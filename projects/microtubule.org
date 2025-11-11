@@ -1,0 +1,6 @@
+#+TITLE: Microtubule project
+#+LAYOUT: maths
+
+* Goal
+
+Model microtubule dynamics.

@@ -1,0 +1,6 @@
+#+TITLE: Large deviations
+#+LAYOUT: maths
+
+* Introduction
+
+Some maths here.

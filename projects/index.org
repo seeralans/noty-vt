@@ -1,0 +1,4 @@
+#+TITLE: Projects
+#+LAYOUT: index
+
+This section contains time-bounded projects.

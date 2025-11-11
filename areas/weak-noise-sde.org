@@ -1,0 +1,498 @@
+#+TITLE: On the Gaussian envelopes of weak-noise stochastic differential equations.
+#+SLUG: gtwsde
+#+LATEX_CLASS: notes
+#+INCLUDE: "_macros.org"
+#+PROPERTY: header-args:jupyter-python :eval no :exports code :results none :session none
+#+LATEX_HEADER: \addbibresource{library.bib}
+# If notes.cls doesn't load TikZ, uncomment:
+# #+LATEX_HEADER: \usepackage{tikz}
+
+#+begin_comment
+Converted literally from Quarto. Text unchanged; only structure transformed.
+Equations have #+name: eq-... and no \label inside.
+All Python blocks have :eval no (and global default set).
+#+end_comment
+
+#+begin_export latex
+% This was in the hidden content block:
+% $$ {{< include customcommands.tex >}} $$
+% Map to a header include instead (already added via LATEX_HEADER above).
+#+end_export
+
+
+
+* Background
+Consider the autonomous  [[file:../../general-notes/stoch_cal.org][SDE]] 
+
+#+name: eq-sde
+\begin{equation}
+\mrm{d}x_t = a( x_t)\mrm{d}t + \alpha(\epsilon) b( x_t) \mrm{d}W_t
+\end{equation}
+
+where $x_t \in \mathbb{R}^n$ is the random variable, $a: \mathbb{R}^n \to \mathbb{R}^n$ is the deterministic drift field, 
+$b: \mathbb{R}^d \to \mathbb{R}^{mn}$ is the noise amplitude, $W_t \in \mathrm{R}^m$ is $m$ dimensional Wiener process and $\alpha(\epsilon)$ is a sufficiently smooth gauge function such that the directional limit $\lim_{\epsilon \to 0^+} \alpha(\epsilon)= 0$. The parameter $\epsilon$ represents perturbation. In the limit $\epsilon \to 0$, [[eq-sde]] is reduced to the deterministic ODE
+
+#+name: eq-ode
+\begin{equation}
+\diffu{x}{t} = a(x).
+\end{equation}
+
+Assuming that there exists a stable invariant manifold $x^{*} \subset \mathbb{R}^n$ to the ODE, we wish parameterise  Gaussian envelope around it which is possible only when the noise sufficiently small and additive.
+
+Suppose we have a manifold $\mathcal{M}^s \subset \mathbb{R}^n$, such that 
+
+#+name: eq-stable-manif-consist
+\begin{equation}
+a(x) \in \mathcal{T}_{x}\mathcal{M}^s\quad \forall x \in \mathcal{M}^s,
+\end{equation}
+
+where $\mathcal{T}_x \cdot$ is the tangent space of the manifold. We have concentration of measure if and only if the manifold $\mathcal{M}^s$ is (locally) attracting. That is given a local neighbourhood $\Lambda$ such that $\mathcal{M}^s \subset \Lambda \subset \mathbb{R}^n$, we define
+
+#+name: eq-stable-mani-def
+\begin{equation}
+\mathcal{M}^s(x) \idef {\lc x_0 \in \Lambda \;|\;  \Psi_t(x_0) \to x\ \text{as}\ t \to \infty\ \text{and}\ \Psi_t(x_0) \in \Lambda, \forall x_0 \in \Lambda   \rc}.
+\end{equation}
+
+Consider now a stable orbit $\bar{x}(s) \in \mathcal{M}^s$ where $s$ is some suitable parameterisation, e.g. $\bar{x}(s) = x^*$ or a fixed point or $\bar{x}(s) = {\lc (\cos{s}, \sin{s}) \;|\; s \in [0, 2\pi) \rc}$ for a cycle of radius one centred at $(0, 0)$, we can consider a small stochastic perturbation to the smooth invariant orbits by letting
+
+#+name: eq-deviation
+\begin{equation}
+x_t = \bar{x}(t) + \beta(\epsilon)y_t \implies y_t = \frac{1}{\beta{(\epsilon)}} {\ls x_t - \bar{x}(t) \rs},
+\end{equation}
+
+where $y_t$ is the perturbation and $\beta(\epsilon)$ is a smooth gauge function such that $\beta(\epsilon) \to 0$ as $\epsilon \to 0$. Using It$\bar{\mrm{o}}$'s lemma we have
+
+#+name: eq-sde-ito-lem
+\begin{equation}
+\mrm{d}y_t = -\frac{1}{\beta} \ls \pdiffu{\bar{x}(t)}{t} \mrm{d}t -  \mrm{d}{x_t} \rs,
+\end{equation}
+
+where we have dropped the dependence on $\epsilon$ in the notation of the gauge function. Before substituting [[eq-sde]] into [[eq-sde-ito-lem]] it is convenient to insert first $x_t = \bar{x}(t) + \beta y_t$ into the former and expand for small $\beta$ to first order
+
+#+name: eq-ito-taylor-expand
+\begin{align}
+\mrm{d}x^i_t &= \ls a^{i}(\bar{x}(t)) + J^{i}_{j}(\bar{x}(t)) (x^{j}_t - \bar{x}^{j}(t)) \rs \mrm{d}t 
++ \alpha \ls b^{i}_{k}(\bar{x}(t))
++ (x^{j}_t - \bar{x}^{j}(t)) \mpdiff{b^{i}_k(\bar{x}(t))}{x^{j}}\rs\mrm{d}W^{k}_{t}, \\
+\mrm{d}x^i_t &= \ls a^{i}(\bar{x}(t)) +  \beta J^{i}_{j}(\bar{x}(t)) y^{j}_t \rs \mrm{d}t 
++ \alpha \ls b^{i}_{k}(\bar{x}(t))
++ \beta y^{j}_t \mpdiff{b^{i}_k(\bar{x}(t))}{x^{j}}\rs\mrm{d}W^{k}_{t},
+\end{align}
+
+where we employ Einstein summation convention, i.e. repeated indicies are summed over, and 
+
+#+name: eq-jacobian
+\begin{equation}
+J^{i}_{j}(\bar{x}(t)) = \mpdiff{a^{i}(x)}{x^j} \;|_{x \to \bar{x}(t)},
+\end{equation}
+
+is the Jacobian of the vector field $a(x)$ evaluated at $\bar{x}(t)$. Substituting [[eq-ito-taylor-expand]] into [[eq-sde-ito-lem]] we obtain (to first order in $\beta$)
+
+#+name: eq-sde-dev-f
+\begin{equation}
+\mrm{d}y^{i}_t = J^{i}_{j}(\bar{x}(t)) y^{j}_t \mrm{d}t + 
+\frac{\alpha}{\beta}b^{i}_{k}(\bar{x}(t))\mrm{d}{W^k_t} + \alpha y^{j}_t \mpdiff{b^{i}_k(\bar{x}(t))}{x^{j}}\mrm{d}{W^k_t}.
+\end{equation}
+
+For the sake of consistency, the perturbation to the deterministic orbit must be the same order as noise in [[eq-sde]], that is $\alpha(\epsilon) = \mathcal{O}(\beta(\epsilon))$ (and vice versa) or $\lim_{\epsilon \to 0} \alpha(\epsilon) / \beta(\epsilon) = c$ where $c$ is some real constant. Thus to leading order we have 
+
+#+name: eq-sde-dev-lead-o
+\begin{equation}
+\mrm{d}y_t = \tilde{J}(t) y_t \mrm{d}t + 
+c \tilde{b}(t)\mrm{d}{W_t}, 
+\end{equation}
+
+where $\tilde{J}(t) = J(\bar{x}(t))$ and $\tilde{b}(t) = b(\bar{x}(t))$ are, respectively, the Jacobian and noise amplitude in matrix form. 
+
+This derivation corresponds having a perturbative solution to the SDE [[eq-sde]] with the form
+
+#+name: eq-sde-perturb-sol
+\begin{equation}
+x_{t} = x^{(0)}_t + \alpha x^{{(1)}}_t + \alpha^2 x^{(2)}_t + \alpha^3 x^{(3)}_t + \cdots 
+\end{equation}
+
+where $x^{(k)}_t \in \mathbb{R}^n$ and the index is used to indicate the order of perturbation and not the index of the vector component. Inserting the series [[eq-sde-perturb-sol]] into [[eq-sde]], we obtain the set of SDEs
+
+#+name: eq-sde-perturb-hier
+\begin{aligned}
+\mrm{d} x^{(0)}_t &= a(x^{(0)}) \mrm{d}t, \quad x^{(0)}_0 = x_0 \\
+\mrm{d} x^{(1)}_t &= x^{(1)}_t \partial_{x}a(x)_{x \to x^{(0)}_t} \mrm{d}t +  b(x^{(0)}_t) \mrm{d}W_t, \quad x^{(1)}_0 = 0 \\
+\phantom{\mrm{d}x^{(1)}_t} & \vdots
+\end{aligned}
+
+which is equal to [[eq-sde-dev]]-lead-o with $y_t = x^{(1)}_t$ being the first-order (stochastic) correction to the deterministic solution. For the full derivation (and proof) look at Chapter 2 of [Freidlin-Wentzell](https://link.springer.com/book/10.1007/978-3-642-25847-3) specifically Theorems 2.1 and 2.2.
+
+Notice thus far that we have not explicitly assumed any constraints on $\tilde{J}(t)$, however, it must be negative semi-definite since it is evaluated on an orbit that exists on a stable invariant manifold. Further if we assume that the Jacobian to have at-least one eigenvalue with negative real parts with a corresponding stable eigenspace, then the fluctuations projected on to the stable eigenspace is an Ornstein-Uhlenbeck.
+
+To see this, let the eigenvalues of the Jacobian be $\{\lambda_1,\dots,\lambda_r,\dots,\lambda_n\}$ ordered such that for $i = 1, \dots, r$ we have $\Re(\lambda_i) < 0$ which corresponds to the stable subspace,and for $i = r+1,\dots,n$ we have $\Re(\lambda_i) \geq 0$ which corresponds centre and unstable subspace. Let
+#+name: eq-R-def
+\begin{equation}
+\mmat{R}(t) = \begin{pmatrix} \mmat{P}_s(t) \\ \mmat{P}_{o}(t) \end{pmatrix}
+\end{equation}
+be a full rank unitary operator, where $\mmat{P}_s$ is the projection operator onto the stable eigenspace $E^s \subset \mathbb{R}^n$ spanned by the eigenvectors associated with $\{\lambda_1,\dots,\lambda_r\}$. Let $z_t = \mmat{R} y_t$ and using It$\bar{\text{o}}$'s lemma with [[eq-sde-dev-lead-o]] we obtain
+#+name: eq-rotation-to-z
+\begin{equation}
+\rmd z_t =  \mmat{R} \tilde{J} \mmat{R}^{-1} z_t + \mmat{R}\, \tilde{b}\, \rmd W_t.
+\end{equation}
+From [[eq-rotation-to-z]], we can obtain the evolution of the covariance, i.e. the Lyapunov equation 
+#+name: eq-lyapunov-z
+\begin{equation}
+\diffl{\mmat{\Sigma}}{t} = \mmat{A}(t) \mmat{\Sigma} +  \mmat{\Sigma} \mmat{A}^{\trans}(t)
++ \mmat{D}(t)
+\end{equation}
+where $\mmat{A} = \mmat{R} \tilde{J} \mmat{R}^{-1}$ and $\mmat{D} = \mmat{R}\, \tilde{b}$. If all the eigenvalues of the Jacobian have positive real part, then Equation [[eq-rotation-to-z]] gives a time dependent Ornstein-Uhlenbeck. Notice that we have
+#+name: eq-sigma-expanded
+\begin{equation}
+\mmat{\Sigma} = 
+\begin{pmatrix}
+\Sigma_{\mrm{ss}} & \Sigma_{\mrm{so}}\\
+\Sigma_{\mrm{os}} &  \Sigma_{\mrm{oo}}
+\end{pmatrix}
+\end{equation}
+
+** Example
+Consider the following two dimensional system where
+#+name: toy-sde-semi-conf
+\begin{equation}
+\begin{pmatrix}
+\rmd y^{(1)}_t \\
+\rmd y^{(2)}_t 
+\end{pmatrix}
+=
+\begin{pmatrix}
+-k & \epsilon \\
+\epsilon & \delta
+\end{pmatrix}
+\begin{pmatrix}
+y^{(1)}_t \\
+y^{(2)}_t 
+\end{pmatrix}
++
+2
+\begin{pmatrix}
+\sigma_1 & 0 \\
+0 & \sigma_2
+\end{pmatrix}
+\begin{pmatrix}
+\rmd W^{(1)}_t \\
+\rmd W^{(2)}_t
+\end{pmatrix}
+\end{equation}
+$k, \sigma_1, \sigma_2 \in \mathbb{R}^+$, while $\epsilon, \delta \in \mathbb{R}$. If we consider the steady-state Lyapunov equation we have three simultaneous equations
+#+NAME: eq-lyapunov-z-toy-cond
+\begin{equation}
+\begin{aligned}
+-k\Sigma_{\mrm{ss}} + \epsilon\Sigma_{\mrm{so}} + \sigma_1 &= 0, \\
+(\delta - k)\Sigma_{\mrm{so}} + \epsilon(\Sigma_{\mrm{oo}} +\Sigma_{\mrm{ss}}) &= 0, \\
+ \epsilon \Sigma_{\mrm{so}} + \delta\Sigma_{\mrm{oo}} + \sigma_2 &= 0, \\
+\end{aligned}
+\end{equation}
+which gives us (check!)
+#+NAME: eq-ess
+\begin{equation}
+\Sigma_{\mrm{ss}} = \frac{\epsilon^2(\sigma_2 - \sigma_2) - \sigma_1 \delta (\delta - k)}{\epsilon^2 \delta +  k \delta (\delta - k) + \epsilon^2 k}
+\end{equation}
+
+
+
+-------
+
+
+Projecting [[eq-sde-dev-lead-o]] onto $E^s$ gives
+
+#+name: eq-sde-stable-project
+\begin{equation}
+\rmd z_t = 
+\end{equation}
+
+
+#+name: eq-OU-stable
+\begin{equation}
+\mathrm{d}z_t =  \mmat{P}_{s} \tilde{J}(t) \mmat{P}^{-1}_s \z_t \mrm{d}t
+\tilde{J}^{\mrm{s}}(t) z_t \,\mathrm{d}t + c\,b^{\mrm{s}}(t) \,\mathrm{d}W_t
+\end{equation}
+
+where $z_t = P_s y_t, J_s = P_s \tilde{J}(t) P_s$ is Hurwitz (all eigenvalues have strictly negative real part), and $b_s(t) = P_s \tilde{b}(t)$.
+
+If $\tilde{J}(t)$ is constant in time (e.g., in the neighbourhood of a fixed point), the above SDE is exactly the multivariate Ornstein–Uhlenbeck process,
+$\mathrm{d}z_t = A z_t \,\mathrm{d}t + \Sigma \,\mathrm{d}W_t$,
+with $A = J_s$ and $\Sigma = c\,b_s$, which admits a stationary Gaussian distribution with zero mean and covariance matrix $C$ satisfying the Lyapunov equation $A C + C A^\top + \Sigma \Sigma^\top = 0$.
+
+This shows that in the stable directions the fluctuations remain bounded and Gaussian in the small-noise limit, while any neutral or unstable directions require higher-order analysis or additional constraints to control their growth.
+
+
+
+* Examples and code
+
+
+#+begin_src python :eval no :results none :exports code
+import numpy as np
+import matplotlib.pyplot as pp
+import prusty.prusty as pr
+# pp.style.use("~/.config/matplotlib/stylelib/paper.mplstyle")
+#+end_src
+
+
+# Piecewise-smooth SDEs 
+
+## Piecewise-constant 
+[[file:figures/constant-ps.svg]]
+
+#+name: eq-general-ps-sde
+\begin{equation}
+\lc
+\begin{aligned}
+\mrm{d}x_t &=  u\mrm{d}t + \sqrt{\epsilon} u \mrm{d}^{i}W_t, \\
+\mrm{d}y_t &=  -v \mrm{sign}(x_t) \mrm{d}t + \sqrt{\epsilon} b^{2}_{i}(x_t, y_t) \mrm{d}^{i}W_t, \\
+\end{aligned}
+\rd.
+\end{equation}
+
+where $u$ and $v$ are constants and $\mrm{sign}$ is the signum function. Suppose we employ the regularisation
+
+#+name: eq-regular-sign
+\begin{equation}
+\mrm{sign}(x) \sim
+\mrm{sign}^{\epsilon}(x) = 
+\lc
+\begin{array}{ll}
+-1 & x < -\frac{\epsilon}{2} \\
+\Lambda^{\epsilon}(x) & |x| \in [-\frac{\epsilon}{2}, \frac{\epsilon}{2}] \\
+\phantom{1} 1 & x > -\frac{\epsilon}{2}
+\end{array}
+\rd
+\end{equation}
+
+where $\Lambda^{\epsilon}(x)$  are the family of bounded functions on the closed interval $[-\epsilon/2, \epsilon/ 2]$, i.e.
+
+#+name: eq-Lambda-family
+\begin{equation}
+\Lambda^{\epsilon}(x) \in  
+\left\{ f \in C^1([-\epsilon/2, \epsilon/2]) \,\middle|\,
+\begin{array}{l}
+f(\epsilon/2) = 1,\quad f(-\epsilon/2) = -1, \\
+\sup_{x \neq \epsilon/2} f(x) < 1, \\
+\inf_{x \neq -\epsilon/2} f(x) > -1
+\end{array}
+\right\}.
+\end{equation}
+
+This family of functions in the limit $\epsilon \to 0$ all yeilds the discontinuous sign function and is illustrated in [[fig-reg-family]]. Notice that the (fix b) noise amplitude  is $\mathcal{O}(\sqrt{\epsilon})$. This is in preparation for later analysis as the Gaussian noise correction to the deterministic dynamics of a chemical reaction in the thermodynamic limit is inversely proportional to the square root of the volume: $1/ \sqrt{V} = \sqrt{\epsilon}$.
+
+#+name: fig-reg-family
+#+begin_export latex
+\begin{tikzpicture}[scale=2]
+  % Axes
+  \draw[->] (-3,0) -- (3,0) node[right] {$x$};
+  \draw[->] (0,-1.5) -- (0,1.5) node[above] {$\mathrm{sign}^{\epsilon}(x)$};
+
+  % Function segments
+  \draw[thick] (-3,-1) -- (-1,-1);
+  \draw[thick] (-1,-1) -- (1,1);
+  \draw[thick] (1,1) -- (3,1); 
+ \draw[thick, dashed](-1, -1) .. controls (-1, 0.5) and (1, -0.5) .. (1, 1 );
+  
+
+  % Dashed verticals and labels
+  \draw[dashed] (-1,0) -- (-1,-1);
+  \draw[dashed] (1,0) -- (1,1);
+
+  \node[below] at (-1,0) {$-\frac{\epsilon}{2}$};
+  \node[below] at (1,0) {$\frac{\epsilon}{2}$};
+\end{tikzpicture}
+#+end_export
+
+The choice of $\Lambda^{\epsilon}(x)$, while not affecting the macroscopic dynamics, will obiously lead to different stationary distributions inside the layer.
+
+If we consider in phase space we obtain trajectories that lead from an arbitrary initially condition to the surface $\mathcal{D}$, where one would expect sliding motion we instead obtain rapid crossing and recrossing of the surface. 
+
+When simulating one must use $\mathrm{d}t \leq \epsilon $
+
+#+begin_src python :eval no :results none :exports code
+#| label: fig-const-vec-disc-phase
+#| fig-cap: "A phase portrait of a trajectory in a piecewise constant field dt=1"
+
+init_cond = np.array([-1.0, 10.0])
+d_mult = np.array([0.5, 1.0])
+ep = 0.05
+
+sigma = np.array([[1.0, 0.0], [0.0, 1.0]])  * ep
+num_points = 500
+num_trials = 20000
+num_treads = 6
+
+t_min_max = (0.0, 500.0)
+
+dat_pt, dat_px = pr.sde.constant_opposing_linear_cont(init_cond, d_mult, sigma, ep, t_min_max, num_points, num_trials, num_threads)
+xx, yy = np.meshgrid(np.linspace(0, 500, 10), np.linspace(-10, 10, 10))
+uu = xx * 0 + d_mult[0]
+vv = yy * 0;
+vv[yy > 0] += -d_mult[1]
+vv[yy < 0] +=  d_mult[1]
+
+fig_t, ax_ts = pp.subplots(ncols=2, sharey=True, figsize=[8,3])
+ax_ts[0].quiver(xx, yy, uu, vv)
+ax_ts[0].plot(dat_px[:, 0, 0], dat_px[:, 1, 0])
+ax_ts[0].set_xlabel("x")
+ax_ts[0].set_ylabel("y")
+
+ax_ts[1].plot(dat_pt[:, 0], dat_px[:, 1, 0])
+ax_ts[1].set_xlabel("t")
+ax_ts[1].set_ylabel("y")
+#+end_src
+
+#+begin_src python :eval no :results none :exports code
+#| label: fig-const-vec-disc-phase-small-dt
+#| fig-cap: "A phase portrait of a trajectory in a piecewise constant field dt=0.05"
+
+init_cond = np.array([-1.0, 10.0])
+d_mult = np.array([0.5, 1.0])
+ep = 0.05
+
+sigma = np.array([[1.0, 0.0], [0.0, 1.0]])  * ep
+num_points = 10000
+num_trials = 20000
+num_treads = 6
+
+t_min_max = (0.0, 500.0)
+
+dat_pt, dat_px = pr.sde.constant_opposing_linear_cont(init_cond, d_mult, sigma, ep, t_min_max, num_points, num_trials, num_threads)
+xx, yy = np.meshgrid(np.linspace(0, 500, 10), np.linspace(-10, 10, 10))
+uu = xx * 0 + d_mult[0]
+vv = yy * 0;
+vv[yy > 0] += -d_mult[1]
+vv[yy < 0] +=  d_mult[1]
+
+fig_t, ax_ts = pp.subplots(ncols=2, sharey=True, figsize=[8,3])
+ax_ts[0].quiver(xx, yy, uu, vv)
+ax_ts[0].plot(dat_px[:, 0, 0], dat_px[:, 1, 0])
+ax_ts[0].set_xlabel("x")
+ax_ts[0].set_ylabel("y")
+
+ax_ts[1].plot(dat_pt[:, 0], dat_px[:, 1, 0])
+ax_ts[1].set_xlabel("t")
+ax_ts[1].set_ylabel("y")
+#+end_src
+
+#+begin_src python :eval no :results none :exports code
+#| label: fig-const-vec-ep-dist
+#| fig-cap: "Probability distribution in the $\\epsilon$-layer of the discontinuty surface"
+x_space = np.linspace(-10*ep, 10*ep, 100)
+norm_pdf = lambda x, mu, sig_s: np.exp(-0.5/sig_s *(x-mu)**2)/np.sqrt(2*np.pi*sig_s)
+yy, xx = np.histogram(dat_px[-1, 1, :], bins=100, density=True)
+fig_p, ax_p = pp.subplots()
+ax_p.scatter(0.5 * (xx[1:] + xx[:-1]), yy)
+ax_p.set_xlim([-10*ep, 10*ep])
+ax_p.set_xlabel(r"$y$");
+ax_p.set_ylabel(r"$P(y)$");
+#+end_src
+
+
+
+## Piecewise cycle 
+
+#+begin_src python :eval no :results none :exports code
+#| eval: true
+#| cache: true
+
+v = 1.0;
+al = 4;
+al_mult = 1.0;
+v = 2 * np.pi;
+sig_mult = 1.96 * 0;
+noise_amp = 1 / (2 * np.pi * al) * 5.0;
+y_disc = 3
+
+init_cond = np.array([-al, 1.9])
+d_mult = np.array([-1.0, 0.00, 1.0, 0.0])
+sigma = np.array([[1.0, 0.0], [0.0, 1.0]]) * noise_amp 
+ep = 0.001
+
+
+drift_params = np.array([al, al_mult, v, y_disc])
+
+
+
+num_points = 1000000
+num_trials = 1
+num_threas = 1
+t_min_max = (0.0, 1000.0)
+
+
+s_bound = 1.0/(v**2 - y_disc**2)*(-v*y_disc*al + np.sqrt(y_disc**4*(v**2 - y_disc**2 + al**2)))
+
+sim_dat = pr.sde.stochastic_trajectory_on_ring_with_disc(np.array([s_bound,  y_disc]), drift_params, sigma, ep, t_min_max, num_points, num_trials, num_threas)
+segment_dat = pr.sde.stochastic_trajectory_on_ring_with_disc(np.array([s_bound,  y_disc]), np.array([al, al_mult, v, y_disc]), 0.0 * sigma, ep, (0, 1), num_points, num_trials, num_threas)
+
+th_space = np.linspace(0, 2*np.pi, 100)
+#+end_src
+
+#+begin_src python :eval no :results none :exports code
+#| eval: true
+#| cache: true
+
+fig, ax = pp.subplots()
+
+ax.plot(al*np.cos(th_space), al*np.sin(th_space))
+# ax.plot(np.linspace(-al, al, 100), y_disc * np.ones(100))
+ax.plot(sim_dat[1][:, 0, 0], sim_dat[1][:, 1, 0])
+ax.plot(segment_dat[1][:, 0, 0], segment_dat[1][:, 1, 0])
+ax.scatter(-1.17041, y_disc)
+ax.scatter(-0.348558, y_disc)
+ax.set_aspect('equal')
+
+#+end_src
+
+Taking the stochastic trajectories, and then paramerising the 
+
+$\Phi: \mathbb{R}^2 \to \mathbb{R}^2 \times [0, 2\pi)$
+
+#+begin_src python :eval no :results none :exports code
+#| eval: true
+#| cache: true
+
+pp.style.use("~/.config/matplotlib/stylelib/paper.mplstyle")
+
+
+fig, ax = pp.subplots()
+x_vals = sim_dat[1]
+num_trajs = x_vals.shape[-1]
+
+mean_traj = segment_dat[1][:, :, 0]
+
+for ti in range(num_trajs):
+    x_traj = x_vals[:, 0, ti]
+    y_traj = x_vals[:, 1, ti]
+
+    # Compute theta
+    thi = np.arctan2(y_traj, x_traj)
+    
+    # Wrap negative angles to [0, 2π]
+    thi[thi < 0] += 2 * np.pi
+    
+    # Normalise to [0, 1]
+    thi_mod = (thi / (2 * np.pi)) % 1
+
+    # Scatter for x component
+    ax.scatter(thi_mod, x_traj, s=0.08, c='r', alpha=0.2, edgecolors='none')
+
+    # Scatter for y component
+    ax.scatter(thi_mod, y_traj, s=0.08, c='r', alpha=0.2, edgecolors='none')
+
+
+
+mean_thi = np.arctan2(mean_traj[:, 1], mean_traj[:, 0])
+mean_thi[mean_thi <= 0] += 2 * np.pi
+mean_thi_mod = (mean_thi / (2 * np.pi)) % 1
+
+ax.plot(mean_thi_mod, mean_traj[:, 0])    
+ax.plot(mean_thi_mod, mean_traj[:, 1])    
+
+ax.set_xlabel(r"$\bar{\theta}$")
+ax.set_ylabel(r"$x,y$")
+fig.tight_layout()
+
+#+end_src
+
+
+#  LocalWords:  Ornstein

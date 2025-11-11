@@ -1,0 +1,610 @@
+#+TITLE: Issues with regularising the layer  
+#+OPTIONS: num:t
+#+SLUG: mtb
+#+bibliography: ../bib/library.bib
+#+cite_export: csl ../csl/chicago-author-date.csl
+#+LATEX_HEADER: \usepackage{amsmath,amsthm,amssymb}
+#+LATEX_HEADER: \usepackage[nameinlink,noabbrev]{cleveref}
+
+#+LATEX_HEADER: \newtheorem{theorem}{Theorem}[section]
+#+LATEX_HEADER: \newtheorem{lemma}[theorem]{Lemma}
+#+LATEX_HEADER: \newtheorem{proposition}[theorem]{Proposition}
+#+LATEX_HEADER: \newtheorem{corollary}[theorem]{Corollary}
+#+LATEX_HEADER: \theoremstyle{definition}\newtheorem{definition}[theorem]{Definition}
+#+LATEX_HEADER: \theoremstyle{remark}\newtheorem*{remark}{Remark}
+#+LATEX_HEADER: \crefname{lemma}{lemma}{lemmas}
+#+LATEX_HEADER: \Crefname{lemma}{Lemma}{Lemmas}
+#+LATEX_HEADER: \input{customcommands.tex}
+#+LATEX_HEADER: \newcommand{\cunt}{\mathbb{R}}
+
+#+PROPERTY: header-args :eval no
+
+
+* Regularising the hidden layer
+From a practical point-of-view, to obtain numerical trajectories either from solving an ODE or SDE (Gaussian approximation), we require the regularisation of the switching function
+#+NAME: eq-lambda-def
+\begin{equation}
+\begin{array}{ll}
+\lambda = \mathrm{sign}(\sigma(x))  &\sigma(x) \neq 0 \\
+\lambda \in (-1, 1), &\sigma(x) =  0
+\end{array}
+\end{equation}
+over the layer $|\sigma(x)| < \epsilon$. The regularisation must satisfy the properties given in the following definition
+#+NAME: def-lambda-reg
+#+ATTR_LATEX: :options [Regularising]
+#+begin_definition
+Let $\lambda^{\epsilon}(\sigma(x))$ be the regularised family of $\lambda$ with $\epsilon > 0$ such that following properties hold:
+1. $\forall \sigma \neq 0$, we must have $\lambda^{\epsilon}(\sigma) \to \mathrm{sign}(\sigma)$ 
+2. $\forall |\sigma| < \epsilon$, we must have $\lambda^{\epsilon}(\sigma) \in (-1, 1)$ \\
+3. $\lambda^{\epsilon}(0) = 0$ \\
+4. $\lambda^{\epsilon}(-\sigma) = -\lambda^{\epsilon}(\sigma)$ 
+#+end_definition
+There are many functions that can satisfy the properties layed out in [[def-lambda-reg]], 
+and obtaining a "correct" smoothing is of-course ill-posed. There is also the choice of smoothing over the entire real line or in such a way that for $|\sigma| >= \epsilon$ we have $\lambda(\sigma) = \pm 1$. For example the regularisation 
+#+NAME: eq-tang-reg
+\begin{equation}
+\lambda^{\epsilon}(\sigma) = \tanh(\sigma / \epsilon)
+\end{equation}
+ensures satisfies all properties and is $C^{\infty}$ but it never reaches $\pm 1$. Howeer if we consider the asymptotic expansion away from $0$, we have
+#+NAME: eq-tanh-expand
+\begin{equation}
+\tanh(x/\epsilon) \simeq \mathrm{sign}(x)\big(1-2e^{-2|x|/\epsilon}+2e^{-4|x|/\varepsilon}-\cdots\big).
+\end{equation}
+which shows that any errors are exponential suppressed. We can also consider functions such as 
+#+NAME: eq-cn-reg
+\begin{equation}
+\lambda =
+\left\{
+\begin{array}{ll}
+ \mathrm{sign}(\sigma)  &|\sigma(x)| \geq \epsilon \\
+\Lambda(\sigma / \epsilon) , &|\sigma(x)| < \epsilon
+\end{array}
+\right.
+\end{equation}
+where 
+#+NAME: eq-cap-lam-def
+\begin{equation}
+\Lambda(x) = a_1 x + a_3 x^3 + a_5 x^5 \cdots 
+\end{equation}
+is an odd polynomial whose degree determines how smooth it is. e.g.  
+#+NAME: eq-cap-lam-c0
+\begin{equation}
+\Lambda(x) = x
+\end{equation}
+gives a $C^0$ smoothing over the layer, whereas
+#+NAME: eq-cap-lam-c1
+\begin{equation}
+\Lambda(x) = x +
+\frac{1}{2}x^{3}
+-\frac{1}{2}x^{5}
+\end{equation}
+gives a $C^2$ regularisation.
+
+#+name: insight-which-reg
+#+begin_insight
+Typically when perturbed the system follows the "linear" approximation, as discussed in Jeffrey2018. In other words if I take the $\tanh$ approximation and then add noise I should basically see behaviour close to the linear approximation, for sufficently *large* noise. 
+#+end_insight
+
+
+
+
+#+begin_src jupyter-python :session debug :exports none :eval no :results none
+import numpy as np
+import matplotlib.pyplot as pp
+from prusty.prusty import sde as sde
+from matplotlib import rcParams
+
+# Enable LaTeX for all text
+rcParams["text.usetex"] = True
+rcParams["font.family"] = "serif"   # Or "sans-serif" or "monospace"
+rcParams["text.latex.preamble"] = r"\usepackage{amsmath}"  # Optional: add LaTeX packages
+rcParams['figure.dpi'] = 100
+
+param_pairs = {
+ "ep_01_safe": {"g" : 0.4502913000, "ep" : 0.01, "delta_t": 0.005, "smooth": -1},
+ "ep_01": {"g" : 0.450292300, "ep" : 0.01, "delta_t": 0.005, "smooth": -1},
+ "ep_005": {"g" : 0.45029155, "ep" : 0.01, "delta_t": 0.001, "smooth": -1}
+}
+
+
+def euler_int(t_vals, x0, rhs):
+  x_vals = np.zeros((len(t_vals), len(x0)))
+  x_vals[0, :] = x0.copy()
+  for i in range(1, len(t_vals)):
+    h = t_vals[i] - t_vals[i-1]
+    x_dot = rhs(t_vals[i-1], x_vals[i-1])
+    x_vals[i, :] = x_vals[i-1, :] + x_dot * h
+  return x_vals
+
+
+state = np.array([0.3, 0.3, 0.3])
+state = np.random.rand(3) * 0.4  + 0.1
+state[2] = 2 * state[1] * state[0] / (state[0] + state[1])
+
+j = 0.8
+h = 0.8
+bes = 1.0
+
+ep_label = "ep_005"
+ep = 0.0005
+g = 0.458
+delta_t = ep / 10
+smooth = -1
+
+# g = 0.4502913000
+# ep = 0.005
+# delta_t = 0.001
+# smooth = -1
+
+g = 0.4502913000
+ep = 0.005
+delta_t = 0.001
+smooth = -1
+
+g = 0.45
+ep = 0.0103203
+delta_t = 0.001
+smooth = -1
+
+g = 0.45
+ep = 0.0415
+delta_t = 0.001
+smooth = 1
+
+# g = 0.4616459046
+# ep = 0.01
+# delta_t = 0.001
+# smooth = 1
+
+t_max = 500
+t_vals = np.arange(0, t_max, delta_t)
+
+rhs = lambda t, x: sde.micro_full_smooth_lam_py(t, x, j, h, g, bes, ep, smooth)
+
+
+x_vals = euler_int(t_vals, state, rhs)
+
+fig, axs = pp.subplot_mosaic(
+    [
+        ["a", "a"],   # top row: 'a' spans two columns
+        ["b", "c"],   # bottom row: 'b' and 'c'
+    ],
+    figsize=(6, 6),
+    constrained_layout=True,
+)
+
+axs['a'].plot(t_vals, x_vals)
+axs['a'].plot(t_vals, x_vals[:, 0] + x_vals[:, 1])
+axs['a'].set_ylim([0, 1])
+axs['a'].set_xlabel("$t$")
+axs['a'].set_ylabel(r"$\varphi, \vartheta, \xi$")
+
+axs["b"].plot(x_vals[:, 0], x_vals[:, 1])
+axs["b"].set_xlabel(r"$\varphi$")
+axs["b"].set_ylabel(r"$\vartheta$")
+axs["b"].set_xlim([-0.05, 1.0])
+axs["b"].set_ylim([-0.05, 1.0])
+axs["b"].set_aspect('equal')
+
+axs["c"].plot(x_vals[:, 0] - x_vals[:, 1], x_vals[:, 2])
+axs["c"].set_xlabel(r"$\varphi - \vartheta$")
+axs["c"].set_ylabel(r"$\vartheta$")
+axs["c"].set_xlim([-1, 1.0])
+axs["c"].set_ylim([0, 1.0])
+axs["c"].set_aspect(2.0)
+
+
+fig.savefig("./figures/euler-solve.png")
+#+end_src
+
+
+#+NAME: fig-time-series
+#+CAPTION: Example time series (placeholder path). Parameters: $x_0 = [0.1, 0.1, 0.1], j = 0.8, h = 0.8, g = 0.4502, \epsilon = 0.01$
+[[./figures/euler-solve.png]]
+
+
+#+begin_src jupyter-python :session debug :exports none :eval no :results none :cache nil
+
+g = 0.45
+ep = 0.0415
+delta_t = 0.001
+smooth = -1
+
+ep_layer = ep
+ep_noise_amp = ep * 0.0000001
+
+state = np.array([0.01, 0.01, 0.01])
+
+t_max = 500
+t_min_max = (0.0, t_max)
+t_vals = np.arange(0, t_max, delta_t)
+num_points = len(t_vals)
+num_trials = 1
+num_threads = 1
+bes = 1.0
+s_dat = sde.microtubule_sde_smooth_lam(state, j, h, g, bes, ep_layer, ep_noise_amp, smooth, t_min_max, num_points, num_trials, num_threads)
+
+st_vals = s_dat[0][:, 0]
+sx_vals = s_dat[1][:, :, 0]
+fig, axs = pp.subplot_mosaic([["a", "a"], ["b", "c"],], figsize=(8, 8), constrained_layout=True,)
+
+# axs['a'].plot(st_vals, sx_vals)
+axs['a'].plot(st_vals, sx_vals[:, 0] + sx_vals[:, 1])
+axs['a'].set_ylim([0, 1])
+axs['a'].set_xlabel("$t$")
+axs['a'].set_ylabel(r"$\varphi, \vartheta, \xi$")
+
+axs["b"].plot(sx_vals[:, 0], sx_vals[:, 1])
+axs["b"].set_xlabel(r"$\varphi$")
+axs["b"].set_ylabel(r"$\vartheta$")
+axs["b"].set_xlim([-0.05, 1.0])
+axs["b"].set_ylim([-0.05, 1.0])
+axs["b"].set_aspect('equal')
+
+axs["c"].plot(sx_vals[:, 0] - sx_vals[:, 1], sx_vals[:, 2])
+axs["c"].set_xlabel(r"$\varphi - \vartheta$")
+axs["c"].set_ylabel(r"$\xi$")
+axs["c"].set_xlim([-1, 1.0])
+axs["c"].set_ylim([0, 1.0])
+axs["c"].set_aspect(2.0)
+
+fig.savefig("../assets/img/sde-euler-solve.png", bbox_inches='tight')
+#+end_src
+
+
+#+NAME: fig-sde-time-series
+#+CAPTION: Example time series SDE (placeholder path). Parameters: $x_0 = [0.1, 0.1, 0.1], j = 0.8, h = 0.8, g = 0.4502, \epsilon = 0.01$
+[[../assets/img/sde-euler-solve.png]]
+
+* Testing Jacobian Computation
+
+
+
+#+begin_src jupyter-python :session debug :exports none :eval no :results none
+from python.euler_maru import * 
+from python.system import *
+import matplotlib.patches as patches
+
+g = 0.45
+j = 0.8
+h = 0.8
+bes = 1.0
+ep = 0.001
+delta_t = 0.001
+smooth = -1
+
+g = 0.45
+ep = 0.0415
+g = 0.0
+delta_t = 0.001
+smooth = 1
+bes = 0.0; slug = "-no-int"
+
+ep_layer = ep
+vol = 5000
+ep_noise_amp = 1/np.sqrt(vol)
+state = np.array([0.1, 0.3, 0.1])
+t_max = 2
+t_min_max = (0.0, t_max)
+t_vals = np.arange(0, t_max, delta_t)
+num_points = len(t_vals)
+num_trials = 1000
+num_threads = 6
+(a_dat_t, a_dat_x) = sde.microtubule_sde_smooth_lam(state, j, h, g, bes, ep_layer, ep_noise_amp*0.0, smooth, t_min_max, num_points, 1, 1)
+a_dat_t = a_dat_t[:, 0]
+a_dat_x = a_dat_x[:, :, 0]
+
+s_dat_t, s_dat_x = sde.microtubule_sde_smooth_lam(state, j, h, g, bes, ep_layer, ep_noise_amp, smooth, t_min_max, num_points, num_trials, num_threads)
+s_dat_t = s_dat_t[:, 0]
+
+# jacs = np.array([jac_micro_full(x, j, h, g, bes, 1, 1, 1, 1) for x in a_dat_x]) 
+jacs = np.array([jac_micro_full_smooth_lam(x, j, h, g, bes, ep, smooth) for x in a_dat_x]) 
+diffs = np.array([micro_full_drift_and_diff(1.0, x, j, h, g, bes, 1, 1, 1, 1)[1] for x in a_dat_x])
+diffs = np.array([micro_full_drift_and_diff_smooth_lam(1.0, x, j, h, g, bes, ep, smooth)[1] for x in a_dat_x])
+diffs = np.array([A @ A.T for A in diffs])
+
+sigmas = np.zeros((len(jacs), 3, 3))
+sigmas[0, :, :] = np.eye(3) * 0.00
+for i in range(1, len(jacs)):
+  dt = t_vals[i] - t_vals[i-1]
+  sig = sigmas[i-1]
+  jac = jacs[i - 1]
+  diff = diffs[i - 1]
+  diff_sigma = jac @ sig + sig @ jac.T + ep_noise_amp**(2) * diff
+  sigmas[i] += sigmas[i-1] + dt * (diff_sigma)
+
+k_dist = 1
+
+x_upper = np.array([a_dat_x[:, 0] + k_dist*np.sqrt(sigmas[:, 0, 0]), a_dat_x[:, 1] + k_dist*np.sqrt(sigmas[:, 1, 1]), a_dat_x[:, 2] + k_dist*np.sqrt(sigmas[:, 2, 2])]).T
+x_lower = np.array([a_dat_x[:, 0] - k_dist*np.sqrt(sigmas[:, 0, 0]), a_dat_x[:, 1] - k_dist*np.sqrt(sigmas[:, 1, 1]), a_dat_x[:, 2] - k_dist*np.sqrt(sigmas[:, 2, 2])]).T
+
+l_sigmas = sigmas.sum(axis=(1, 2))
+
+l_upper = np.array(a_dat_x[:, 0] + a_dat_x[:, 1] + k_dist*np.sqrt(l_sigmas))
+l_lower = np.array(a_dat_x[:, 0] + a_dat_x[:, 1] - k_dist*np.sqrt(l_sigmas))
+
+
+tang = a_dat_x[:, (0, 1)]
+tang = np.diff(tang, axis=0)
+norm = np.array([-tang[:, 1], tang[:, 0]]).T
+norm = (norm.T / np.linalg.norm(norm, axis=1)).T
+std_norm = np.array([np.sqrt(norm[i, :] @ sigmas[i, 0:2, 0:2] @ norm[i, :][:, None]) for i in range(len(norm))])
+
+phase_ph_th_upper = a_dat_x[:-1, 0:2] + k_dist * std_norm * norm
+phase_ph_th_lower = a_dat_x[:-1, 0:2] - k_dist * std_norm * norm
+
+V = np.array([[1, -1, 0], [0, 0, 1]])
+
+sigmas_s_xi = np.array([V @ sigma @ V.T for sigma in sigmas])
+
+phase_s_xi_tang = np.array([a_dat_x[:, 0] - a_dat_x[:, 1], a_dat_x[:, 2]]).T
+phase_s_xi_tang = np.diff(phase_s_xi_tang, axis=0)
+phase_s_xi_norm = np.array([-phase_s_xi_tang[:, 1], phase_s_xi_tang[:, 0]]).T
+phase_s_xi_norm = (phase_s_xi_norm.T / np.linalg.norm(phase_s_xi_norm, axis=1)).T
+std_s_xi_norm = np.array([np.sqrt(phase_s_xi_norm[i, :] @ sigmas_s_xi[i, 0:2, 0:2] @ phase_s_xi_norm[i, :][:, None]) for i in range(len(phase_s_xi_norm))])
+
+phase_s_xi = np.array([a_dat_x[:, 0] - a_dat_x[:, 1], a_dat_x[:, 2]]).T
+phase_s_xi_upper = phase_s_xi[:-1, :] + k_dist * std_s_xi_norm * phase_s_xi_norm
+phase_s_xi_lower = phase_s_xi[:-1, :] - k_dist * std_s_xi_norm * phase_s_xi_norm
+
+
+# phase_s_xi_upper = phase_s_xi_tang + k_dist * std_norm * norm
+# phase_s_xi_lower = phase_s_xi_tang - k_dist * std_norm * norm
+
+fig, axs = pp.subplot_mosaic(
+    [
+        ["a", "a", "b", "b"],
+        ["a", "a", "b", "b"],
+        ["d", "d", "c", "c"],
+        ["e", "e", "c", "c"],
+    ],
+    figsize=(6, 6),
+    constrained_layout=True,
+)
+
+
+labels = ["a", "d", "e"]
+for i in range(3):
+  axs[labels[i]].plot(a_dat_t, + a_dat_x[:, i], c='k')
+  axs[labels[i]].plot(a_dat_t, + s_dat_x[:, i], c="tab:blue", alpha=0.1)
+  axs[labels[i]].plot(a_dat_t, + x_upper[:, i], c="red", label=r"$\widetilde{\varphi}(t) + k\text{SD}$")
+  axs[labels[i]].plot(a_dat_t, + x_lower[:, i], c="orange", label=r"$\widetilde{\varphi}(t) - k\text{SD}$")
+  axs[labels[i]].set_xlabel(r"$t$")
+
+axs['a'].legend(frameon=False)
+
+# axs['a'].plot(a_dat_t, a_dat_x[:, 0] +a_dat_x[:, 1], c='k')
+# axs['a'].plot(a_dat_t, s_dat_x[:, 0] + s_dat_x[:, 1], c="tab:blue", alpha=0.1)
+
+# axs['a'].plot(a_dat_t, + l_upper, c="red")
+# axs['a'].plot(a_dat_t, + l_lower, c="orange")
+xy_lims = {key: [item.set_xlim(), item.set_ylim()] for key, item in axs.items()}
+
+
+square = patches.Rectangle((1.15, 0.0), t_max, 2.0, linewidth=0, facecolor="tab:green", alpha=0.10, zorder=0)
+axs['a'].add_patch(square)
+square = patches.Rectangle((1.15, 0.0), t_max, 2.0, linewidth=0, facecolor="tab:green", alpha=0.10, zorder=0)
+axs['d'].add_patch(square)
+square = patches.Rectangle((1.15, 0.0), t_max, 2.0, linewidth=0, facecolor="tab:green", alpha=0.10, zorder=0)
+axs['e'].add_patch(square)
+# axs['e'].add_patch(square)
+
+
+
+for key, item in axs.items():
+  item.set_xlim(xy_lims[key][0])
+  item.set_ylim(xy_lims[key][1])
+
+axs['a'].set_ylabel(r"$\varphi$")
+axs['d'].set_ylabel(r"$\vartheta$")
+axs['e'].set_ylabel(r"$\xi$")
+
+axs['b'].plot(a_dat_x[:, 0], a_dat_x[:, 1])
+axs['b'].plot(s_dat_x[:, 0], s_dat_x[:, 1], c="tab:blue", alpha=0.1)
+
+axs['b'].plot(phase_ph_th_upper[:, 0], phase_ph_th_upper[:, 1], "red")
+axs['b'].plot(phase_ph_th_lower[:, 0], phase_ph_th_lower[:, 1], "orange")
+
+
+axs["b"].set_xlabel(r"$\varphi$")
+axs["b"].set_ylabel(r"$\vartheta$")
+
+# Define polygon vertices (triangle here)
+triangle_coords = [(1.0, 0.0), (0.0, 1.0), (1.0, 1.0)]
+
+# Add polygon patch
+triangle = patches.Polygon(triangle_coords, 
+                           closed=True, 
+                           facecolor="black", 
+                           alpha=0.05, 
+                           zorder=0)
+
+axs['b'].add_patch(triangle)
+
+axs["b"].set_xlim([-0.00, 1.0])
+axs["b"].set_ylim([-0.00, 1.0])
+
+axs["b"].set_xlim(0, 0.6)
+axs["b"].set_ylim([0.2, 0.8])
+
+axs["b"].set_aspect('equal')
+
+
+
+axs['c'].plot(a_dat_x[:, 0]- a_dat_x[:, 1], a_dat_x[:, 2])
+axs['c'].plot(s_dat_x[:, 0]- s_dat_x[:, 1], s_dat_x[:, 2], c="tab:blue", alpha=0.1)
+
+axs['c'].plot(phase_s_xi_upper[:, 0], phase_s_xi_upper[:, 1], "red")
+axs['c'].plot(phase_s_xi_lower[:, 0], phase_s_xi_lower[:, 1], "orange")
+
+axs["c"].set_xlabel(r"$\varphi - \vartheta$")
+axs["c"].set_ylabel(r"$\xi$")
+
+
+# Define polygon vertices (triangle here)
+triangle_coords = [(-1.0, 0.0), (0.0, 1.0), (1.0, 0.0), (1, 2), (-1, 2)]
+triangle_1 = patches.Polygon(triangle_coords, 
+                           closed=True, 
+                           facecolor="black", 
+                           alpha=0.05, 
+                           zorder=0)
+
+axs['c'].add_patch(triangle_1)
+axs['b'].annotate(r"$k = 1$", (0.6, 0.9), fontsize=12, xycoords='axes fraction')
+axs['b'].annotate(r"$N = 5\times 10^3$", (0.60, 0.8), fontsize=12, xycoords='axes fraction')
+
+axs["c"].set_xlim([-1, 1.0])
+axs["c"].set_ylim([0, 1.0])
+axs["c"].set_aspect(2.0)
+
+
+fig.savefig("./figures/sde-tubes" + slug + ".png", bbox_inches='tight')
+fig.savefig("./figures/sde-tubes" + slug + ".pdf", bbox_inches='tight')
+#+end_src
+
+
+#+NAME: fig-sde-tubes
+#+CAPTION: Examples of stochastic trajectories no interaction.
+[[./figures/sde-tubes-no-int.png]]
+
+
+
+#+NAME: fig-sde-tubes
+#+CAPTION: Examples of stochastic trajectories with interaction.
+[[./figures/sde-tubes-int.png]]
+
+
+#+begin_src jupyter-python :session debug :exports none :eval no :results none
+
+fig = pp.figure(figsize=(4, 4))
+ax = fig.add_subplot(111, projection="3d")
+
+plot_trajectory_3d_pub(a_dat_x[:, 0], a_dat_x[:, 1], a_dat_x[:, 2], figax=(fig, ax), lw=1, alpha=1.0, c='r')
+for i in range(len(s_dat_x[0, 0, :])):
+  plot_trajectory_3d_pub(s_dat_x[:, 0, i], s_dat_x[:, 1, i], s_dat_x[:, 2, i], figax=(fig, ax), lw=0.3, alpha=0.02, c='tab:blue')
+add_normalplane_cov_ellipses(ax, a_dat_x, sigmas, every=60, k=1, ellipse_kwargs=dict(color="crimson", linewidths=0.5, alpha=1.0)
+                             )
+
+ax.set_xlabel(r"$\varphi$")
+ax.set_ylabel(r"$\vartheta$")
+ax.set_zlabel(r"$\xi$")
+fig.tight_layout()
+ax.set_proj_type('ortho')
+ax.view_init(elev=20, azim=250)
+ax.set_xlim([0, 1])
+ax.set_ylim([0, 1])
+ax.set_zlim([0, 1])
+ax.set_aspect('equal')
+
+
+
+
+fig.savefig("./figures/tube-3d" + slug + ".png", bbox_inches='tight', dpi=500)
+fig.savefig("./figures/tube-3d" + slug + ".pdf", bbox_inches='tight', dpi=500)
+#+end_src
+
+
+#+NAME: fig-three-dim-phase-tube-no-int
+#+CAPTION: Stochastic trajectories in 3D phase space with tubes
+[[./figures/tube-3d-no-int.png]]
+
+#+NAME: fig-three-dim-phase-tube
+#+CAPTION: Stochastic trajectories in 3D phase space  with tubes and interaction
+[[./figures/tube-3d-int.png]]
+
+
+* Python Code
+
+#+begin_src jupyter-python :session debug :exports none :eval no :results drawer
+# parameters (example numbers)
+from python.euler_maru import * 
+from python.system import *
+
+ep = 0.01
+smooth = -1
+x0 = np.array([0.4, 0.5, 0.2])
+
+
+j = 0.8
+h = 0.8
+bes = 1.0
+
+g = 0.45
+ep = 0.0415
+delta_t = 0.001
+smooth = -1
+
+ep_layer = ep
+ep_noise_amp = ep * 0.0000001
+
+state = np.array([0.01, 0.01, 0.01])
+
+t_max = 500
+t_min_max = (0.0, t_max)
+t_vals = np.arange(0, t_max, delta_t)
+num_points = len(t_vals)
+num_trials = 1
+num_threads = 1
+bes = 1.0
+
+def drift_micro_smooth(t: float, x: np.ndarray, a) -> np.ndarray:
+    """
+    a = (j, h, g, bes, ep, smooth)
+    returns drift vector (3,)
+    """
+    j, h, g, bes, ep, smooth = a
+    drift_vec, _ = micro_full_drift_and_diff_smooth_lam(t, x, j, h, g, bes, ep, smooth)
+    return drift_vec
+
+def diffusion_micro_smooth(t: float, x: np.ndarray, a) -> np.ndarray:
+    """
+    a = (j, h, g, bes, ep, smooth)
+    returns diffusion matrix (3, 18)
+    """
+    j, h, g, bes, ep, smooth = a
+    _, diff_mat = micro_full_drift_and_diff_smooth_lam(t, x, j, h, g, bes, ep, smooth)
+    return 0.001 * diff_mat  # 18 independent Brownian drivers
+t, X = euler_maruyama(
+    drift=drift_micro_smooth,
+    diffusion=diffusion_micro_smooth,
+    x0=x0,
+    t0=0.0,
+    t1=t_max,
+    dt=t_vals[1] - t_vals[0],
+    args=(j, h, g, bes, ep, smooth),
+    trajectories=1,
+    rng=np.random.default_rng(),
+)
+
+
+st_vals = t
+sx_vals = X[0, :, :]
+fig, axs = pp.subplot_mosaic([["a", "a"], ["b", "c"],], figsize=(8, 8), constrained_layout=True,)
+
+# axs['a'].plot(st_vals, sx_vals)
+axs['a'].plot(st_vals, sx_vals[:, 0] + sx_vals[:, 1])
+axs['a'].set_ylim([0, 1])
+axs['a'].set_xlabel("$t$")
+axs['a'].set_ylabel(r"$\varphi, \vartheta, \xi$")
+
+axs["b"].plot(sx_vals[:, 0], sx_vals[:, 1])
+axs["b"].set_xlabel(r"$\varphi$")
+axs["b"].set_ylabel(r"$\vartheta$")
+axs["b"].set_xlim([-0.05, 1.0])
+axs["b"].set_ylim([-0.05, 1.0])
+axs["b"].set_aspect('equal')
+
+axs["c"].plot(sx_vals[:, 0] - sx_vals[:, 1], sx_vals[:, 2])
+axs["c"].set_xlabel(r"$\varphi - \vartheta$")
+axs["c"].set_ylabel(r"$\vartheta$")
+axs["c"].set_xlim([-1, 1.0])
+axs["c"].set_ylim([0, 1.0])
+axs["c"].set_aspect(2.0)
+
+fig.savefig("../assets/img/sde-euler-solve-py.png", bbox_inches='tight')
+
+#+end_src
+
+#+RESULTS[ce9b16d97eb00d52820beedbb73f8eacf13abe95]:
+[[file:./.ob-jupyter/2ae7e2a977c433c96f02da59cb51e37d726eaecf.png]]
+

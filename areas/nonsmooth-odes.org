@@ -1,0 +1,18 @@
+#+title: Piecewise-smooth ODEs
+#+SLUG: psode
+#+PROPERTY: header-args :eval no
+
+* Introduction
+
+In general a piecewise-smooth ODE takes the form 
+#+NAME: eq-gen-def
+\begin{equation}
+\dot{x} = 
+\left\{
+\begin{array}
+f^{+}(x) & \sigma(x) > 0 \\
+f^{-}(x) & \sigma(x) < 0
+\end{array}
+\right.
+\end{equation}
+where $x \in \mathbb{R}^d$ is the state, $f^{\pm}: \mathbb{R}^{d} \mapsto \mathbb{R}^{d}$, are flows and $\sigma : \mathbb{R}^{d} \mapsto \mathbb{R}$ is used to define the discontinuity surface.

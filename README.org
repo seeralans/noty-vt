@@ -1,0 +1,12 @@
+#+TITLE: emacs-noty Example Wiki
+
+This directory is an example emacs-noty wiki.  You can either use
+it directly as your =noty-source-root= or create a fresh wiki by
+running:
+
+#+begin_example
+M-x noty-setup-wiki
+#+end_example
+
+and choosing a new directory.  The =noty-setup-wiki= command will
+copy this skeleton into the target directory.

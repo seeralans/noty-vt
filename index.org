@@ -1,0 +1,9 @@
+#+TITLE: Home
+#+LAYOUT: default
+
+Welcome to your emacs-noty wiki.
+
+- [[file:areas/index.org][Areas]] — long-lived domains of knowledge.
+- [[file:projects/index.org][Projects]] — time-bounded work.
+- [[file:personal/index.org][Personal]] — personal notes.
+- [[file:pages/manual.org][Manual]] — documentation for the system itself.

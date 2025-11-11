@@ -1,0 +1,29 @@
+#+title: The Bucket
+#+SLUG: buc
+#+PROPERTY: header-args :eval no
+
+
+* Concentration of Measure of First Passage Trajectories
+It must be possible to define a mean trajectory where the trajctories concentrate. For example in the WKB expansion, the most probable paths from an initial position $x_0$ to an attractor $x^*$ are given by the the most relaxation trajctory.
+
+** Coverage Trajectories
+Once the first-passage trajectories are done it must be easy to extend this.
+
+** Concentration of Filtration
+Given $(\omega, \Omega, P)$, where $\Omega$ is the $\sigma$-algebra of $\omega$ and $P: \Omega \to [0, 1]$. A filtration is family $\mathcal{F} = \left\{ \mathcal{M}_t\right\}_{t \geq 0}$ of $\sigma$-algebras $\mathcal{F}_t \in \Omega$ such that 
+$$
+\mathcal{F}_{s} \subset \mathcal{F}_t, \quad  \forall s \in [0, t)
+$$.
+Can we define a concentration in the filtration?
+
+
+* Chaos of Relaxation Trajectories
+Relaxation trajectories represent minima in the rate function? so what happens when we obtain chaotic orbits in the relacation trajectories? does the landascape become super rough?
+
+* Guassian Tubes in SPDEs
+Guassian tubes around most probable paths are possible (in-theory). Can I get a an analogue for a pde?
+
+
+
+
+

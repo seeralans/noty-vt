@@ -1,0 +1,4 @@
+#+TITLE: Martingale Notes — demo
+
+A placeholder project page. Equation ref again: see [[eq-taylor]] from Areas (cross-file refs require file links like [[file:../areas/large-deviations.org::eq-taylor]]).
+

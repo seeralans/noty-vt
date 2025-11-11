@@ -1,0 +1,298 @@
+#+TITLE: emacs-noty Manual
+#+LAYOUT: default
+#+MATH_ENGINE: mathjax
+#+PROPERTY: header-args:emacs-lisp :eval no
+
+* Introduction
+
+emacs-noty is a template-based publishing system for Org-mode
+wikis.  It separates your *content* (Org files) from *presentation*
+(HTML templates, CSS themes) and *output* (a static site under
+=public/=).
+
+The system is designed for mathematical notes but works for any
+kind of personal wiki.
+
+* Concepts
+
+- =noty-source-root=: the root directory of your notes (sections
+  like =areas/=, =projects/=, =personal/=, and the =assets/= folder).
+- =noty-publish-root=: the directory where the generated static
+  site is written, usually =public/= under =noty-source-root=.
+- =noty-templates-dir=: directory with HTML templates and partials,
+  usually =assets/templates/= under =noty-source-root=.
+- Sections: top-level subdirectories under =noty-source-root= such
+  as =areas/=, =projects/=, =personal/=, and any you add later
+  (e.g. =house/=).
+
+* Installation
+
+1. Place the =lisp/= directory somewhere on your Emacs load path.
+2. Add the following to your init file:
+
+   #+begin_src emacs-lisp
+   (add-to-list 'load-path "/path/to/emacs-noty/lisp")
+   (require 'noty-entry)
+   #+end_src
+
+3. Restart Emacs or evaluate the forms.
+
+* Setting up a new wiki
+
+Run:
+
+#+begin_src emacs-lisp
+M-x noty-setup-wiki
+#+end_src
+
+Choose an empty directory.  emacs-noty will copy a skeleton
+structure into it:
+
+- =areas/=
+- =projects/=
+- =personal/=
+- =pages/=
+- =assets/=
+- =public/=
+
+and set =noty-source-root=, =noty-publish-root= and
+=noty-templates-dir= accordingly.
+
+You can also set these variables manually via =M-x customize-group RET noty RET=.
+
+* Directory structure
+
+A typical layout looks like:
+
+- =areas/= :: Long-lived themes and domains of knowledge.
+- =projects/= :: Time-bounded projects.
+- =personal/= :: Personal notes.
+- =pages/= :: Miscellaneous pages such as this manual.
+- =assets/css/= :: Stylesheets, including Modus theme CSS.
+- =assets/js/= :: JavaScript files.
+- =assets/templates/= :: HTML templates and partials.
+- =assets/bib/= :: Bibliography files (global and local).
+- =assets/tex/= :: Global TeX macro file (=customcommands.tex=).
+- =public/= :: Generated static site (safe to host).
+
+* Themes
+
+emacs-noty ships with CSS themes inspired by Modus:
+
+- =modus-operandi= :: Light theme.
+- =modus-operandi-tinted= :: Soft light variant.
+- =modus-vivendi= :: Dark theme.
+- =modus-vivendi-tinted= :: Soft dark variant.
+
+The global default is controlled by:
+
+- =noty-default-theme=
+
+Per-page overrides are possible using a keyword:
+
+#+begin_example
+#+THEME: modus-vivendi
+#+end_example
+
+Templates receive the theme via the ={{css_theme}}= placeholder.
+
+* Layouts
+
+Each page can choose a layout using:
+
+#+begin_example
+#+LAYOUT: default
+#+end_example
+
+or, for math-heavy pages:
+
+#+begin_example
+#+LAYOUT: maths
+#+end_example
+
+For section index pages (like =areas/index.org=), you can use:
+
+#+begin_example
+#+LAYOUT: index
+#+end_example
+
+which will add an automatically generated list of sibling notes
+via the ={{shadow_index}}= placeholder.
+
+* Math engines
+
+The math engine controls how LaTeX is rendered in HTML.  The
+default is MathJax, which is expected to work out of the box.
+
+- Global default: =noty-default-math-engine= (a symbol).
+- Per-page override:
+
+  #+begin_example
+  #+MATH_ENGINE: mathjax
+  #+end_example
+
+  or
+
+  #+begin_example
+  #+MATH_ENGINE: katex
+  #+end_example
+
+  or
+
+  #+begin_example
+  #+MATH_ENGINE: none
+  #+end_example
+
+The chosen engine determines which math partial is injected into
+the template via the ={{math_lib}}= placeholder.
+
+Currently MathJax is the recommended and default choice.  KaTeX
+is kept as an option for future use.
+
+* Global and local TeX macros
+
+MathJax is configured via =assets/js/mathjax-config.js= and can
+be extended using a global TeX file:
+
+- =assets/tex/customcommands.tex=
+
+Additionally, pages can load extra macros locally using a
+special block:
+
+#+begin_example
+#+ATTR_HTML: :class math_custom :data-macros "localmacros.tex"
+#+begin_export html
+<!-- the JS will replace this with a display-math block -->
+#+end_export
+#+end_example
+
+The bundled JavaScript will fetch the TeX file, parse
+=\\newcommand=, =\\renewcommand= and =\\DeclareMathOperator=
+forms, and register them as MathJax macros.
+
+* Bibliography
+
+emacs-noty assumes a default bibliography file at:
+
+- =assets/bib/library.bib=
+
+You can keep your main reference library there.  In addition, you
+may place extra =.bib= files next to specific projects or areas
+and configure Org's citation machinery (e.g. =org-cite=) to use
+them alongside the global library.
+
+* Publishing
+
+To set up the =org-publish= project, run:
+
+#+begin_src emacs-lisp
+M-x noty-setup-org-publish
+#+end_src
+
+Then you can publish:
+
+- The current file:
+
+  #+begin_src emacs-lisp
+  M-x noty-publish-current-file
+  #+end_src
+
+- The entire site:
+
+  #+begin_src emacs-lisp
+  M-x noty-publish-all
+  #+end_src
+
+emacs-noty will:
+
+1. Export the Org buffer to an HTML body using =ox-html=.
+2. Collect metadata (title, layout, theme, math engine).
+3. Generate a shadow index for section =index.org= files.
+4. Load the chosen HTML template.
+5. Replace placeholders like ={{title}}=, ={{content}}=,
+   ={{math_lib}}=, ={{css_theme}}=.
+6. Write the final HTML to =noty-publish-root=, preserving the
+   relative directory structure.
+
+* Quick publish on save
+
+To enable quick publishing for the current buffer, run:
+
+#+begin_src emacs-lisp
+M-x noty-enable-quick-publish
+#+end_src
+
+This turns on =noty-quick-publish-mode=, which hooks into
+=after-save-hook= and republishes the current file when it is
+under =noty-source-root=.
+
+To disable it:
+
+#+begin_src emacs-lisp
+M-x noty-disable-quick-publish
+#+end_src
+
+You can control whether quick publish is globally allowed using
+the variable =noty-quick-publish=.
+
+* Shadow indices
+
+For each section, the =index.org= file can show a listing of all
+other Org files in the same directory.  emacs-noty generates a
+simple =<ul>= with links and injects it into the template via the
+={{shadow_index}}= placeholder.
+
+The =index= layout wires this in by default.
+
+* Client-side features
+
+The bundled JavaScript adds:
+
+- A per-page “On this page” sidebar using headings.
+- Automatic numbering and labelling of theorem-like blocks,
+  equations, figures and tables.
+- Relabelling of in-document links to those objects using the
+  generated labels.
+- A right-hand margin notes panel for elements with classes
+  =sidenote= or =marginnote=.
+- A theme toggle button (light/dark) with persistence in
+  =localStorage=.
+- Scroll position restoration across reloads, aware of MathJax
+  layout changes.
+- Global and local TeX macro loading as described above.
+
+* Previewing
+
+If you set =noty-live-preview-url= to something like:
+
+#+begin_src emacs-lisp
+(setq noty-live-preview-url \"http://localhost:3000\")
+#+end_src
+
+then after publishing, you can open the last page in a browser
+using:
+
+#+begin_src emacs-lisp
+M-x noty-open-preview
+#+end_src
+
+This simply concatenates the base URL with the site-relative
+path of the last published page.
+
+* Development server
+
+The skeleton includes a small helper script under =scripts/=:
+
+- =scripts/dev-watch=
+
+which uses =browser-sync= to serve the =public/= directory and
+reload on changes.
+
+* Conclusion
+
+emacs-noty gives you a flexible, template-driven publishing
+pipeline for Org-mode notes, with clean separation between
+content, presentation, and output.  You can customise layouts,
+themes, and math rendering without changing your note files.
+
+Happy writing!

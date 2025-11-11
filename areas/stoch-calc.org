@@ -1,0 +1,37 @@
+#+title: Stochastic Calculus
+#+SLUG: stocalc
+
+
+* Stochastic Differential Equation
+
+A stochastic differential equation with $x_t \in \mathbb{R}^d$ has the general form
+\begin{equation}
+\label{}
+\mathrm{d} x_t = a(x_t, t)\mathrm{d} t + b(x_t, t) \mathrm{d} w_t
+\end{equation}
+
+
+* Ito's Lemma
+Let $x_t \in \mathbb{R}^d$ and $f: \mathbb{R}^d \to \mathbb{R}$
+#+name:eq-itos-lemma
+\begin{equation}
+\label{}
+\mathrm{d} f(x_t)  = \mpdiff{f(x_t)}{x}   \cdot \mathrm{d} x_t  + \frac{1}{2} x^{\trans}_t \mpdiff[2]{f(x_t)}{x_t} x^{\trans}_t
+\end{equation}
+
+
+* Generator
+A generator of a stochastic process is defined
+#+NAME: eq-generator
+\begin{equation}
+(\mathcal{L}f)(x) = \lim_{t \to 0} \frac{1}{t} \lc  \mathbb{E}_{x}{\ls f(X_t )\rs} - f(x) \rc,
+\end{equation}
+it describes the infinitesimal evolution of expectations of observables. Suppose one starts with a smooth test function $f(x)$, the generator describes how this function is deformed by the stochastic process in an infinitesial time.
+It compares the smooth evolution you would expect from the function $f$ to the instantaneous changes induced by the underlying stochastic dynamics. The evolution of the expectation of an observable is them
+
+
+#+name:eq-func-evolve
+\begin{equation}
+\diffl{\mathbb{E}[f(X_t)]} = \mathbb{E}[(\mathcal{L}f)(x)]
+\label{eq-func-evolve}
+\end{equation}

@@ -1,0 +1,426 @@
+#+TITLE: On stochastic differential equations with piecewise smooth drift and noise amplitudes.
+#+OPTIONS: num:t
+#+SLUG: pwsde
+#+bibliography: ../bib/references.bib
+#+cite_export: csl ../csl/chicago-author-date.csl
+#+LATEX_HEADER: \usepackage{amsmath,amsthm,amssymb}
+#+LATEX_HEADER: \usepackage[nameinlink,noabbrev]{cleveref}
+
+#+LATEX_HEADER: \newtheorem{theorem}{Theorem}[section]
+#+LATEX_HEADER: \newtheorem{lemma}[theorem]{Lemma}
+#+LATEX_HEADER: \newtheorem{proposition}[theorem]{Proposition}
+#+LATEX_HEADER: \newtheorem{corollary}[theorem]{Corollary}
+#+LATEX_HEADER: \theoremstyle{definition}\newtheorem{definition}[theorem]{Definition}
+#+LATEX_HEADER: \theoremstyle{remark}\newtheorem*{remark}{Remark}
+#+LATEX_HEADER: \crefname{lemma}{lemma}{lemmas}
+#+LATEX_HEADER: \Crefname{lemma}{Lemma}{Lemmas}
+#+LATEX_HEADER: \input{customcommands.tex}
+#+LATEX_HEADER: \newcommand{\cunt}{\mathbb{R}}
+
+#+PROPERTY: header-args :eval no
+
+* Introduction 
+Consider the the autonomous general piecewise stochastic differential equation
+#+NAME: eq-general-psde
+\begin{equation}
+\mathrm{d}x_t = a(x_t, \lambda_t) \mathrm{d}t + \sqrt{\epsilon} b(x_t, \lambda_t) \mathrm{d}W_t,
+\end{equation}
+where $x_t \in \mathbb{R}^d$, $\lambda_t \in [-1, 1]$, and $a(\cdot) \in \mathbb{R}^d$ is 
+$b(\cdot) \in \mathbb{R}^d$, and $\mathrm{d}W_t$ is a Wiener increment. Of course without the non-smoothness, equations of the form [[eq-general-psde]] are obtained when one perturbs a system with weak noise see for example [cite:freidlinwentzel2012book]. Such equations are also manifest the sde description corresponding to the quadratic approximation of the tilted (non-linear) generator obtained via large deviation principle on a chemical master equation for large system size.
+
+
+Let the discontinuity $\sigma: \mathbb{R}^d \mapsto \mathbb{R}$ be a scalar function used to define the discontinuity surface
+#+NAME: eq-disc-surf
+\begin{equation}
+\mathcal{D} = {\left\{ x \in \mathbb{R}^d \,|\, \sigma(x) = 0 \right\}},
+\end{equation}
+notice that $\lambda_{t} = \mathrm{sign}(\sigma(x_{t}))$ is now stochastic. The dynamics of $x_t$ together with $\lambda_t$ is a stochastic slow-fast system. Recall that
+for deterministic system, the fast dynamics of the switching variable is given via $\dot{\lambda} = \epsilon^{-1}\nabla \sigma \cdot \dot{x}^{{\scriptsize\mathsf{T}}}$, this comes from regularising the sign function into something of the form
+#+NAME: eq-lambda-reg
+\begin{equation}
+\lambda^{(\epsilon^{\beta})}(x) = 
+\left\{
+\begin{array}
+\sigma \sigma (x) / \epsilon^{\beta} & |\sigma(x)| < \epsilon^{\beta},\\
+\mathrm{sign}(\sigma(x)) & |\sigma(x)| \geq \epsilon^{\beta},
+\end{array}
+\right.
+\quad 0 < \epsilon, \beta 
+\end{equation}
+and then taking the derivative with respect to time. Note that this regularisation is obviously not unique, any choose of $\beta > 0$, would work as we are interested in only the singular limit as it pertains to resolving the sliding mode.
+
+For stochastic system one must employ Ito's lemma which yeilds
+#+NAME: eq-lambda-slow-ito
+\begin{equation}
+\mathrm{d}\lambda_t = \frac{1}{\epsilon} \left[
+\nabla \sigma \cdot
+\mathrm{d}x_t
++  
+\frac{1}{2}
+\mathrm{d}x_t
+\nabla^2 \sigma
+\mathrm{d}x_t^{\scriptsize{\mathsf{T}}} \right],
+\end{equation}
+clearly for non planar discontinuity surfaces the additional Ito correction will yeild additional drift terms, while for planar discontinuity surfaces we obtain a simple projection onto the normal. For this introduction let us assume we have a planar discontinuity surface with $\sigma(x) = n \cdot x$ where $n \in \mathbb{R}^{d}$ is a constant vector, which gives us 
+#+NAME: eq-lambda-slow
+\begin{equation}
+\mathrm{d}\lambda_t = 
+\frac{1}{\epsilon}
+n \cdot
+a(x_t, \lambda_t) \mathrm{d}t +
+\frac{1}{\sqrt{\epsilon}}
+n\cdot b(x_t, \lambda_t) 
+\mathrm{d}W_t,
+\end{equation}
+Suppose we wish to analyse the fast subsystem, let us consider the rescaling time with $t = \epsilon^{\alpha} \tau$, where $\epsilon, \alpha > 0$. Rescaling [[eq-lambda-slow]] we obtain 
+#+NAME: eq-lambda-fast
+\begin{equation}
+\mathrm{d}\lambda_{\tau} = 
+\epsilon^{\alpha - 1}
+a^{(n)}(x_{\tau}, \lambda_{\tau}) \mathrm{d}\tau +
+\epsilon^{\frac{\alpha - 1}{2}}
+b^{(n)}(x_\tau, \lambda_{\tau}) 
+\mathrm{d}W_{\tau},
+\end{equation}
+where $\mathrm{d}W_{\tau}$ is a Weiner increment with zero mean and second moment
+$\mathbb{E}[\mathrm{d}W_{\tau}^2] = \mathrm{d}\tau$. Notice that $\alpha = 1$ puts both the drift and noise terms on equal footing. Notice that there is no time scale that is  faster than $t$ such that we can suppress the noise faster than the drift as $\epsilon$. That is for all $\alpha > 0$ (fast $\tau$)
+$$
+\frac{\epsilon^{-\frac{1}{2}}|b^{(n)(x_{\tau}, \lambda_{\tau})}|}{|a^{(n)(x_{\tau}, \lambda_{\tau})}|} \not \to 0, 
+\quad \text{as} \quad \epsilon \to 0.
+$$
+This follows from the fact that the dynamics of $\lambda_{\tau}$ exist in an $\epsilon$ layer around the discontinuity surface and because the noise amplitude in [[eq-general-psde]] is $\mathcal{O}(\sqrt{\epsilon})$. In the microtubule example the lattice size $N$ affixes indpendently the size of the layer with $\epsilon = 1/N$ which corresponds to one lattice site, as well as the Gaussian noise amplitude which is $O(1/\sqrt{N})$. The slow subsystem under the fast time scale is given by 
+#+NAME: eq-general-psde-fast
+\begin{equation}
+\mathrm{d}x_{\tau} = \epsilon^{\alpha} a(x_{\tau}, \lambda_{\tau}) \mathrm{d}{\tau} + \epsilon^{\alpha + \frac{1}{2}} b(x_{\tau}, \lambda_{\tau}) \mathrm{d}W_{\tau},
+\end{equation}
+which shows that variable is static under the fast time and also maintains the correct scaling between the drift and noise terms 
+$$
+\frac{\epsilon^{\frac{1}{2}}|b^{(n)(x_{\tau}, \lambda_{\tau})}|}{|a^{(n)(x_{\tau}, \lambda_{\tau})}|} \to 0, 
+\quad \text{as} \quad \epsilon \to 0.
+$$
+
+
+
+** Example
+Let us start of with the following simple example inspired by the microtubule project
+#+NAME: eq-sde-linear
+\begin{equation}
+\begin{pmatrix}
+\mathrm{d}x_{t} \\
+\mathrm{d}y_{t} 
+\end{pmatrix}
+= 
+\left[
+\begin{pmatrix}
+-1 & \phantom{-}1 \\
+\phantom{-}1 & -1 
+\end{pmatrix}
+\begin{pmatrix}
+ x_t \\
+ y_t 
+\end{pmatrix}
+ + 
+\frac{1}{2}
+\begin{pmatrix}
+ v^+ +v^- + \lambda_t (v^+ -  v^-) \\
+ v^+ +v^- + \lambda_t (v^+ -  v^-) 
+\end{pmatrix}
+\right]
+\mathrm{d}t
++\sqrt{\epsilon}
+B(\lambda_{t}) \mathrm{d}W_t,
+\end{equation}
+where
+#+NAME: eq-complete-diff-mat
+\begin{equation}
+B(\lambda_t) = \frac{1}{2} \left[ \Sigma^+ +\Sigma^- +
+\lambda_t (\Sigma^+ -\Sigma^-) \right],
+\end{equation}
+is the convex combination of of the noise amplitude, and as usual $\lambda \in [-1, 1]$ is the switching parameter. A schematic of the system is shown in [[fig-toy-psde-sch]]
+#+name:   fig-toy-psde-sch
+#+width: 40%
+#+caption: Scematic of toy PSDE.
+[[../assets/img/psde_toy_grow.svg]]
+The discontinuity surface is defined via the zero set of $\sigma(x, y) = 1 - x - y$, that is $\mathcal{D} = {\left\{(x, y) \in \mathbb{R}^2 \,|\, \sigma(x,y) = 0 \right\}}$, it caps the growth. This corresponds with exactly the no-interaction limit of the single filament microtubule. We also have the SDE
+#+NAME: eq-lambda-sde-linear-slow
+\begin{equation}
+\mathrm{d}\lambda_t = \frac{1}{\epsilon}\left[\lambda_t (v^- -  v^+) - v^+ - v^- \right]\mathrm{d}t
++ \frac{1}{\sqrt{\epsilon}}B^{(n)}(\lambda_t) \mathrm{d}W_t
+\end{equation}
+where $B^{(n)}(\lambda_t)$ is the noise amplitude projected onto $n = \nabla \sigma = (-1, -1)^{\scriptsize{\mathsf{T}}}$. In slow time taking $\epsilon \to 0$ we obtain a standard piecewise ODE which permits a sliding mode with 
+$$
+\lambda^{*} = \frac{v^+ + v^-}{v^- - v^+} \in (-1, 1),\quad \text{with}\quad v^- < 0 < v^+.
+$$
+unsuprisingly this is exactly equivalent to obtaining the evolution of ${\mathbb{E}[ \lambda_{t} ]}$ using  [[eq-lambda-sde-linear-slow]] and then taking steady state value. Substituting $\lambda^{*}$ into [[eq-sde-linear]] we obtain the dynamics near the discontinuity surface. Suppose now we consider the dynamics near the steady state $(1/2, 1/2)$, let $r_t = n \cdot (x_t - 1/2, y_t -1/2) / ||n||$ and $s_t = m \cdot (x_t - 1/2, y_t - 1/2) / ||m||$ where $m = (-1, 1)$ and is tangent to $\mathcal{D}$. Using Ito's lemma we obtain 
+#+NAME: eq-norm-sde-slow
+\begin{equation}
+\mathrm{d}r_t =  \sqrt{\frac{\epsilon}{2}} B^{(n)}(\lambda^{*}) \mathrm{d}W_{t}
+\end{equation}
+and 
+#+NAME: eq-tang-sde-slow
+\begin{equation}
+\begin{aligned}
+\mathrm{d}s_t &=  \sqrt{2}(x_{t} - y_{t})\mathrm{d}t + \sqrt{\frac{\epsilon}{2}} B^{(m)}(\lambda^{*}) \mathrm{d}W_{t} \\
+ &=  -\sqrt{2} s_t \mathrm{d}t + \sqrt{\frac{\epsilon}{2}} B^{(m)}(\lambda^{*}) \mathrm{d}W_{t}.
+\end{aligned}
+\end{equation}
+The latter is clearly an Ornstein-Uhlenbeck process with the stationary density
+#+NAME: eq-tang-stat-prob
+\begin{equation}
+P(s) = 
+\end{equation}
+
+
+* Understanding [[https://www.sciencedirect.com/science/article/pii/S0167278922001671?casa_token=CpEZCgN3GWgAAAAA:pSx8GzP48UUk2bQ5vytjX8PetKp6ca52FX8nIxXhwNUqKVonT-nZbdMoYtRNlNvgp7vWqln7][Hill et.al. 2022]]
+In this paper they use $\Gamma$-convergence in 
+
+
+* Numerical 
+
+#+begin_src jupyter-python :session sde :exports none :eval no :results drawer 
+import numpy as np
+import matplotlib.pyplot as pp
+import sdeint 
+
+def emperical_density(x_series, time_series, bins, start=0):
+  import numpy as np
+  x = x_series[start:-1][:, None]
+  delta_t = np.diff(time_series)
+  bin_centres = 0.5*(bins[:-1] + bins[1:])
+  bin_widths  = np.diff(bins)
+  hists = (x > bins[:-1]) & (x < bins[1:])
+  time_in_bin_cum = (hists * delta_t[:, None]).cumsum(0)
+  t_cum = time_series[1:] - time_series[0]
+  emp_prob_per_bin = time_in_bin_cum / t_cum[:, None]
+  emp_density = emp_prob_per_bin / bin_widths[None, :]
+  return emp_density, bin_centres, time_series[:-1]
+
+#+end_src
+
+#+RESULTS[27872b1f7c185d879841496923a64d19ae18b74f]:
+
+#+name:   fig-layer-ss
+#+caption: Steady state distrbution the deviations normal to $\mathcal{D}$ from the fixed 
+#+begin_src jupyter-python :session sde :eval no :results none graphics :file ../assets/img/layer-sde.png :exports none
+
+vp = 0.4
+vm = -0.4
+c = 1.0
+ep = 0.01
+delta = ep
+
+
+sigma_p = 1.0 * np.array([[1.0, 0.0], [0.0, 1.0]])
+sigma_m = 1.0 * np.array([[1.0, 0.0], [0.0, 1.0]])
+
+def lam_func(x, ep):
+  sig = 1 - x[0] - x[1]
+  if abs(sig) < ep:
+    return 1/ep * sig
+  else:
+    return np.sign(sig)
+   
+
+def a(x, t):
+  xt = x[0]
+  yt = x[1]
+  la = lam_func(x, ep)
+  dxdt = c*yt - c*xt + 0.5*(vp + vm + la * (vp - vm))
+  dydt = c*xt - c*yt + 0.5*(vp + vm + la * (vp - vm))
+  return np.array([dxdt, dydt])
+
+def b(x, t):
+  xt = x[0]
+  yt = x[1]
+  la = lam_func(x, ep)
+  val = np.sqrt(delta) * 0.5 * (sigma_p + sigma_m + la * (sigma_p - sigma_m))
+  return val
+
+dt = 0.005
+t_max = 300.0
+tspan = np.linspace(0.0, t_max, 1 + int(t_max / dt))
+trials = 1
+x0 = np.array([0.5, 0.5])
+result = np.array([sdeint.itoint(a, b, x0, tspan) for i in range(trials)])
+fig, axs = pp.subplots(ncols=2)
+for ax in axs:
+  ax.plot(result[0, :, 0], result[0, :, 1])
+  ax.plot(np.linspace(0, 1, 30), 1 - np.linspace(0, 1, 30), zorder=99, c="black")
+  ax.plot(np.linspace(0, 1, 30) - ep/np.sqrt(2), 1 - np.linspace(0, 1, 30) - ep/np.sqrt(2), zorder=99, c="red")
+  ax.plot(np.linspace(0, 1, 30) + ep/np.sqrt(2), 1 - np.linspace(0, 1, 30) + ep/np.sqrt(2), zorder=99, c="red")
+  ax.set_xlabel("x")
+  ax.set_ylabel("y")
+  ax.set_aspect('equal')
+
+
+
+axs[0].set_xlim([0.0, 1.0])
+axs[0].set_ylim([0.0, 1.0])
+axs[1].set_xlim([0.4, 0.6])
+axs[1].set_ylim([0.4, 0.6])
+fig.tight_layout()
+
+
+fig.savefig("../assets/img/toy-psde-phase.png", bbox_inches="tight")
+
+result_norm = -(result - 0.5).sum(2)
+result_tang = ((result - 0.5) * np.array([1.0, -1.0])).sum(2)
+
+norm_space = np.linspace(-0.2, 0.2, 901)
+
+bn = np.array([-1, -1]) @ b(np.array([0.05, 0.05]), 1) / np.sqrt(delta)
+bn = np.sqrt(bn @ bn.T) / np.sqrt(2) 
+pdf = np.sqrt(vp / 2 / np.pi / bn**2) * np.exp(-vp / bn**2 * (norm_space**2)) 
+
+result_norm_trans = result_norm.T
+result_tang_trans = result_tang.T
+
+
+# result_norm_trans_filt = result_norm_trans[abs(result_norm_trans) < ep, :]
+# result_norm_trans_filt = result_norm_trans[abs(result_norm_trans) < ep, :]
+
+emp_norm_prob, emp_norm_space, emp_norm_t = emperical_density(result_norm_trans[:, 0], tspan, np.linspace(-np.sqrt(2)*2, np.sqrt(ep)*2, 501))
+emp_tang_prob, emp_tang_space, emp_tang_t = emperical_density(result_tang_trans[:, 0], tspan, np.linspace(-np.sqrt(2)*2, np.sqrt(ep)*2, 501))
+ 
+bar = np.linspace(0, np.max(emp_norm_prob))
+fig_hist, ax_hist = pp.subplots(ncols=2, figsize=[8, 3])
+
+ax_hist[0].scatter(emp_norm_space, emp_norm_prob[-1, :])
+ax_hist[0].plot(norm_space, pdf)
+ax_hist[0].plot(bar*0 -ep, bar)
+ax_hist[0].plot(bar*0 +ep, bar)
+ax_hist[0].set_xlim([-20*ep, 20*ep])
+ax_hist[0].set_ylim([0, 20])
+ax_hist[0].set_xlabel(r"r")
+ax_hist[0].set_ylabel(r"$P(r)$")
+
+v = (vp - vm) * np.sqrt(2)
+sig_diff = np.sqrt(ep)
+fine_norm_space = np.linspace(-np.sqrt(2)*2, np.sqrt(ep)*2, 901)
+ax_hist[0].plot(fine_norm_space, np.sqrt(v / np.pi / sig_diff**2) * np.exp(-v * fine_norm_space**2 / sig_diff**2))
+
+
+ax_hist[1].scatter(emp_tang_space, emp_tang_prob[-1, :])
+ax_hist[1].set_xlim([-1, 1])
+ax_hist[1].set_ylim([0, 5])
+ax_hist[1].set_xlabel(r"s")
+ax_hist[1].set_ylabel(r"$P(s)$")
+
+fig_hist.legend()
+fig_hist.tight_layout()
+fig_hist.savefig("../assets/img/layer-sde.png", bbox_inches="tight")
+
+fig_norm_hist, ax_norm_hist = pp.subplots(figsize=[6, 3])
+ax_norm_hist.scatter(emp_norm_space, emp_norm_prob[-1, :])
+
+norm_pdf = lambda x, mu, sig: np.exp(-(x - mu)**2 / 2 / sig**2) / np.sqrt(2 * np.pi * sig**2)
+ax_norm_hist.plot(bar*0 -ep, np.linspace(0, 1, len(bar))*np.max(emp_norm_prob[:, -1]))
+ax_norm_hist.plot(bar*0 +ep, np.linspace(0, 1, len(bar))*np.max(emp_norm_prob[:, -1]))
+
+v = (vp - vm) / np.sqrt(2)
+sig_diff = np.sqrt(ep)
+# pp.plot(norm_space, np.sqrt(v / np.pi / sig_diff**2) * np.exp(-v * norm_space**2 / sig_diff**2))
+
+ax_norm_hist.set_xlim([-5*ep, 5*ep])
+ax_norm_hist.set_xlabel(r"r")
+ax_norm_hist.set_ylabel(r"$P(r)$")
+
+ax_hist_hist.plot(fine_norm_space, np.sqrt(v / np.pi / sig_diff**2) * np.exp(-v * fine_norm_space**2 / sig_diff**2))
+fig_norm_hist.tight_layout()
+fig_norm_hist.savefig("../assets/img/layer-norm-sde.png", bbox_inches="tight")
+
+#+end_src
+
+#+name:   fig-toy-psde-phase
+#+caption: Stochastic trajectory starting at the steady-state value. The black line is the discontinuity surface and the red lines indicate the boundaries of the $\epsilon$-layer.
+[[../assets/img/toy-psde-phase.png]]
+
+
+#+name:   fig-toy-psde-layer
+#+caption: Steady state distrbution the deviations from the fixed point at $(1/2, 1/2)$ which are normal (left) and tangential (right) to $\mathcal{D}$.
+[[../assets/img/layer-sde.png]]
+
+
+
+#+name:   fig-toy-psde-layer-layer
+#+caption: Steady state distrbution the deviations from the fixed point at $(1/2, 1/2)$ which are normal to $\mathcal{D}$.
+[[../assets/img/layer-norm-sde.png]]
+
+
+
+#+begin_src jupyter-python :session sde :exports none :eval no :results drawer
+import numpy as np
+
+x0 = np.array([0.0])
+def av(x, t):
+  return -2/np.sqrt(2) * (vp - vm) * x
+
+def bv(x, t):
+  return np.array([[np.sqrt(ep)]])
+
+v = np.sqrt(2) * (vp - vm)
+sig_diff = np.sqrt(ep)
+
+dt = 0.001
+t_max = 1000.0
+tspan = np.linspace(0.0, t_max, 1 + int(t_max / dt))
+result = sdeint.itoint(av, bv, x0, tspan)
+lam_space = np.linspace(-np.sqrt(ep)*2, np.sqrt(ep)*2, 301)
+
+
+(emp_prob, emp_space, tt) = emperical_density(result[:, 0], tspan, lam_space)
+pp.scatter(emp_space, emp_prob[-1, :], s=10, label='Empirical (time-weighted)')
+pp.plot(lam_space, np.sqrt(v / np.pi / sig_diff**2) * np.exp(-v * lam_space**2 / sig_diff**2))
+
+#+end_src
+
+#+RESULTS[f988200410e52f9a4597683b785ecb9a03aee9bf]:
+[[file:./.ob-jupyter/0a2a5018d2492b8899b2207a7e758e3e37fd55a4.png]]
+
+
+#+begin_src jupyter-python :session sde :exports none :eval yes :results drawer
+import numpy as np
+import matplotlib.pyplot as pp
+import sdeint 
+v = 1.0
+diff = np.pi
+ep = np.pi/3/100 * 0.01
+def av(x, t):
+  sig = 1 - x[0]
+  if abs(sig) < ep:
+    lam =  1/ep * sig
+  else:
+    lam = np.sign(sig)
+  return np.array([lam * v])
+
+def bv(x, t):
+  sig = 1 - x[0]
+  if abs(sig) < ep:
+    lam =  1/ep * sig
+  else:
+    lam = np.sign(sig)
+  return np.array([[ep**(1/2) * diff]])
+
+
+dt = 0.001
+t_max = 100.0
+x0 = np.array([1.0])
+tspan = np.linspace(0.0, t_max, 1 + int(t_max / dt))
+result = sdeint.itoint(av, bv, x0, tspan)
+
+
+x_space = np.linspace(0.5, 1.5 , 501)
+emp_prob, emp_space, tt = emperical_density(result[:, 0], tspan, x_space)
+
+v = v
+sig_diff = ep**(1/2) * diff
+pp.plot(emp_space, emp_prob[-1, :])
+pp.plot(x_space, np.sqrt(v / np.pi / sig_diff**2) * np.exp(-v * (x_space - 1)**2 / sig_diff**2))
+
+
+#+end_src
+
+#+RESULTS[5a26d48b862ce485343b97ff78c4a96ecc72908a]:
+[[file:./.ob-jupyter/c37cfd97dfed35d2302001d2baac18723569ea70.png]]
+
+

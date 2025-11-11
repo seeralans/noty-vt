@@ -1,0 +1,4 @@
+#+TITLE: Personal
+#+LAYOUT: index
+
+This section contains personal notes.

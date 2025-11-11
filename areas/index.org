@@ -1,0 +1,4 @@
+#+TITLE: Areas
+#+LAYOUT: index
+
+This section contains long-lived areas of study and knowledge.

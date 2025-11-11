@@ -1,0 +1,20 @@
+
+#+TITLE: Exegesis 
+#+OPTIONS: num:t
+#+SLUG: mtb
+#+bibliography: ../bib/library.bib
+#+cite_export: csl ../csl/chicago-author-date.csl
+
+* Veneration of Mary
+
+** Luke 23:40-43
+Of course this story of the theif is about us being accepted for as long as we confess Christ as our Lord. I am not using this verse in order to discuss Sola Fide, but pureley as a demonstrative of the location of theif once he passes. Jesus says 'today you will be in heaven with me'. 
+
+
+However there are counter points. While salvation is ultimately 
+
+
+I was using it with not as point of theology
+
+
+but instead as statement regarding where the repented theif is
