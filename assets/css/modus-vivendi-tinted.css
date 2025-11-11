@@ -1,0 +1,60 @@
+/* Modus Vivendi Tinted inspired dark theme */
+:root {
+  /* ===== Modus Vivendi Tinted Core ===== */
+  --bg: #0d0e1c;            /* warm charcoal background */
+  --fg: #ffffff;            /* light grey foreground */
+  --muted: #484d67;         /* dimmed text */
+  --border: #3d3d3d;        /* subtle border */
+  --link: #7aa2ff;          /* softened blue link */
+  --accent: #c4a000;        /* gentle golden accent */
+  --code-bg: #232323;       /* slightly raised panel */
+  --inline-bg: #2a2a2a;     /* inline code background */
+
+  /* ===== Semantic block colours ===== */
+  --theorem-bg:   #202020;  /* neutral soft black */
+  --insight-bg:   #1b3a2d;  /* calm dark green tint */
+  --todo-bg:      #3a1e1e;  /* muted dark red */
+  --note-bg:      #1e2f45;  /* dusky blue */
+  --question-bg:  #3a321b;  /* brown-gold tint */
+
+  /* ===== Extra UI shades derived from theme ===== */
+  --header-bg: var(--theorem-bg);
+  --footer-bg: var(--theorem-bg);
+  --button-bg: var(--inline-bg);
+  --button-hover-bg: var(--code-bg);
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--fg);
+}
+
+a {
+  color: var(--link);
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+pre,
+code {
+  background-color: var(--code-bg);
+}
+
+.noty-header,
+.noty-footer {
+  background-color: var(--header-bg);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.noty-nav-actions button {
+  background-color: var(--button-bg);
+  color: var(--fg);
+  border: 1px solid var(--border);
+}
+
+.noty-nav-actions button:hover {
+  background-color: var(--button-hover-bg);
+}

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Stochastic Calculus</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="">
+  <meta name="keywords" content="">
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <link rel="stylesheet" href="/assets/css/modus-operandi.css" id="noty-theme">
+</head>
+<body>
+  <header class="noty-header">
+    <nav class="noty-nav">
+  <a href="/index.html" class="noty-nav-brand">Home</a>
+  <ul class="noty-nav-list">
+    <li><a href="/areas/index.html">Areas</a></li>
+    <li><a href="/projects/index.html">Projects</a></li>
+    <li><a href="/personal/index.html">Personal</a></li>
+    <li><a href="/pages/manual.html">Manual</a></li>
+  </ul>
+  <div class="noty-nav-actions">
+    <button class="theme-toggle" type="button" title="Toggle theme">🌓</button>
+    <button class="sidenote-toggle" type="button" title="Toggle notes">☰</button>
+  </div>
+</nav>
+
+  </header>
+  <main class="page">
+    <aside class="left-bar">
+      <div id="toc"></div>
+    </aside>
+    <article class="content noty-article">
+      <h1 class="noty-title">Stochastic Calculus</h1>
+      <div id="outline-container-org60b5621" class="outline-2">
+<h2 id="org60b5621"><span class="section-number-2">1.</span> Stochastic Differential Equation</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+A stochastic differential equation with \(x_t \in \mathbb{R}^d\) has the general form
+</p>
+\begin{equation}
+\label{}
+\mathrm{d} x_t = a(x_t, t)\mathrm{d} t + b(x_t, t) \mathrm{d} w_t
+\end{equation}
+</div>
+</div>
+<div id="outline-container-orgd1a221c" class="outline-2">
+<h2 id="orgd1a221c"><span class="section-number-2">2.</span> Ito's Lemma</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+Let \(x_t \in \mathbb{R}^d\) and \(f: \mathbb{R}^d \to \mathbb{R}\)
+</p>
+\begin{equation}
+\label{orgad79b49}
+\label{}
+\mathrm{d} f(x_t)  = \mpdiff{f(x_t)}{x}   \cdot \mathrm{d} x_t  + \frac{1}{2} x^{\trans}_t \mpdiff[2]{f(x_t)}{x_t} x^{\trans}_t
+\end{equation}
+</div>
+</div>
+<div id="outline-container-orgd03851f" class="outline-2">
+<h2 id="orgd03851f"><span class="section-number-2">3.</span> Generator</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+A generator of a stochastic process is defined
+</p>
+\begin{equation}
+\label{org66ac51b}
+(\mathcal{L}f)(x) = \lim_{t \to 0} \frac{1}{t} \lc  \mathbb{E}_{x}{\ls f(X_t )\rs} - f(x) \rc,
+\end{equation}
+<p>
+it describes the infinitesimal evolution of expectations of observables. Suppose one starts with a smooth test function \(f(x)\), the generator describes how this function is deformed by the stochastic process in an infinitesial time.
+It compares the smooth evolution you would expect from the function \(f\) to the instantaneous changes induced by the underlying stochastic dynamics. The evolution of the expectation of an observable is them
+</p>
+
+
+\begin{equation}
+\label{org01415dc}
+\diffl{\mathbb{E}[f(X_t)]} = \mathbb{E}[(\mathcal{L}f)(x)]
+\label{eq-func-evolve}
+\end{equation}
+</div>
+</div>
+
+      
+    </article>
+    <!-- notes-panel is created dynamically if missing -->
+  </main>
+  <footer class="noty-footer">
+    <div class="noty-footer-inner">
+  <p>Generated with <code>emacs-noty</code>.</p>
+</div>
+
+  </footer>
+  <script src="/assets/js/theme.js"></script>
+  <script src="/assets/js/site.js"></script>
+  <script src="/assets/js/refs.js"></script>
+  <script src="/assets/js/scroll-restore.js"></script>
+  <script src="/assets/js/load-math-macros.js"></script>
+  <script src="/assets/js/link-preview.js"></script>
+  <script src="/assets/js/mathjax-config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" id="MathJax-script"></script>
+
+</body>
+</html>

@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>_macros.org</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="">
+  <meta name="keywords" content="">
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <link rel="stylesheet" href="/assets/css/modus-operandi.css" id="noty-theme">
+</head>
+<body>
+  <header class="noty-header">
+    <nav class="noty-nav">
+  <a href="/index.html" class="noty-nav-brand">Home</a>
+  <ul class="noty-nav-list">
+    <li><a href="/areas/index.html">Areas</a></li>
+    <li><a href="/projects/index.html">Projects</a></li>
+    <li><a href="/personal/index.html">Personal</a></li>
+    <li><a href="/pages/manual.html">Manual</a></li>
+  </ul>
+  <div class="noty-nav-actions">
+    <button class="theme-toggle" type="button" title="Toggle theme">🌓</button>
+    <button class="sidenote-toggle" type="button" title="Toggle notes">☰</button>
+  </div>
+</nav>
+
+  </header>
+  <main class="page">
+    <aside class="left-bar">
+      <div id="toc"></div>
+    </aside>
+    <article class="content noty-article">
+      <h1 class="noty-title">_macros.org</h1>
+      <p>
+\[
+\renewcommand{\bm}[1]{\boldsymbol{#1}}%
+\renewcommand{\ensuremath}[1]{{#1}}%
+\renewcommand{\note}[2][orange]{\colorbox{#1!20}{#2}}%
+%
+\renewcommand{\varvb}{\bm{v}}%
+\renewcommand{\varv}{v}%
+%
+% \DeclareBoldMathCommand\varv{v}%
+\renewcommand{\order}[1]{\mathcal{O}{({#1})}}%
+%
+\renewcommand{\ee}{{\mathrm{e}}}%
+\renewcommand{\acos}{\mathrm{acos}}%
+\renewcommand{\vphi}{\varphi}%
+\renewcommand{\veps}{\varepsilon}%
+\renewcommand{\vthe}{\vartheta}%
+%
+%
+\renewcommand{\lb}{\left(}%
+\renewcommand{\rb}{\right)}%
+%
+\renewcommand{\ls}{\left[}%
+\renewcommand{\rs}{\right]}%
+%
+\renewcommand{\lc}{\left\{}%
+\renewcommand{\rc}{\right\}}%
+%
+\renewcommand{\ld}{\left.}%
+\renewcommand{\rd}{\right.}%
+%
+\renewcommand{\la}{\left\langle}%
+\renewcommand{\ra}{\right\rangle}%
+%
+\renewcommand{\lp}{\left|}%
+\renewcommand{\rp}{\right|}%
+%
+\renewcommand{\acosh}{\mathrm{acosh}}%
+\renewcommand{\floor}[1]{{\lfloor{#1}\rfloor}}%
+%
+%
+\renewcommand{\ffrac}[2]{{#1}/{#2}}%
+\renewcommand{\carr}{\curvearrowright}%
+\renewcommand{\carl}{\curvearrowleft}%
+\renewcommand{\ztrans}[1]{\widetilde{#1}}%
+\renewcommand{\wt}{\widetilde}%
+\renewcommand{\sgn}{\mathrm{sgn}}%
+\renewcommand{\tr}{\mathrm{Tr}}%
+\renewcommand{\mat}[1]{\mathbf{#1}}%
+\renewcommand{\mmat}[1]{\underline{\bm{#1}}}%
+\renewcommand{\mvec}[1]{\bm{#1}}%
+\renewcommand{\nvec}{\mvec{n}}%
+\renewcommand{\xvec}{\mvec{x}}%
+%
+\renewcommand{\mdet}[1]{\left|#1\right|}%
+\renewcommand{\mrm}[1]{\ensuremath{\mathrm{{#1}}}}%
+\renewcommand{\rmd}{\ensuremath{\mathrm{{d}}}}%
+%
+\renewcommand{\trans}{\ensuremath{\scriptsize\mathsf{T}}}%
+\renewcommand{\thh}{{\ensuremath\mathrm{th}}}%
+\renewcommand{\grad}[2]{\ensuremath{{\nabla_{\!{{#1}}}}{#2}}}%
+%
+\renewcommand{\giv}{\,|\,}%
+\renewcommand{\matidx}[2]{{{#1}, {#2}}}%
+\renewcommand{\mbinom}[2]{{\ensuremath{\begin{pmatrix}{#1}\\{#2}\end{pmatrix}}}}%
+%
+%
+\renewcommand{\apref}[1]{Appendix~\ref{#1}}%
+\renewcommand{\checked}{{\color{green}\textbf{CHECKED}}\\}%
+\renewcommand{\changed}{{\color{red}\textbf{DISCUSS}}\\}%
+%
+%
+% symbols%
+\renewcommand{\sstate}[1][\nvec]{\ensuremath{\sigma_{{#1}}}}%
+%
+\renewcommand{\disp}{\ensuremath{g}}%
+%
+\renewcommand{\nt}[2][]{\ensuremath{N^{_{#1}}_{^{^\mathrm{#2}}}}}%
+\renewcommand{\ntb}[2][]{\ensuremath{{\mvec{N}}^{_{#1}}_{^{^\mathrm{#2}}}}}%
+%
+%
+\renewcommand{\xep}[2][]{\ensuremath{{\rho}^{_{#1}}_{^{^\mathrm{#2}}}}}%
+%
+\renewcommand{\xt}[1]{\ensuremath{{\color{sol_red}\xi}_{_{\mathrm{#1}}}}}%
+%
+\renewcommand{\xtt}[2][]{\ensuremath{{\color{sol_red}\xi}^{{#1}}_{_{\mathrm{#2}}}}}%
+\renewcommand{\xtd}[1]{\ensuremath{{\color{sol_red}\dot{\xi}}_{_{\mathrm{#1}}}}}%
+\renewcommand{\et}[2][\vphi , \vthe]{\ensuremath{{\color{sol_blue}\eta}_{_{\mathrm{#2}}}{\lb {#1} \rb}}}%
+%
+%
+\renewcommand{\jt}[1]{\ensuremath{J_{^{^\mathrm{#1}}}}}%
+\renewcommand{\jtt}[1]{\ensuremath{\tilde{J}_{^{^\mathrm{#1}}}}}%
+%
+%
+\renewcommand{\configs}[1][]{\ensuremath{\lc \sstate[\nvec] \rc_{{#1}}}}%
+\renewcommand{\motif}[3]{\ensuremath{\mathcal{N}^{{#1}}_{{#2}}({#3})}}%
+\renewcommand{\motiff}[1]{\ensuremath{n_{{#1}}}}%
+%
+%
+\renewcommand{\intpsym}{\varphi}%
+\renewcommand{\intmsym}{\pi}%
+\renewcommand{\intpv}{\mvec{\intpsym}}%
+\renewcommand{\intmv}{\mvec{\intmsym}}%
+\renewcommand{\intpsyms}{\bar{\intpv}}%
+\renewcommand{\intmsyms}{\bar{\intmv}}%
+\renewcommand{\intpvs}{\mvec{\intpsyms}}%
+\renewcommand{\intmvs}{\mvec{\intmsyms}}%
+%
+\renewcommand{\diffu}[3][]{\ensuremath{\frac{\mathrm{d}^{#1}{#2}}{\mathrm{d}{#3}^{#1}}}}%
+\renewcommand{\diffl}[3][]{\ensuremath{\frac{\mathrm{d}^{#1}}{\mathrm{d}{#3}^{#1}} {#2}}}%
+%
+\renewcommand{\pdiffu}[3][]{\ensuremath{\frac{\partial^{#1}{#2}}{\partial{#3}^{#1}}}}%
+\renewcommand{\pdiffl}[3][]{\ensuremath{\frac{\partial^{#1}}{\partial{#3}^{#1}} {#2}}}%
+%
+%
+\renewcommand{\mpdiff}[3][]{\ensuremath{\partial^{#1}_{#3}{#2}}}%
+%
+\renewcommand{\fpdiffu}[3][]{\ensuremath{\frac{\partial^{#1}{#2}}{\partial{#3}}}}%
+%
+%
+\renewcommand{\grad}[2][]{\ensuremath{{\nabla_{\!{{#1}}}}{#2}}}%
+%
+%
+\renewcommand{\ufunc}[1]{\ensuremath{u{\ls {#1} \rs}}}%
+\renewcommand{\ufuncr}{\ensuremath{u}}%
+\renewcommand{\ufuncf}[1]{\ensuremath{\frac{1}{2}\ls 1 - \tanh{\lb \frac{1}{2} {#1} \rb} \rs}}%
+%
+\renewcommand{\ew}[3]{\ensuremath{W^{{#1}}_{\mathrm{#2}}{\lb {#3} \rb}}}%
+\renewcommand{\iw}[3]{\ensuremath{w^{{#1}}_{\mathrm{#2}}{\lb {#3} \rb}}}%
+%
+%
+%
+%
+\renewcommand{\ewf}[4]{\ensuremath{W^{_\mathrm{{#1}}}_{^{\, \mathrm{{#2}}| {#3}}}{\lb {#4} \rb}}}%
+\renewcommand{\ewff}[5]{\ensuremath{W^{_{\mathrm{{#1}}| {#4}}}_{^{\, \mathrm{{#2}}| {#3}}}{\lb {#5} \rb}}}%
+%
+\renewcommand{\swf}[4][]{\ensuremath{N^{_\mathrm{{#1}}}_{^{\, \mathrm{{#2}}| {#3}}}{\lb {#4} \rb}}}%
+\renewcommand{\swff}[5][]{\ensuremath{N^{_{\mathrm{{#1}}| {#4}}}_{^{\, \mathrm{{#2}}| {#3}}}{\lb {#5} \rb}}}%
+%
+\renewcommand{\rcwf}[3]{\ensuremath{\tau^{_\mathrm{{#1}}}_{^{\, \mathrm{{#2}}| {#3}}}}}%
+\renewcommand{\rcwff}[4]{\ensuremath{\tau^{_{\mathrm{{#1}}| {#4}}}_{^{\, \mathrm{{#2}}| {#3}}}}}%
+%
+\renewcommand{\scwf}[3]{\ensuremath{\mvec{\Delta}^{_\mathrm{{#1}}}_{^{\, \mathrm{{#2}}| {#3}}}}}%
+\renewcommand{\scwff}[4]{\ensuremath{\mvec{\Delta}^{_{\mathrm{{#1}}| {#4}}}_{^{\, \mathrm{{#2}}| {#3}}}}}%
+%
+%
+\renewcommand{\edwf}[3]{\ensuremath{\Delta H^{_\mathrm{{#1}}}_{^{\, \mathrm{{#2}}| {#3}}}}}%
+\renewcommand{\edwff}[4]{\ensuremath{\Delta H^{_{\mathrm{{#1}}| {#4}}}_{^{\, \mathrm{{#2}}| {#3}}}}}%
+%
+\renewcommand{\gwf}[4][G]{\ensuremath{{#1}^{_\mathrm{{#2}}}_{^{\, \mathrm{{#3}}| {#4}}}}}%
+\renewcommand{\gwff}[5][G]{\ensuremath{{#1}^{_{\mathrm{{#2}}| {#5}}}_{^{\, \mathrm{{#3}}| {#4}}}}}%
+%
+%
+\renewcommand{\iwf}[4]{\ensuremath{w^{_\mathrm{{#1}}}_{^{ \mathrm{{#2}}| {#3}}}{\lb {#4} \rb}}}%
+\renewcommand{\iwfs}[3]{\ensuremath{w^{_\mathrm{{#1}}}_{^{ \mathrm{{#2}} }}{\lb {#3} \rb}}}%
+% w^{_\mathrm{D}}_{^{\mathrm{T} |  {i,j}}}(\vphi, \vtheta, \xt{TD})%
+%
+%
+\renewcommand{\enwf}[3]{\ensuremath{u^{_\mathrm{{#1}}}_{^{ \mathrm{{#2}}| {#3}}}}}%
+\renewcommand{\enwfs}[2]{\ensuremath{u^{_\mathrm{{#1}}}_{^{ \mathrm{{#2}} }}}}%
+%
+%
+\renewcommand{\sech}{\ensuremath{\mathrm{sech}}}%
+%
+\renewcommand{\idef}{\ensuremath{\overset{\,\mathrm{def}\,}{=}}}%
+\renewcommand{\prob}{\ensuremath{\mathbb{P}}}%
+%
+%
+\renewcommand{\wptt}[1]{\ensuremath{\iwf{T}{E}{1, 0}{{#1}}}}%
+\renewcommand{\wptd}[1]{\ensuremath{\iwf{D}{E}{1, 0}{{#1}}}}%
+\renewcommand{\wpdd}[1]{\ensuremath{\iwf{D}{E}{0, 1}{{#1}}}}%
+\renewcommand{\wpdt}[1]{\ensuremath{\iwf{T}{E}{0, 1}{{#1}}}}%
+%
+\renewcommand{\wmtt}[1]{\ensuremath{\iwf{E}{T}{1, 0}{{#1}}}}%
+\renewcommand{\wmtd}[1]{\ensuremath{\iwf{E}{D}{1, 0}{{#1}}}}%
+\renewcommand{\wmdd}[1]{\ensuremath{\iwf{E}{D}{0, 1}{{#1}}}}%
+\renewcommand{\wmdt}[1]{\ensuremath{\iwf{E}{T}{0, 1}{{#1}}}}%
+%
+%
+\renewcommand{\wptte}[1]{\ensuremath{\iwf{T}{D}{1, 0}{{#1}}}}%
+\renewcommand{\wpdde}[1]{\ensuremath{\iwf{D}{T}{0, 1}{{#1}}}}%
+\renewcommand{\wmtte}[1]{\ensuremath{\iwf{D}{T}{1, 0}{{#1}}}}%
+\renewcommand{\wmdde}[1]{\ensuremath{\iwf{T}{D}{0, 1}{{#1}}}}%
+%
+\renewcommand{\wpttt}[1]{\ensuremath{\iwf{T}{D}{2, 0}{{#1}}}}%
+\renewcommand{\wpddd}[1]{\ensuremath{\iwf{D}{T}{0, 2}{{#1}}}}%
+%
+\renewcommand{\wmttt}[1]{\ensuremath{\iwf{D}{T}{2, 0}{{#1}}}}%
+\renewcommand{\wmddd}[1]{\ensuremath{\iwf{T}{D}{0, 2}{{#1}}}}%
+%
+\renewcommand{\wpttd}[1]{\ensuremath{\iwf{T}{D}{1, 1}{{#1}}}}%
+\renewcommand{\wmttd}[1]{\ensuremath{\iwf{D}{T}{1, 1}{{#1}}}}%
+%
+\]
+</p>
+
+      
+    </article>
+    <!-- notes-panel is created dynamically if missing -->
+  </main>
+  <footer class="noty-footer">
+    <div class="noty-footer-inner">
+  <p>Generated with <code>emacs-noty</code>.</p>
+</div>
+
+  </footer>
+  <script src="/assets/js/theme.js"></script>
+  <script src="/assets/js/site.js"></script>
+  <script src="/assets/js/refs.js"></script>
+  <script src="/assets/js/scroll-restore.js"></script>
+  <script src="/assets/js/load-math-macros.js"></script>
+  <script src="/assets/js/link-preview.js"></script>
+  <script src="/assets/js/mathjax-config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" id="MathJax-script"></script>
+
+</body>
+</html>

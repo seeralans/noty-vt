@@ -1,0 +1,462 @@
+/* ===========================
+   Fonts (Computer Modern)
+   =========================== */
+@import url("https://cdn.jsdelivr.net/gh/dreampulse/computer-modern-web-font@master/fonts.css");
+
+/* ===========================
+   Base
+   =========================== */
+
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: "Computer Modern Sans","CMU Sans Serif",sans-serif;
+  line-height: 1.35;
+}
+
+/* ===========================
+   Header / Footer
+   =========================== */
+
+.noty-header,
+.noty-footer {
+  padding: 0.75rem 1.5rem;
+  background: var(--bg);
+  color: var(--fg);
+}
+.noty-header {
+  position: fixed;           /* ALWAYS at top of viewport */
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+
+  padding: 0.75rem 1.5rem;
+  background: var(--bg);
+  color: var(--fg);
+  border-bottom: 1px solid var(--border);
+}
+
+.noty-footer {
+  padding: 0.75rem 1.5rem;
+  border-top: 1px solid var(--border);
+  font-size: 0.9rem;
+}
+
+/* Header nav */
+
+.noty-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.noty-nav-brand {
+  font-weight: bold;
+  text-decoration: none;
+  color: var(--fg);
+}
+
+.noty-nav-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: 0.75rem;
+}
+
+.noty-nav-list a {
+  text-decoration: none;
+  color: var(--fg);
+}
+
+.noty-nav-list a:hover {
+  text-decoration: underline;
+}
+
+.noty-nav-actions {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.noty-nav-actions button {
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0.2rem 0.5rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  background: var(--inline-bg);
+  color: var(--fg);
+}
+
+/* ===========================
+   Layout: TOC | Content | Notes
+   =========================== */
+
+.page {
+  display: grid;
+  grid-template-columns: minmax(0, 220px) minmax(0, 110ch) minmax(0, 1.5fr);
+  gap: 1.5rem;
+  max-width: 1200px;
+  margin: 4.5rem auto 0;   /* push content below fixed header */
+  padding: 0 1.5rem 3rem;
+  align-items: start;
+}
+
+
+
+.left-bar {
+  position: sticky;
+  top: 4.5rem;
+  align-self: flex-start;
+  font-size: 0.9rem;
+  max-height: calc(100vh - 2rem);
+  overflow: auto;
+  border-right: 1px solid var(--border);
+  padding-right: 0.8rem;
+}
+
+.left-bar h3 {
+  margin-top: 0.2rem;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+}
+
+.left-bar ul {
+  list-style: none;
+  padding-left: 0;
+  margin: 0.5rem 0 0;
+}
+
+.left-bar li {
+  margin: 0.1rem 0;
+}
+
+.left-bar a {
+  text-decoration: none;
+  color: var(--fg);
+}
+
+.left-bar a:hover {
+  font-weight: bold;
+}
+
+/* Center: content */
+
+.content > * {
+    padding-left: 2ch;
+    padding-right: 2ch;
+}
+
+.content {
+  min-width: 0;
+  max-width: 92ch;
+  width: 100%;
+  justify-self: center;
+  padding: 0 2rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 6px;
+}
+
+/* Right: section index / notes panel */
+
+.noty-sidebar {
+  position: sticky;
+  top: 1rem;
+  align-self: flex-start;
+}
+
+#notes-panel {
+  position: sticky;
+  top: 1rem;
+  align-self: flex-start;
+  max-height: calc(100vh - 2rem);
+  overflow: auto;
+  border-left: 1px solid var(--border);
+  padding-left: 0.75rem;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+#notes-panel .notes-title {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+/* Hide inline notes once mirrored to the panel (JS) */
+.content .sidenote,
+.content .marginnote {
+  display: none;
+}
+
+/* Small screens */
+
+@media (max-width: 900px) {
+  .page {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .left-bar {
+    position: static;
+    border-right: none;
+    margin-bottom: 1rem;
+    max-height: none;
+    overflow: visible;
+    padding-right: 0;
+  }
+  .noty-sidebar,
+  #notes-panel {
+    position: static;
+    border-left: none;
+    max-height: none;
+    overflow: visible;
+    margin-top: 1rem;
+  }
+  .content {
+    padding: 0 1rem;
+  }
+}
+
+/* ===========================
+   Headings
+   =========================== */
+
+h1, h2, h3, h4 {
+  /* font-family: "Computer Modern Serif","CMU Serif",serif; */
+  line-height: 1.25;
+  margin: 1.2em 0 0.6em;
+}
+
+h1 {
+  font-size: 1.95rem;
+  margin-top: 0.2rem;
+}
+
+h2 {
+  font-size: 1.55rem;
+}
+
+h3 {
+  font-size: 1.25rem;
+}
+
+h4 {
+  font-size: 1.05rem;
+}
+
+/* ===========================
+   Links & Footer
+   =========================== */
+
+a {
+  color: var(--link);
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+.postamble {
+  margin: 2rem 0 3rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+/* ===========================
+   Code
+   =========================== */
+
+code {
+  background: var(--inline-bg);
+  padding: 0.1rem 0.3rem;
+  border-radius: 4px;
+  font-family: "CMU Typewriter Text",monospace;
+}
+
+pre, pre.src {
+  font-family: "CMU Typewriter Text",monospace;
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  padding: 0.9rem 1rem;
+  border-radius: 8px;
+  overflow: auto;
+}
+
+/* ===========================
+   Semantic blocks (theorems, etc.)
+   =========================== */
+
+.theorem, .lemma, .proposition, .corollary, .definition, .remark, .insight, .question, .note, .todo {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.theorem, .lemma, .proposition, .corollary, .definition, .remark {
+  background: var(--theorem-bg);
+}
+
+.insight {
+  background: var(--insight-bg);
+}
+
+.question {
+  background: var(--question-bg);
+}
+
+.note {
+  background: var(--note-bg);
+}
+
+.todo {
+  background: var(--todo-bg);
+}
+
+
+/* Optional: differentiate by type via border (still using theme accent) */
+/* you can override these per theme if you want different colors per type */
+
+.insight {
+  /* Slightly stronger background is up to theme; default same as inline-bg */
+}
+
+.question {
+  /* Same structure; theme can override color via extra vars if desired */
+}
+
+.note {
+}
+
+.todo {
+}
+
+/* Labels for theorem-ish blocks and figs/tables */
+
+.theorem-label,
+.lemma-label,
+.proposition-label,
+.corollary-label,
+.definition-label,
+.question-label,
+.insight-label,
+.remark-label,
+.figure-title,
+caption,
+.note-label,
+.todo-label {
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+}
+
+/* Proof block */
+
+.proof {
+  padding: 0.75rem 1rem;
+  margin: 1rem 0;
+  background: var(--inline-bg);
+}
+
+.proof::before {
+  content: "Proof.";
+  font-weight: 700;
+  margin-right: 0.5rem;
+  display: block;
+  margin-bottom: 0.4rem;
+}
+
+.proof::after {
+  content: "□";
+  float: right;
+}
+
+/* ===========================
+   Equation wrapper (when present)
+   =========================== */
+
+.eq.env {
+  position: relative;
+  text-align: center;
+  margin: 1rem 0;
+}
+
+.eq.env > .eq-number {
+  float: right;
+  font-weight: 700;
+  margin-left: 0.5rem;
+}
+
+/* ===========================
+   Figures
+   =========================== */
+
+div.figure,
+.figure {
+  margin: 1rem auto;
+  text-align: center;
+}
+
+div.figure img,
+.figure img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 6px;
+}
+
+/* ===========================
+   Shadow index list
+   =========================== */
+
+.noty-shadow-index {
+  padding-left: 1.25rem;
+}
+
+.noty-shadow-index li {
+  margin-bottom: 0.25rem;
+}
+
+/* ===========================
+   TOC (if Org emits it; JS may move it into left-bar)
+   =========================== */
+
+.toc {
+  font-size: 0.9rem;
+}
+
+/* ===========================
+   Link preview tooltip
+   =========================== */
+
+#noty-link-preview {
+  position: fixed;
+  max-width: 40ch;
+  max-height: 60vh;
+  overflow: auto;
+
+  padding: 0.5rem 0.75rem;
+  background: var(--bg);
+  color: var(--fg);
+  border: 1px solid var(--border);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+  border-radius: 6px;
+
+  font-size: 0.9rem;
+  z-index: 9999;
+  display: none;
+  pointer-events: none;  /* don’t steal hover from the link */
+}
+

@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>On stochastic differential equations with piecewise smooth drift and noise amplitudes.</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="">
+  <meta name="keywords" content="">
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <link rel="stylesheet" href="/assets/css/modus-operandi.css" id="noty-theme">
+</head>
+<body>
+  <header class="noty-header">
+    <nav class="noty-nav">
+  <a href="/index.html" class="noty-nav-brand">Home</a>
+  <ul class="noty-nav-list">
+    <li><a href="/areas/index.html">Areas</a></li>
+    <li><a href="/projects/index.html">Projects</a></li>
+    <li><a href="/personal/index.html">Personal</a></li>
+    <li><a href="/pages/manual.html">Manual</a></li>
+  </ul>
+  <div class="noty-nav-actions">
+    <button class="theme-toggle" type="button" title="Toggle theme">🌓</button>
+    <button class="sidenote-toggle" type="button" title="Toggle notes">☰</button>
+  </div>
+</nav>
+
+  </header>
+  <main class="page">
+    <aside class="left-bar">
+      <div id="toc"></div>
+    </aside>
+    <article class="content noty-article">
+      <h1 class="noty-title">On stochastic differential equations with piecewise smooth drift and noise amplitudes.</h1>
+      <div id="outline-container-org765895e" class="outline-2">
+<h2 id="org765895e"><span class="section-number-2">1.</span> Introduction</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+Consider the the autonomous general piecewise stochastic differential equation
+</p>
+\begin{equation}
+\label{orgcb9669a}
+\mathrm{d}x_t = a(x_t, \lambda_t) \mathrm{d}t + \sqrt{\epsilon} b(x_t, \lambda_t) \mathrm{d}W_t,
+\end{equation}
+<p>
+where \(x_t \in \mathbb{R}^d\), \(\lambda_t \in [-1, 1]\), and \(a(\cdot) \in \mathbb{R}^d\) is 
+\(b(\cdot) \in \mathbb{R}^d\), and \(\mathrm{d}W_t\) is a Wiener increment. Of course without the non-smoothness, equations of the form \eqref{orgcb9669a} are obtained when one perturbs a system with weak noise see for example [cite:freidlinwentzel2012book]. Such equations are also manifest the sde description corresponding to the quadratic approximation of the tilted (non-linear) generator obtained via large deviation principle on a chemical master equation for large system size.
+</p>
+
+
+<p>
+Let the discontinuity \(\sigma: \mathbb{R}^d \mapsto \mathbb{R}\) be a scalar function used to define the discontinuity surface
+</p>
+\begin{equation}
+\label{org836ec3e}
+\mathcal{D} = {\left\{ x \in \mathbb{R}^d \,|\, \sigma(x) = 0 \right\}},
+\end{equation}
+<p>
+notice that \(\lambda_{t} = \mathrm{sign}(\sigma(x_{t}))\) is now stochastic. The dynamics of \(x_t\) together with \(\lambda_t\) is a stochastic slow-fast system. Recall that
+for deterministic system, the fast dynamics of the switching variable is given via \(\dot{\lambda} = \epsilon^{-1}\nabla \sigma \cdot \dot{x}^{{\scriptsize\mathsf{T}}}\), this comes from regularising the sign function into something of the form
+</p>
+\begin{equation}
+\label{orgbdde82d}
+\lambda^{(\epsilon^{\beta})}(x) = 
+\left\{
+\begin{array}
+\sigma \sigma (x) / \epsilon^{\beta} & |\sigma(x)| < \epsilon^{\beta},\\
+\mathrm{sign}(\sigma(x)) & |\sigma(x)| \geq \epsilon^{\beta},
+\end{array}
+\right.
+\quad 0 < \epsilon, \beta 
+\end{equation}
+<p>
+and then taking the derivative with respect to time. Note that this regularisation is obviously not unique, any choose of \(\beta > 0\), would work as we are interested in only the singular limit as it pertains to resolving the sliding mode.
+</p>
+
+<p>
+For stochastic system one must employ Ito's lemma which yeilds
+</p>
+\begin{equation}
+\label{org80c0365}
+\mathrm{d}\lambda_t = \frac{1}{\epsilon} \left[
+\nabla \sigma \cdot
+\mathrm{d}x_t
++  
+\frac{1}{2}
+\mathrm{d}x_t
+\nabla^2 \sigma
+\mathrm{d}x_t^{\scriptsize{\mathsf{T}}} \right],
+\end{equation}
+<p>
+clearly for non planar discontinuity surfaces the additional Ito correction will yeild additional drift terms, while for planar discontinuity surfaces we obtain a simple projection onto the normal. For this introduction let us assume we have a planar discontinuity surface with \(\sigma(x) = n \cdot x\) where \(n \in \mathbb{R}^{d}\) is a constant vector, which gives us 
+</p>
+\begin{equation}
+\label{org351fe4a}
+\mathrm{d}\lambda_t = 
+\frac{1}{\epsilon}
+n \cdot
+a(x_t, \lambda_t) \mathrm{d}t +
+\frac{1}{\sqrt{\epsilon}}
+n\cdot b(x_t, \lambda_t) 
+\mathrm{d}W_t,
+\end{equation}
+<p>
+Suppose we wish to analyse the fast subsystem, let us consider the rescaling time with \(t = \epsilon^{\alpha} \tau\), where \(\epsilon, \alpha > 0\). Rescaling \eqref{org351fe4a} we obtain 
+</p>
+\begin{equation}
+\label{org56a1cc0}
+\mathrm{d}\lambda_{\tau} = 
+\epsilon^{\alpha - 1}
+a^{(n)}(x_{\tau}, \lambda_{\tau}) \mathrm{d}\tau +
+\epsilon^{\frac{\alpha - 1}{2}}
+b^{(n)}(x_\tau, \lambda_{\tau}) 
+\mathrm{d}W_{\tau},
+\end{equation}
+<p>
+where \(\mathrm{d}W_{\tau}\) is a Weiner increment with zero mean and second moment
+\(\mathbb{E}[\mathrm{d}W_{\tau}^2] = \mathrm{d}\tau\). Notice that \(\alpha = 1\) puts both the drift and noise terms on equal footing. Notice that there is no time scale that is  faster than \(t\) such that we can suppress the noise faster than the drift as \(\epsilon\). That is for all \(\alpha > 0\) (fast \(\tau\))
+\[
+\frac{\epsilon^{-\frac{1}{2}}|b^{(n)(x_{\tau}, \lambda_{\tau})}|}{|a^{(n)(x_{\tau}, \lambda_{\tau})}|} \not \to 0, 
+\quad \text{as} \quad \epsilon \to 0.
+\]
+This follows from the fact that the dynamics of \(\lambda_{\tau}\) exist in an \(\epsilon\) layer around the discontinuity surface and because the noise amplitude in \eqref{orgcb9669a} is \(\mathcal{O}(\sqrt{\epsilon})\). In the microtubule example the lattice size \(N\) affixes indpendently the size of the layer with \(\epsilon = 1/N\) which corresponds to one lattice site, as well as the Gaussian noise amplitude which is \(O(1/\sqrt{N})\). The slow subsystem under the fast time scale is given by 
+</p>
+\begin{equation}
+\label{orgb27d46b}
+\mathrm{d}x_{\tau} = \epsilon^{\alpha} a(x_{\tau}, \lambda_{\tau}) \mathrm{d}{\tau} + \epsilon^{\alpha + \frac{1}{2}} b(x_{\tau}, \lambda_{\tau}) \mathrm{d}W_{\tau},
+\end{equation}
+<p>
+which shows that variable is static under the fast time and also maintains the correct scaling between the drift and noise terms 
+\[
+\frac{\epsilon^{\frac{1}{2}}|b^{(n)(x_{\tau}, \lambda_{\tau})}|}{|a^{(n)(x_{\tau}, \lambda_{\tau})}|} \to 0, 
+\quad \text{as} \quad \epsilon \to 0.
+\]
+</p>
+</div>
+<div id="outline-container-org5252614" class="outline-3">
+<h3 id="org5252614"><span class="section-number-3">1.1.</span> Example</h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+Let us start of with the following simple example inspired by the microtubule project
+</p>
+\begin{equation}
+\label{org15940dd}
+\begin{pmatrix}
+\mathrm{d}x_{t} \\
+\mathrm{d}y_{t} 
+\end{pmatrix}
+= 
+\left[
+\begin{pmatrix}
+-1 & \phantom{-}1 \\
+\phantom{-}1 & -1 
+\end{pmatrix}
+\begin{pmatrix}
+ x_t \\
+ y_t 
+\end{pmatrix}
+ + 
+\frac{1}{2}
+\begin{pmatrix}
+ v^+ +v^- + \lambda_t (v^+ -  v^-) \\
+ v^+ +v^- + \lambda_t (v^+ -  v^-) 
+\end{pmatrix}
+\right]
+\mathrm{d}t
++\sqrt{\epsilon}
+B(\lambda_{t}) \mathrm{d}W_t,
+\end{equation}
+<p>
+where
+</p>
+\begin{equation}
+\label{org5d7b49b}
+B(\lambda_t) = \frac{1}{2} \left[ \Sigma^+ +\Sigma^- +
+\lambda_t (\Sigma^+ -\Sigma^-) \right],
+\end{equation}
+<p>
+is the convex combination of of the noise amplitude, and as usual \(\lambda \in [-1, 1]\) is the switching parameter. A schematic of the system is shown in <a href="#orga6f1782">No description for this link</a>
+</p>
+<p>
+<img src="../assets/img/psde_toy_grow.svg" alt="psde_toy_grow.svg" class="org-svg" />
+The discontinuity surface is defined via the zero set of \(\sigma(x, y) = 1 - x - y\), that is \(\mathcal{D} = {\left\{(x, y) \in \mathbb{R}^2 \,|\, \sigma(x,y) = 0 \right\}}\), it caps the growth. This corresponds with exactly the no-interaction limit of the single filament microtubule. We also have the SDE
+</p>
+\begin{equation}
+\label{org466cca9}
+\mathrm{d}\lambda_t = \frac{1}{\epsilon}\left[\lambda_t (v^- -  v^+) - v^+ - v^- \right]\mathrm{d}t
++ \frac{1}{\sqrt{\epsilon}}B^{(n)}(\lambda_t) \mathrm{d}W_t
+\end{equation}
+<p>
+where \(B^{(n)}(\lambda_t)\) is the noise amplitude projected onto \(n = \nabla \sigma = (-1, -1)^{\scriptsize{\mathsf{T}}}\). In slow time taking \(\epsilon \to 0\) we obtain a standard piecewise ODE which permits a sliding mode with 
+\[
+\lambda^{*} = \frac{v^+ + v^-}{v^- - v^+} \in (-1, 1),\quad \text{with}\quad v^- < 0 < v^+.
+\]
+unsuprisingly this is exactly equivalent to obtaining the evolution of \({\mathbb{E}[ \lambda_{t} ]}\) using  \eqref{org466cca9} and then taking steady state value. Substituting \(\lambda^{*}\) into \eqref{org15940dd} we obtain the dynamics near the discontinuity surface. Suppose now we consider the dynamics near the steady state \((1/2, 1/2)\), let \(r_t = n \cdot (x_t - 1/2, y_t -1/2) / ||n||\) and \(s_t = m \cdot (x_t - 1/2, y_t - 1/2) / ||m||\) where \(m = (-1, 1)\) and is tangent to \(\mathcal{D}\). Using Ito's lemma we obtain 
+</p>
+\begin{equation}
+\label{org40a1eeb}
+\mathrm{d}r_t =  \sqrt{\frac{\epsilon}{2}} B^{(n)}(\lambda^{*}) \mathrm{d}W_{t}
+\end{equation}
+<p>
+and 
+</p>
+\begin{equation}
+\label{orgf36c619}
+\begin{aligned}
+\mathrm{d}s_t &=  \sqrt{2}(x_{t} - y_{t})\mathrm{d}t + \sqrt{\frac{\epsilon}{2}} B^{(m)}(\lambda^{*}) \mathrm{d}W_{t} \\
+ &=  -\sqrt{2} s_t \mathrm{d}t + \sqrt{\frac{\epsilon}{2}} B^{(m)}(\lambda^{*}) \mathrm{d}W_{t}.
+\end{aligned}
+\end{equation}
+<p>
+The latter is clearly an Ornstein-Uhlenbeck process with the stationary density
+</p>
+\begin{equation}
+\label{orgd15e138}
+P(s) = 
+\end{equation}
+</div>
+</div>
+</div>
+<div id="outline-container-org19b5188" class="outline-2">
+<h2 id="org19b5188"><span class="section-number-2">2.</span> Understanding <a href="https://www.sciencedirect.com/science/article/pii/S0167278922001671?casa_token=CpEZCgN3GWgAAAAA:pSx8GzP48UUk2bQ5vytjX8PetKp6ca52FX8nIxXhwNUqKVonT-nZbdMoYtRNlNvgp7vWqln7">Hill et.al. 2022</a></h2>
+<div class="outline-text-2" id="text-2">
+<p>
+In this paper they use $&Gamma;$-convergence in 
+</p>
+</div>
+</div>
+<div id="outline-container-orgae83e20" class="outline-2">
+<h2 id="orgae83e20"><span class="section-number-2">3.</span> Numerical</h2>
+<div class="outline-text-2" id="text-3">
+
+<div id="org54f08c3" class="figure">
+<p><img src="../assets/img/toy-psde-phase.png" alt="toy-psde-phase.png" />
+</p>
+<p><span class="figure-number">Figure 1: </span>Stochastic trajectory starting at the steady-state value. The black line is the discontinuity surface and the red lines indicate the boundaries of the $&epsilon;$-layer.</p>
+</div>
+
+
+
+<div id="org910a3c8" class="figure">
+<p><img src="../assets/img/layer-sde.png" alt="layer-sde.png" />
+</p>
+<p><span class="figure-number">Figure 2: </span>Steady state distrbution the deviations from the fixed point at \((1/2, 1/2)\) which are normal (left) and tangential (right) to \(\mathcal{D}\).</p>
+</div>
+
+
+
+
+<div id="org263926d" class="figure">
+<p><img src="../assets/img/layer-norm-sde.png" alt="layer-norm-sde.png" />
+</p>
+<p><span class="figure-number">Figure 3: </span>Steady state distrbution the deviations from the fixed point at \((1/2, 1/2)\) which are normal to \(\mathcal{D}\).</p>
+</div>
+</div>
+</div>
+
+      
+    </article>
+    <!-- notes-panel is created dynamically if missing -->
+  </main>
+  <footer class="noty-footer">
+    <div class="noty-footer-inner">
+  <p>Generated with <code>emacs-noty</code>.</p>
+</div>
+
+  </footer>
+  <script src="/assets/js/theme.js"></script>
+  <script src="/assets/js/site.js"></script>
+  <script src="/assets/js/refs.js"></script>
+  <script src="/assets/js/scroll-restore.js"></script>
+  <script src="/assets/js/load-math-macros.js"></script>
+  <script src="/assets/js/link-preview.js"></script>
+  <script src="/assets/js/mathjax-config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" id="MathJax-script"></script>
+
+</body>
+</html>

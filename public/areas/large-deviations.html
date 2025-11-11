@@ -1,0 +1,1742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Large Deviation Theory</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="">
+  <meta name="keywords" content="">
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <link rel="stylesheet" href="/assets/css/modus-operandi.css" id="noty-theme">
+</head>
+<body>
+  <header class="noty-header">
+    <nav class="noty-nav">
+  <a href="/index.html" class="noty-nav-brand">Home</a>
+  <ul class="noty-nav-list">
+    <li><a href="/areas/index.html">Areas</a></li>
+    <li><a href="/projects/index.html">Projects</a></li>
+    <li><a href="/personal/index.html">Personal</a></li>
+    <li><a href="/pages/manual.html">Manual</a></li>
+  </ul>
+  <div class="noty-nav-actions">
+    <button class="theme-toggle" type="button" title="Toggle theme">🌓</button>
+    <button class="sidenote-toggle" type="button" title="Toggle notes">☰</button>
+  </div>
+</nav>
+
+  </header>
+  <main class="page">
+    <aside class="left-bar">
+      <div id="toc"></div>
+    </aside>
+    <article class="content noty-article">
+      <h1 class="noty-title">Large Deviation Theory</h1>
+      <p>
+\[
+\renewcommand{\bm}[1]{\boldsymbol{#1}}%
+\renewcommand{\ensuremath}[1]{{#1}}%
+\renewcommand{\note}[2][orange]{\colorbox{#1!20}{#2}}%
+%
+\renewcommand{\varvb}{\bm{v}}%
+\renewcommand{\varv}{v}%
+%
+% \DeclareBoldMathCommand\varv{v}%
+\renewcommand{\order}[1]{\mathcal{O}{({#1})}}%
+%
+\renewcommand{\ee}{{\mathrm{e}}}%
+\renewcommand{\acos}{\mathrm{acos}}%
+\renewcommand{\vphi}{\varphi}%
+\renewcommand{\veps}{\varepsilon}%
+\renewcommand{\vthe}{\vartheta}%
+%
+%
+\renewcommand{\lb}{\left(}%
+\renewcommand{\rb}{\right)}%
+%
+\renewcommand{\ls}{\left[}%
+\renewcommand{\rs}{\right]}%
+%
+\renewcommand{\lc}{\left\{}%
+\renewcommand{\rc}{\right\}}%
+%
+\renewcommand{\ld}{\left.}%
+\renewcommand{\rd}{\right.}%
+%
+\renewcommand{\la}{\left\langle}%
+\renewcommand{\ra}{\right\rangle}%
+%
+\renewcommand{\lp}{\left|}%
+\renewcommand{\rp}{\right|}%
+%
+\renewcommand{\acosh}{\mathrm{acosh}}%
+\renewcommand{\floor}[1]{{\lfloor{#1}\rfloor}}%
+%
+%
+\renewcommand{\ffrac}[2]{{#1}/{#2}}%
+\renewcommand{\carr}{\curvearrowright}%
+\renewcommand{\carl}{\curvearrowleft}%
+\renewcommand{\ztrans}[1]{\widetilde{#1}}%
+\renewcommand{\wt}{\widetilde}%
+\renewcommand{\sgn}{\mathrm{sgn}}%
+\renewcommand{\tr}{\mathrm{Tr}}%
+\renewcommand{\mat}[1]{\mathbf{#1}}%
+\renewcommand{\mmat}[1]{\underline{\bm{#1}}}%
+\renewcommand{\mvec}[1]{\bm{#1}}%
+\renewcommand{\nvec}{\mvec{n}}%
+\renewcommand{\xvec}{\mvec{x}}%
+%
+\renewcommand{\mdet}[1]{\left|#1\right|}%
+\renewcommand{\mrm}[1]{\ensuremath{\mathrm{{#1}}}}%
+\renewcommand{\rmd}{\ensuremath{\mathrm{{d}}}}%
+%
+\renewcommand{\trans}{\ensuremath{\scriptsize\mathsf{T}}}%
+\renewcommand{\thh}{{\ensuremath\mathrm{th}}}%
+\renewcommand{\grad}[2]{\ensuremath{{\nabla_{\!{{#1}}}}{#2}}}%
+%
+\renewcommand{\giv}{\,|\,}%
+\renewcommand{\matidx}[2]{{{#1}, {#2}}}%
+\renewcommand{\mbinom}[2]{{\ensuremath{\begin{pmatrix}{#1}\\{#2}\end{pmatrix}}}}%
+%
+%
+\renewcommand{\apref}[1]{Appendix~\ref{#1}}%
+\renewcommand{\checked}{{\color{green}\textbf{CHECKED}}\\}%
+\renewcommand{\changed}{{\color{red}\textbf{DISCUSS}}\\}%
+%
+%
+% symbols%
+\renewcommand{\sstate}[1][\nvec]{\ensuremath{\sigma_{{#1}}}}%
+%
+\renewcommand{\disp}{\ensuremath{g}}%
+%
+\renewcommand{\nt}[2][]{\ensuremath{N^{_{#1}}_{^{^\mathrm{#2}}}}}%
+\renewcommand{\ntb}[2][]{\ensuremath{{\mvec{N}}^{_{#1}}_{^{^\mathrm{#2}}}}}%
+%
+%
+\renewcommand{\xep}[2][]{\ensuremath{{\rho}^{_{#1}}_{^{^\mathrm{#2}}}}}%
+%
+\renewcommand{\xt}[1]{\ensuremath{{\color{sol_red}\xi}_{_{\mathrm{#1}}}}}%
+%
+\renewcommand{\xtt}[2][]{\ensuremath{{\color{sol_red}\xi}^{{#1}}_{_{\mathrm{#2}}}}}%
+\renewcommand{\xtd}[1]{\ensuremath{{\color{sol_red}\dot{\xi}}_{_{\mathrm{#1}}}}}%
+\renewcommand{\et}[2][\vphi , \vthe]{\ensuremath{{\color{sol_blue}\eta}_{_{\mathrm{#2}}}{\lb {#1} \rb}}}%
+%
+%
+\renewcommand{\jt}[1]{\ensuremath{J_{^{^\mathrm{#1}}}}}%
+\renewcommand{\jtt}[1]{\ensuremath{\tilde{J}_{^{^\mathrm{#1}}}}}%
+%
+%
+\renewcommand{\configs}[1][]{\ensuremath{\lc \sstate[\nvec] \rc_{{#1}}}}%
+\renewcommand{\motif}[3]{\ensuremath{\mathcal{N}^{{#1}}_{{#2}}({#3})}}%
+\renewcommand{\motiff}[1]{\ensuremath{n_{{#1}}}}%
+%
+%
+\renewcommand{\intpsym}{\varphi}%
+\renewcommand{\intmsym}{\pi}%
+\renewcommand{\intpv}{\mvec{\intpsym}}%
+\renewcommand{\intmv}{\mvec{\intmsym}}%
+\renewcommand{\intpsyms}{\bar{\intpv}}%
+\renewcommand{\intmsyms}{\bar{\intmv}}%
+\renewcommand{\intpvs}{\mvec{\intpsyms}}%
+\renewcommand{\intmvs}{\mvec{\intmsyms}}%
+%
+\renewcommand{\diffu}[3][]{\ensuremath{\frac{\mathrm{d}^{#1}{#2}}{\mathrm{d}{#3}^{#1}}}}%
+\renewcommand{\diffl}[3][]{\ensuremath{\frac{\mathrm{d}^{#1}}{\mathrm{d}{#3}^{#1}} {#2}}}%
+%
+\renewcommand{\pdiffu}[3][]{\ensuremath{\frac{\partial^{#1}{#2}}{\partial{#3}^{#1}}}}%
+\renewcommand{\pdiffl}[3][]{\ensuremath{\frac{\partial^{#1}}{\partial{#3}^{#1}} {#2}}}%
+%
+%
+\renewcommand{\mpdiff}[3][]{\ensuremath{\partial^{#1}_{#3}{#2}}}%
+%
+\renewcommand{\fpdiffu}[3][]{\ensuremath{\frac{\partial^{#1}{#2}}{\partial{#3}}}}%
+%
+%
+\renewcommand{\grad}[2][]{\ensuremath{{\nabla_{\!{{#1}}}}{#2}}}%
+%
+%
+\renewcommand{\ufunc}[1]{\ensuremath{u{\ls {#1} \rs}}}%
+\renewcommand{\ufuncr}{\ensuremath{u}}%
+\renewcommand{\ufuncf}[1]{\ensuremath{\frac{1}{2}\ls 1 - \tanh{\lb \frac{1}{2} {#1} \rb} \rs}}%
+%
+\renewcommand{\ew}[3]{\ensuremath{W^{{#1}}_{\mathrm{#2}}{\lb {#3} \rb}}}%
+\renewcommand{\iw}[3]{\ensuremath{w^{{#1}}_{\mathrm{#2}}{\lb {#3} \rb}}}%
+%
+%
+%
+%
+\renewcommand{\ewf}[4]{\ensuremath{W^{_\mathrm{{#1}}}_{^{\, \mathrm{{#2}}| {#3}}}{\lb {#4} \rb}}}%
+\renewcommand{\ewff}[5]{\ensuremath{W^{_{\mathrm{{#1}}| {#4}}}_{^{\, \mathrm{{#2}}| {#3}}}{\lb {#5} \rb}}}%
+%
+\renewcommand{\swf}[4][]{\ensuremath{N^{_\mathrm{{#1}}}_{^{\, \mathrm{{#2}}| {#3}}}{\lb {#4} \rb}}}%
+\renewcommand{\swff}[5][]{\ensuremath{N^{_{\mathrm{{#1}}| {#4}}}_{^{\, \mathrm{{#2}}| {#3}}}{\lb {#5} \rb}}}%
+%
+\renewcommand{\rcwf}[3]{\ensuremath{\tau^{_\mathrm{{#1}}}_{^{\, \mathrm{{#2}}| {#3}}}}}%
+\renewcommand{\rcwff}[4]{\ensuremath{\tau^{_{\mathrm{{#1}}| {#4}}}_{^{\, \mathrm{{#2}}| {#3}}}}}%
+%
+\renewcommand{\scwf}[3]{\ensuremath{\mvec{\Delta}^{_\mathrm{{#1}}}_{^{\, \mathrm{{#2}}| {#3}}}}}%
+\renewcommand{\scwff}[4]{\ensuremath{\mvec{\Delta}^{_{\mathrm{{#1}}| {#4}}}_{^{\, \mathrm{{#2}}| {#3}}}}}%
+%
+%
+\renewcommand{\edwf}[3]{\ensuremath{\Delta H^{_\mathrm{{#1}}}_{^{\, \mathrm{{#2}}| {#3}}}}}%
+\renewcommand{\edwff}[4]{\ensuremath{\Delta H^{_{\mathrm{{#1}}| {#4}}}_{^{\, \mathrm{{#2}}| {#3}}}}}%
+%
+\renewcommand{\gwf}[4][G]{\ensuremath{{#1}^{_\mathrm{{#2}}}_{^{\, \mathrm{{#3}}| {#4}}}}}%
+\renewcommand{\gwff}[5][G]{\ensuremath{{#1}^{_{\mathrm{{#2}}| {#5}}}_{^{\, \mathrm{{#3}}| {#4}}}}}%
+%
+%
+\renewcommand{\iwf}[4]{\ensuremath{w^{_\mathrm{{#1}}}_{^{ \mathrm{{#2}}| {#3}}}{\lb {#4} \rb}}}%
+\renewcommand{\iwfs}[3]{\ensuremath{w^{_\mathrm{{#1}}}_{^{ \mathrm{{#2}} }}{\lb {#3} \rb}}}%
+% w^{_\mathrm{D}}_{^{\mathrm{T} |  {i,j}}}(\vphi, \vtheta, \xt{TD})%
+%
+%
+\renewcommand{\enwf}[3]{\ensuremath{u^{_\mathrm{{#1}}}_{^{ \mathrm{{#2}}| {#3}}}}}%
+\renewcommand{\enwfs}[2]{\ensuremath{u^{_\mathrm{{#1}}}_{^{ \mathrm{{#2}} }}}}%
+%
+%
+\renewcommand{\sech}{\ensuremath{\mathrm{sech}}}%
+%
+\renewcommand{\idef}{\ensuremath{\overset{\,\mathrm{def}\,}{=}}}%
+\renewcommand{\prob}{\ensuremath{\mathbb{P}}}%
+%
+%
+\renewcommand{\wptt}[1]{\ensuremath{\iwf{T}{E}{1, 0}{{#1}}}}%
+\renewcommand{\wptd}[1]{\ensuremath{\iwf{D}{E}{1, 0}{{#1}}}}%
+\renewcommand{\wpdd}[1]{\ensuremath{\iwf{D}{E}{0, 1}{{#1}}}}%
+\renewcommand{\wpdt}[1]{\ensuremath{\iwf{T}{E}{0, 1}{{#1}}}}%
+%
+\renewcommand{\wmtt}[1]{\ensuremath{\iwf{E}{T}{1, 0}{{#1}}}}%
+\renewcommand{\wmtd}[1]{\ensuremath{\iwf{E}{D}{1, 0}{{#1}}}}%
+\renewcommand{\wmdd}[1]{\ensuremath{\iwf{E}{D}{0, 1}{{#1}}}}%
+\renewcommand{\wmdt}[1]{\ensuremath{\iwf{E}{T}{0, 1}{{#1}}}}%
+%
+%
+\renewcommand{\wptte}[1]{\ensuremath{\iwf{T}{D}{1, 0}{{#1}}}}%
+\renewcommand{\wpdde}[1]{\ensuremath{\iwf{D}{T}{0, 1}{{#1}}}}%
+\renewcommand{\wmtte}[1]{\ensuremath{\iwf{D}{T}{1, 0}{{#1}}}}%
+\renewcommand{\wmdde}[1]{\ensuremath{\iwf{T}{D}{0, 1}{{#1}}}}%
+%
+\renewcommand{\wpttt}[1]{\ensuremath{\iwf{T}{D}{2, 0}{{#1}}}}%
+\renewcommand{\wpddd}[1]{\ensuremath{\iwf{D}{T}{0, 2}{{#1}}}}%
+%
+\renewcommand{\wmttt}[1]{\ensuremath{\iwf{D}{T}{2, 0}{{#1}}}}%
+\renewcommand{\wmddd}[1]{\ensuremath{\iwf{T}{D}{0, 2}{{#1}}}}%
+%
+\renewcommand{\wpttd}[1]{\ensuremath{\iwf{T}{D}{1, 1}{{#1}}}}%
+\renewcommand{\wmttd}[1]{\ensuremath{\iwf{D}{T}{1, 1}{{#1}}}}%
+%
+\]
+</p>
+<div id="outline-container-orgc3f8ca5" class="outline-2">
+<h2 id="orgc3f8ca5"><span class="section-number-2">1.</span> Introduction</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+Large deviation theory, in its austere form can feel unintuitive, for example the employment of techniques such as Radon-Nikodym are most often introduced without apriori justification. To me large deviation theory is lifeless without the applications that originally motivated it so to get a a feel for the theory we will start with a toy example before returning to formulate the ideas more precisely.
+</p>
+</div>
+<div id="outline-container-sec-static-ldp-intuition" class="outline-3">
+<h3 id="sec-static-ldp-intuition"><span class="section-number-3">1.1.</span> Toy Example: A tail of two die</h3>
+<div class="outline-text-3" id="text-sec-static-ldp-intuition">
+<p>
+Consider a fair six–sided die with outcomes \(z \in \{1, 2, 3, 4, 5, 6\}\), all values have equal probability \(p(z) = 1/6\). Suppose we roll the die \(N\) times and take the emprical mean
+\[
+\overline{Z}_N = \frac{1}{N}\sum_{i=1}^N Z_i,
+\]
+which we know by the law of large numbers \(\overline{Z}_N \to \mathbb{E}[Z] =  3.5\) as \(N \to \infty\). Ignoring for the moment the fact that \(z\) is in integer, what about values that are not close to the mean e.g. what is the probability that \(\overline{Z}_N \neq 3.5\) as \(N \to \infty\)? Suppose we write 
+\[
+\overline{Z}_N = \mathbb{E}[Z] + \xi
+\]
+where \(\xi\) represents a non zero deviation from the true mean, then for sufficiently small deviations \(|\xi| \ll |\bar{z}|\) by the central limit theoreom we have a Gaussian centred on \(\mathbb{E}{[Z]}\) with variance \(\mathrm{Var}[Z]\) that describes the behaviour of the empirical mean. Analgously if the deviations decay with \(N\) such that  \(\xi = O(1/ \sqrt{N})\) then we can have \(\epsilon \idef  \sqrt{N} \xi\) which will be normally distributed with zero mean and variance \(\mathrm{Var}[Z]\).
+</p>
+
+<p>
+But what about larger deviations? or for a general \(\overline{Z}_N = z\)? how do their probabilities change as \(N \to \infty\),  
+</p>
+
+<div class="todo" id="org557be5b">
+<ul class="org-ul">
+<li>Consider a biased die where you don't know the underlying probablities.</li>
+<li>You can only compute emperical means</li>
+<li>You can also in a controlled manner make it more biased</li>
+</ul>
+
+</div>
+
+
+<p>
+However, one may ask:
+&gt; <b>How unlikely is it that the average outcome deviates from 3.5, e.g. \(\bar{Z}_n = 5\)?</b>
+</p>
+
+<p>
+Large deviation theory states that these probabilities decay exponentially,
+\[
+\mathbb{P}(\bar{Z}_n \approx z) \asymp \ee^{-n I(z)},
+\]
+where \(I(z)\) is the <b><b>rate function</b></b> — it quantifies the exponential cost of observing an atypical mean \(z\).
+</p>
+</div>
+</div>
+<div id="outline-container-orgb1fe8e4" class="outline-3">
+<h3 id="orgb1fe8e4"><span class="section-number-3">1.2.</span> The tilted (unfair) die</h3>
+<div class="outline-text-3" id="text-1-2">
+<p>
+Now consider a mechanism that allows us to bias the die in a controlled way.
+We define a <b>tilted measure</b> depending on a control parameter \(\lambda\):
+\[
+p_{\lambda}(z) =
+\frac{\ee^{\lambda z}}{Z(\lambda)}\, p(z),
+\qquad
+Z(\lambda) = \sum_{z} \ee^{\lambda z} p(z).
+\]
+Here \(\lambda\) is a <b>tilt</b> or <b>field</b> that makes large outcomes more (for \(\lambda > 0\)) or less (for \(\lambda < 0\)) likely.
+</p>
+
+<p>
+The expectation under this biased law is
+\[
+\bar{z}(\lambda)
+= \mathbb{E}_{p_\lambda}[Z]
+= \frac{\rmd A(\lambda)}{\rmd \lambda},
+\quad
+A(\lambda) = \ln Z(\lambda)
+= \ln \mathbb{E}_{p}[\ee^{\lambda Z}],
+\]
+where \(A(\lambda)\) is the <b><b>scaled cumulant generating function</b></b> (SCGF).  
+It tells us how the mean responds to an imposed bias \(\lambda\) — the “response curve” of the system.
+</p>
+</div>
+</div>
+<div id="outline-container-orgc60ab1e" class="outline-3">
+<h3 id="orgc60ab1e"><span class="section-number-3">1.3.</span> Change of measure and inference</h3>
+<div class="outline-text-3" id="text-1-3">
+<p>
+The tilted distribution \(p_\lambda\) is related to the original one by the exponential change of measure
+\[
+\frac{p_\lambda(z)}{p(z)} = \frac{\ee^{\lambda z}}{Z(\lambda)}.
+\]
+Under this new measure, outcomes that were <b>rare</b> under \(p\) can become <b>typical</b>.  
+Hence, the tilt allows us to explore the tails of the original distribution as if we were sampling them directly.
+</p>
+
+<p>
+If we can experimentally control \(\lambda\) and measure \(\bar{z}(\lambda)\),
+then all the statistical information about the unknown \(p(z)\) is encoded in \(A(\lambda)\).
+</p>
+</div>
+</div>
+<div id="outline-container-org57d5992" class="outline-3">
+<h3 id="org57d5992"><span class="section-number-3">1.4.</span> Dual viewpoints</h3>
+<div class="outline-text-3" id="text-1-4">
+<p>
+We can look at the same system in two equivalent ways:
+</p>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Viewpoint</th>
+<th scope="col" class="org-left">Question</th>
+<th scope="col" class="org-left">Object</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left"><b><b>Microcanonical</b></b></td>
+<td class="org-left">How unlikely is it to observe a mean \(z\) under the unbiased measure?</td>
+<td class="org-left">Rate function \(I(z)\)</td>
+</tr>
+
+<tr>
+<td class="org-left"><b><b>Canonical</b></b></td>
+<td class="org-left">For what tilt \(\lambda\) does this \(z\) become typical?</td>
+<td class="org-left">SCGF \(A(\lambda)\)</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+They are <b><b>Legendre–Fenchel duals</b></b>:
+\[
+A(\lambda) = \sup_{z} \{ \lambda z - I(z) \},
+\qquad
+I(z) = \sup_{\lambda} \{ \lambda z - A(\lambda) \}.
+\]
+This duality expresses the equivalence between
+conditioning on an outcome \(z\) and reweighting the measure by \(\lambda\).
+</p>
+</div>
+</div>
+<div id="outline-container-org11a74d1" class="outline-3">
+<h3 id="org11a74d1"><span class="section-number-3">1.5.</span> Physical interpretation</h3>
+<div class="outline-text-3" id="text-1-5">
+<p>
+In thermodynamic language, \(\lambda\) acts like an external field (e.g. temperature, pressure),
+and \(z\) is its conjugate observable (energy, volume, etc.).
+The Legendre transform switches between <b>field–controlled</b> and <b>constraint–controlled</b> ensembles:
+</p>
+<ul class="org-ul">
+<li>\(A(\lambda)\) measures how the system <b><b>responds</b></b> to an applied field (canonical view).</li>
+<li>\(I(z)\) measures how <b><b>rare</b></b> it is for the system to realise a constraint (microcanonical view).</li>
+</ul>
+
+<p>
+In this sense, the LDP provides a bridge between the <b>response of a system to a bias</b>
+and the <b>rarity of fluctuations</b> under its natural dynamics.
+</p>
+</div>
+</div>
+<div id="outline-container-org9ec6d2f" class="outline-3">
+<h3 id="org9ec6d2f"><span class="section-number-3">1.6.</span> Summary</h3>
+<div class="outline-text-3" id="text-1-6">
+<p>
+The fair and tilted die serve as the static prototype of large deviation duality:
+</p>
+<ul class="org-ul">
+<li>Tilting by \(\ee^{\lambda z}\) corresponds to changing the measure to make rare outcomes typical.</li>
+<li>The log-partition function \(A(\lambda)\) captures how the mean responds to the tilt.</li>
+<li>The rate function \(I(z)\) quantifies the cost of seeing that mean without any tilt.</li>
+<li>The Legendre transform \(I(z) = \sup_\lambda [\lambda z - A(\lambda)]\) links the two.</li>
+</ul>
+
+<p>
+This same structure — bias, response, and duality — reappears in the path-space LDP for stochastic processes,
+where \((z,\lambda)\) are replaced by \((\dot{x},p)\) and \((A,I)\) by \((\mathcal{H},L)\).
+</p>
+
+
+
+
+
+
+<p>
+Large deviation theory allows one to study the behaviour of random variable away from the typical mean. Colloquially speaking if small deviations (from the mean) are characteristic of sampling values in the centre probability of the probability distribution, or in a small neighboured around the mean, large deviations are exactly the opposite. They manifest from sampling values that exisit in the tails of the distribution. However, the statements we make are asymptotic and do not capture sub-exponential behaviour. To make this more precise consider a family of random variables parameterised by \(N\) denoted by \(X^{(N)}\), the statements we make using large deviation theory are restricted to objects of the form 
+</p>
+\begin{equation}
+\label{org65d5c29}
+\lim_{N \to \infty}\frac{1}{N} \ln\mathbb{E}_{X^{(N)}} [ f(X^{(N)})], 
+\end{equation}
+<p>
+where \(\mathbb{E}_{X^{(N)}} [\cdot]\) is taken to mean the expectation w.r.t the measure of \(X^{(N)}\). Obviously if we have 
+</p>
+\begin{equation}
+\label{org6fe90cc}
+\mathbb{E}_{X^{(N)}} [ g(X^{(N)})] = \mathrm{e}^{N I(x)} A_{0}(x) + A_{1}(x)
+\end{equation}
+<p>
+where \(A_{i}(x) = o(\mathrm{e}^{N x})\), then it is easy to see heuristically that 
+</p>
+\begin{equation}
+\label{org95cc0c3}
+\begin{aligned}
+\lim_{N \to \infty}\frac{1}{N} \ln\mathbb{E}_{X^{(N)}} [ f(X^{(N)})] &=  
+\lim_{N \to \infty}  
+\frac{1}{N}
+\left\{
+\ln \mathrm{e}^{N I(x)} + \ln A_{0}(x) + \ln{\left[1 + \mathrm{e}^{-N I(x)} \frac{A_1(x)}{A_0(x)}\right]} \right\}, \\
+&= I(x),
+\end{aligned}
+\end{equation}
+<p>
+thus any subexponential behaviour are completely suppressed. The aim of this introduction is to establish the existence and properties of the function \(I(x)\) and show that under appropriate conditions that it is equivalent to 
+</p>
+\begin{equation}
+\label{org087c3a7}
+\lim_{N \to \infty}\frac{1}{N} \ln\mathbb{E}_{X^{(N)}} [ f(X^{(N)})] = I(x).
+\end{equation}
+
+<p>
+<b>Notation</b>: Occasionally the subscript notation to indicate the measure with respect to which expectation and probabilities are take may at time be omitted when it is obvious, e.g. \(\mathbb{P}_{X}[X \in A] = \mathbb{P}[X  \in A]\), similarly \(\mathbb{E}_{X}[X] = \mathbb{E}[X]\).
+</p>
+</div>
+</div>
+<div id="outline-container-org25eef04" class="outline-3">
+<h3 id="org25eef04"><span class="section-number-3">1.7.</span> Sum of i.i.d variables (Cramer's Theorem)</h3>
+<div class="outline-text-3" id="text-1-7">
+<p>
+Let us start with a simple example. Let \(Y_1, Y_2, \cdots Y_N\) be i.i.d. random variables on \(\mathbb{R}^d\), and let
+</p>
+
+\begin{equation}
+X^{(N)} = \frac{1}{N}\sum^{N}_{i = 1} Y_i,
+\end{equation}
+
+<p>
+be the random variable that we wish to study as \(N \to \infty\). Specifically let us consider the probability
+</p>
+\begin{equation}
+\mathbb{P}_{X^{(N)}}[X^{(N)} \in A]\quad \forall A \subset \mathbb{R}^{d},
+\end{equation}
+<p>
+our aim is to bound this probability to yeild concentration inequalities. The inequalities we wish to establish is stated formally in the following theorem.
+</p>
+<div class="theorem" id="org92418b1">
+<p>
+Let \(Y_1, Y_2, \cdots Y_N\) be i.i.d. random variables on \(\mathbb{R}^d\), and let
+</p>
+\begin{equation}
+\label{org68358f9}
+X^{(N)} = \frac{1}{N}\sum^{N}_{i = 1} Y_i,
+\end{equation}
+<p>
+be the (random) sample mean. Then the probability \(\mathbb{P}[X^{{(N)}} \in A]\) satisfies the inequalities
+</p>
+\begin{equation}
+\label{org210d283}
+-\inf_{x \in A^{\circ}} I(x)
+\leq \liminf_{N \to \infty} \frac{1}{N} \ln \mathbb{P}[X^{(N)} \in A]
+\leq \lim_{N \to \infty} \frac{1}{N} \ln \mathbb{P}[X^{(N)} \in A],
+\end{equation}
+<p>
+and
+</p>
+\begin{equation}
+\label{orgf7a24d8}
+ -\inf_{x \in \bar{A}} I(x)
+\geq \limsup_{N \to \infty} \frac{1}{N} \ln \mathbb{P}[X^{(N)} \in A]
+\geq \lim_{N \to \infty} \frac{1}{N} \ln \mathbb{P}[X^{(N)} \in A],
+\end{equation}
+<p>
+where \(I: \mathbb{R}^{d} \mapsto [0, \infty)\) is a lower semicontinuous function, \(A^{\circ}\) is the interior of \(A\) and \(\bar{A}\) is the closure of \(A\).
+</p>
+
+</div>
+<p>
+In order to prove <a href="#org92418b1">No description for this link</a> we need the following lemmas.
+</p>
+<div class="lemma" id="org8022474">
+<p>
+Let \(\mathbb{P}_{X^{(N)}}\) be the law of the random variable \(X^{{(N)}} \in \mathbb{R}^{d}\) and take \(\mathrm{e}^{N \langle  \lambda, X^{(N)} \rangle}\) to be the tilted and scaled variable with the law \(\mathbb{P}^{(\lambda)}_{X^{(N)}}\) where  \(\lambda \in \mathbb{R}^{d}\) and \(\langle \cdot, \cdot \rangle\) being the Euclidean inner product. Then the change of the measure of the tilted variable w.r.t to the untilted counterpart is given by the Radon-Nikodym derivative
+</p>
+\begin{equation}
+\label{org4e77999}
+\frac{\mathrm{d}\mathbb{P}^{(\lambda)}_{X^{(N)}}}{\mathrm{d}\mathbb{P}^{\phantom{(\lambda)}}_{X^{(N)}}} = \mathrm{e}^{N {\left[ \langle \lambda, X^{(N)} \rangle - \Lambda(\lambda) \right]}},
+\end{equation}
+<p>
+where \(\Lambda (\lambda) \equiv \ln \mathcal{M}_{Y}(\lambda)\).
+</p>
+
+</div>
+<p>
+<a href="#org8022474">No description for this link</a> may at first seem artificial but the reasoning behind is such that we will effectively compute the probability \(\mathbb{P}_{X^{(N)}}[X^{(N)} \in A]\) by using the tilted measure using an appropriate choice of \(\lambda\) such that under the tilt \(\mathbb{P}^{(\lambda)}_{X^{(N)}}[X^{(N)} \in A] \to 1\). The proof of the lemma uses the standard change of measure property.
+</p>
+
+<div class="proof" id="org9a70cae">
+<p>
+The proof trivally follows from using Radon-Nikodym with the change of variable \(Y = \mathrm{e}^{N\langle \lambda, X \rangle}\).
+</p>
+\begin{equation}
+\label{org77cdb19}
+\begin{aligned}
+\frac{\mathrm{d}\mathbb{P}_{Y}}{\mathrm{d}\mathbb{P}_{X}} = 
+\frac{\mathrm{d}\mathbb{P}^{(\lambda)}_{X}}{\mathrm{d}\mathbb{P}_{X}} 
+&= \frac{\mathrm{e}^{N\langle \lambda, X^{(N)} \rangle}}{\mathbb{E}_{X}[\mathrm{e}^{N\langle \lambda,  X^{(N)} \rangle}]} \\
+&= \frac{\mathrm{e}^{N\langle \lambda, X^{(N)} \rangle}}{\mathbb{E}_{Y}[\mathrm{e}^{N\langle \lambda, \sum^{N}_{i = 1} Y_i \rangle }]}\\
+&= \frac{\mathrm{e}^{N\langle \lambda, X^{(N)} \rangle}}{(\mathbb{E}_{Y}[\mathrm{e}^{\langle \lambda, Y \rangle}])^N} \\
+&= \frac{\mathrm{e}^{N\langle \lambda, X^{(N)} \rangle}}{\left[ \mathcal{M}_{Y}(\lambda)\right]^{N}} \\
+&= \mathrm{e}^{N \left[ \langle \lambda,  X^{(N)} - \Lambda(\lambda) \rangle \right]}.
+\end{aligned}
+\end{equation}
+
+</div>
+
+<p>
+We will establish the lower bound using the following lemma.
+</p>
+<div class="lemma" id="org8ae5673">
+<p>
+Let \(F \subset \mathbb{R}^{d}\) be open, then the probability \(\mathbb{P}[X^{(N)} \in F]\) satisfies the bound
+</p>
+\begin{equation}
+\label{org27312d5}
+-\inf_{x \in F} I(x)
+\leq \liminf_{N \to \infty} \frac{1}{N} \ln \mathbb{P}[X^{(N)} \in F]
+\leq \lim_{N \to \infty} \frac{1}{N} \ln \mathbb{P}[X^{(N)} \in F].
+\end{equation}
+<p>
+where \(I: \mathbb{R}^{d} \mapsto [0, \infty)\) is a lower semicontinuous function.
+</p>
+
+</div>
+<p>
+The proof of <a href="#org8ae5673">No description for this link</a> involves first constructing a measurable set \(B \subset F\) such that, in terms of events, the inclusion \({\left\{ X^{(N)} \in B\right\}} \subset {\left\{ X^{(N)} \in F\right\}}\).
+</p>
+
+<div class="proof" id="org7fd7b62">
+<p>
+Choose \(a \in F\) and \(\delta > 0\) , and take construct the ball
+\(B(a, \delta)= {\left\{ \mathbb{R}^{d} \,|\, ||x - a|| < \delta  \right\}}\), where \(||x|| = \sqrt{\langle x, x\rangle} \subset A\) is the Euclidean norm. Then we have
+</p>
+\begin{equation}
+\label{orgfe6f991}
+\begin{aligned}
+\mathbb{P}{[ X^{(N)} \in F ]} &> \mathbb{P}{[ X^{(N)} \in B(a, \delta)]} \\
+&= \int_{\mathbb{R}^{d}} \mathbb{1}_{B(a, \delta)}(x)\, \mathrm{d}\mathbb{P}_{X^{(N)}}(x) \\
+&= \mathrm{e}^{N \Lambda(\lambda)} \int_{\mathbb{R}^{d}} \mathbb{1}_{B(a, \delta)}(x) \,
+\mathrm{e}^{-N\langle \lambda, x \rangle}
+\mathrm{d}\mathbb{P}^{\lambda}_{X^{(N)}}(x).
+\end{aligned}
+\end{equation}
+<p>
+To bound the integrand we employ Cauchy-Schwarz on the inner product
+</p>
+\begin{equation}
+\label{org93ddab8}
+\begin{aligned}
+{\left< \lambda, x \right>} &= 
+{\left< \lambda, x - a \right>}
++{\left< \lambda, a \right>} 
+\leq {\left< \lambda, a \right>} + ||\lambda||||x - a|| 
+\leq {\left< \lambda, a \right>} + ||\lambda||\delta,
+\end{aligned}
+\end{equation}
+<p>
+which alllows us to obtain 
+</p>
+\begin{equation}
+\label{orgad66835}
+\begin{aligned}
+\mathbb{P}{\left[ X^{(N)} \in B(a, \delta)\right]} 
+&\geq \mathrm{e}^{-N \left\{ \left< \lambda, a \right> - \Lambda(\lambda) + ||\lambda||\delta \right\}}
+\, \mathbb{P}_{X^{(N)}}^{\lambda}[X^{(N)} \in B(a, \delta)], \\
+&\geq \mathrm{e}^{-N \sup_{\lambda} \left\{ \left< \lambda, a \right> - \Lambda(\lambda)\right\} + ||\lambda^{*}||\delta} \, \mathbb{P}_{X^{(N)}}^{\lambda^{{*}}}[X^{(N)} \in B(a, \delta)], \\
+\end{aligned}
+\end{equation}
+<p>
+where \(\lambda^* = \text{argsup}_{\lambda}{\left\{ \left<\lambda, x \right> - \Lambda(\lambda) \right\}}\).
+Defining 
+</p>
+\begin{equation}
+\label{org99b521f}
+I(x) = \sup_{\lambda}{\left\{ \left< \lambda, x \right> - \Lambda(\lambda) \right\}}
+\end{equation} 
+<p>
+as the rate function and taking the log-limit, we obtain 
+</p>
+\begin{equation}
+\label{org85808f7}
+\begin{aligned}
+ \lim_{N \to \infty} \frac{1}{N} \ln \mathbb{P}(X^{(N)} \in F)
+&\geq \liminf_{N \to \infty} \frac{1}{N} \ln \mathbb{P}(X^{(N)} \in F) \\
+&\geq - \sup_{\lambda}{\left\{  \left< \lambda, a \right> - \Lambda(\lambda) \right\}} + \lim_{N \to \infty} \frac{1}{N}
+\mathbb{P}_{X^{(N)}}^{\lambda^{*}}[X^{(N)} \in B(a, \delta)], \\
+&\geq - I(a) 
+\end{aligned}
+\end{equation}
+<p>
+Using L.L.N. it is possible to show that
+</p>
+\begin{equation}
+\label{orgc174ca6}
+\text{as} \quad \lambda \to \lambda^* \quad 
+\mathbb{P}_{X^{(N)}}^{\lambda^{*}}[X^{(N)} \in B(a, \delta)] \to 1,
+\end{equation}
+<p>
+however, for the proof it only needs to be shown that it is some
+finite value which under the log-limit is zero. Since \(a \in A\) is arbitrary and because \(I\) is lower semicontinuous, we can tighten the bound by taking the infimum to obtain 
+</p>
+\begin{equation}
+\label{org7ef860a}
+\begin{aligned}
+ \lim_{N \to \infty} \frac{1}{N} \ln \mathbb{P}(X^{(N)} \in F)
+&\geq \liminf_{N \to \infty} \frac{1}{N} \ln \mathbb{P}(X^{(N)} \in F) \\
+&\geq - \sup_{\lambda}{\left\{  \left< \lambda, a \right> - \Lambda(\lambda) \right\}} + \lim_{N \to \infty} \frac{1}{N}
+\mathbb{P}_{X^{(N)}}^{\lambda^{*}}[X^{(N)} \in B(a, \delta)], \\
+&\geq - \inf_{x \in F}(x) 
+\end{aligned}
+\end{equation}
+
+</div>
+
+<p>
+The upperbound is stated in the following lemma.
+</p>
+<div class="lemma" id="org87f5226">
+<p>
+Let \(G \subset \mathbb{R}^{d}\) be close, then the probability \(\mathbb{P}[X^{(N)} \in G]\) satisfies the bound
+</p>
+\begin{equation}
+\label{org21e2143}
+-\inf_{x \in G} I(x)
+\geq \limsup_{N \to \infty} \frac{1}{N} \ln \mathbb{P}[X^{(N)} \in G]
+\geq \lim_{N \to \infty} \frac{1}{N} \ln \mathbb{P}[X^{(N)} \in G].
+\end{equation}
+<p>
+where \(I: \mathbb{R}^{d} \mapsto [0, \infty)\) is a lower semicontinuous function.
+</p>
+
+</div>
+<div class="proof" id="org2a013ab">
+\begin{align}
+\mathbb{P}_{X^{(N)}}[X^{(N)} \in G] &= \int_{\mathbb{R}^{d}} \mathbb{1}_{G}(x) \mathrm{d}\mathbb{P}_{X^{(N)}}(x), \\
+ &= \mathrm{e}^{N \Lambda(\lambda)}\int_{\mathbb{R}^{d}}\mathrm{e}^{-N \left< \lambda,  x \right>} \mathbb{1}_{G}(x) \mathrm{d}\mathbb{P}^{\lambda}_{X^{(N)}}(x),\\
+ &\leq \mathrm{e}^{N \Lambda(\lambda)}
+\mathbb{E}^{\lambda}_{X^{(N)}}[\mathbb{1}_{G}(X^{(N)}) \mathrm{e}^{-N \inf_{x \in G}\{ \left< \lambda,  x \right> \}}], \\
+ &\leq \mathrm{e}^{N \Lambda(\lambda)}
+\mathbb{E}^{\lambda}_{X^{(N)}}[\mathbb{1}_{G}(X^{(N)}) \mathrm{e}^{-N \inf_{x \in G}\{ \left< \lambda,  x \right> \}}], \\
+ &\leq \mathrm{e}^{-N \left[ \inf_{x \in G}\{ \left< \lambda,  x \right> \} - \Lambda(\lambda) \right]}
+\mathbb{P}^{\lambda}_{X^{(N)}}[X^{(N)} \in G] \\
+ &\leq \mathrm{e}^{-N \left[ \inf_{x \in G}\sup_{\lambda}\{ \left< \lambda,  x \right>  - \Lambda(\lambda) \} \right]}
+\mathbb{P}^{\lambda^{*}}_{X^{(N)}}[X^{(N)} \in G], \\
+\end{align}
+
+<p>
+Taking the log limit yeilds
+</p>
+\begin{equation}
+\label{orgd6601b4}
+\lim_{N \to \infty} \frac{1}{N} \ln \mathbb{P}[X^{(N)} \in G] \leq -\inf_{x \in G} I(x)
+\end{equation}
+
+</div>
+
+<div class="proof" id="org17af231">
+<p>
+The proof is established by taking setting \(F = A^{\circ}\) in <a href="#org8ae5673">No description for this link</a> and \(G =\bar{A}\) in <a href="#org87f5226">No description for this link</a>.
+</p>
+
+</div>
+
+<div class="remark" id="org68f1037">
+<p>
+One can also derive Cramér’s theorem as a special case of the Gärtner–Ellis theorem.
+</p>
+
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-orgf65001e" class="outline-2">
+<h2 id="orgf65001e"><span class="section-number-2">2.</span> Cramers for 1D</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+In this seciton is a more verbose derivation of the proof in 1D
+</p>
+\begin{equation}
+\label{orgb8fb972}
+%\label{eq-exp-cg-me}
+\frac{\mathrm{d}\mathbb{P}^{(\lambda)}_{X}(x)}{\mathrm{d}\mathbb{P}_{X}(x)} = \frac{\mathrm{e}^{\lambda N X_N}}{\mathbb{E}_{X}[e^{\lambda N X_N}]}
+= \frac{\mathrm{e}^{\lambda N X_N}}{\mathbb{E}_{Y}[e^{\lambda \sum^{N}_{i = 1} Y_i}]}
+= \frac{\mathrm{e}^{\lambda N X_N}}{(\mathbb{E}_{Y}[e^{\lambda Y}])^N}
+= \frac{\mathrm{e}^{\lambda N X_N}}{\mathcal{M}^N_{Y}(\lambda)}
+= \mathrm{e}^{N \left[ \lambda X_N - \Lambda(\lambda) \right]},
+\end{equation}
+
+<p>
+where \(\Lambda (\lambda) \equiv \ln \mathcal{M}_{Y}(\lambda)\). Under this change of measure we can bound the probability \(\mathbb{P}(X_N \in F)\) where \(F \subset R\) is closed, via
+</p>
+
+\begin{equation}
+\label{org36de99e}
+\begin{aligned}
+%\label{eq-prob}
+\mathbb{P}(X_N \in F) &= \int \mathbb{1}_{A}(X_N)\, \mathrm{d}\mathbb{P}_{X}(X_N), \\
+ &= \mathcal{M}^{N}_{Y}(\lambda)\int \mathbb{1}_{A}(X_N) \mathrm{e}^{-\lambda N X_N}  \, \mathrm{d}\mathbb{P}^{(\lambda)}_{X}(x), \\
+ &= \mathrm{e}^{N \Lambda{(\lambda)}}\int \mathbb{1}_{A}(X_N)  \mathrm{e}^{-\lambda N X_N}  \, \mathrm{d}\mathbb{P}^{(\lambda)}_{X}(x), \\
+ &= \mathrm{e}^{N \Lambda{(\lambda)}}\mathbb{E}^{(\lambda)}_X \left[ \mathbb{1}_{A}(X_N)  \mathrm{e}^{-\lambda N X_N} \right]  \\
+ &\leq \mathrm{e}^{N \Lambda{(\lambda)}}\mathbb{E}^{(\lambda)}_X \left[ \mathrm{e}^{-\lambda N X_N} \right],  \\
+ &\leq \mathrm{e}^{N \Lambda{(\lambda)}}\mathbb{E}^{(\lambda)}_X \left[ \mathrm{e}^{-\lambda N \inf_{x \in F} x } \right],  \\
+ &\leq \mathrm{e}^{- N   \inf_{x \in F} \left\{ \lambda x  -  \Lambda{(\lambda)} \right\} }.
+\end{aligned}
+\end{equation}
+
+<p>
+We can obtain a tighter bound by taking the smallest value on the right hand side
+</p>
+\begin{equation}
+\label{org3195770}
+\begin{aligned}
+%\label{eq-prob-upper-tight}
+\mathbb{P}(X_N \in F) &\leq \mathrm{e}^{- N   \inf_{x \in F} \left\{ \lambda x  -  \Lambda{(\lambda)} \right\} }, \\
+ &\leq \mathrm{e}^{- N   \inf_{x \in F}\sup_{\lambda} \left\{ \lambda x  -  \Lambda{(\lambda)} \right\}}. \\
+\end{aligned}
+\end{equation}
+
+<p>
+By defining the rate function \(I(x) = \sup_{\lambda}{\left\{ x \lambda - \Lambda(\lambda) \right\}}\) we obtain the upper bound corresponding to the LDP principle
+</p>
+
+\begin{equation}
+\label{org8aa5e45}
+\begin{aligned}
+%\label{eq-prob-upper-tight-ldp}
+\limsup_{N \to \infty} \frac{1}{N} \ln \mathbb{P}(X_N \in F)
+&\leq {- \inf_{x \in F}\sup_{\lambda} \left\{ \lambda x  -  \Lambda{(\lambda)} \right\} }, \\
+ &\leq {-    \inf_{x \in F} I(x)}. \\
+\end{aligned}
+\end{equation}
+
+<p>
+Bounding from below is a bit more involved. Let \(G \in R\) be an open set and take \(a \in G\) and define the open ball \(B_{\epsilon}(a) =
+{\left\{ x : |x - a| < \epsilon \right\}} \subset G\) then
+</p>
+
+\begin{equation}
+\label{orgca2264e}
+\begin{aligned}
+%\label{eq-bounding-lower}
+\mathbb{P}(X_N \in G) &\geq \mathbb{P}(X_N \in B_{\epsilon}(a)),  \\
+ &\geq \mathrm{e}^{N \Lambda{(\lambda)}}\mathbb{E}^{(\lambda)}_{X}[\mathrm{e}^{-\lambda N X_N} \mathbb{1}_{B_{\epsilon}(a)}(X_N)],  \\
+ &\geq \mathrm{e}^{N \Lambda{(\lambda)}}\mathbb{E}^{(\lambda)}_{X}[\mathrm{e}^{-\lambda N (a + \epsilon)} \mathbb{1}_{B_{\epsilon}(a)}(X_N)],  \\
+ &\geq \mathrm{e}^{-N [\lambda (a + \epsilon) - \Lambda{(\lambda)}]}  \mathbb{E}^{(\lambda)}_{X}[\mathbb{1}_{B_{\epsilon}(a)}(X_N)],  \\
+ &\geq \mathrm{e}^{-N [\lambda (a + \epsilon) - \Lambda{(\lambda)}]}  [1 - P^{(\lambda)}_{X}(X_N \notin B_{\epsilon}(a))].
+\end{aligned}
+\end{equation}
+
+<p>
+Taking the log of both sides we obtain
+</p>
+
+\begin{equation}
+\label{org3e48872}
+\begin{aligned}
+%\label{eq-prob-lower-tight-ldp}
+\liminf_{N \to \infty} \frac{1}{N} \ln \mathbb{P}(X_N \in G)
+&\geq -{\left[ \lambda (a + \epsilon) - \Lambda(\lambda) \right]}  + \lim_{N \to \infty} \frac{1}{N} {\ln\left[ 1 - P^{(\lambda)}_{X}(X_N \notin B_{\epsilon}(a))\right]} \\
+&\geq -{\left[ \lambda (a + \epsilon) - \Lambda(\lambda) \right]}  + \lim_{N \to \infty} \frac{1}{N} {\ln \left[ 1 - \mathrm{e}^{-c N} \right]} \quad \text{by exponential tightness}\\
+&\geq -{\left[ \lambda (a + \epsilon) - \Lambda(\lambda) \right]} \\ 
+&\geq -\sup_{\lambda}{\left\{ \lambda (a + \epsilon) - \Lambda(\lambda) \right\}} \\ 
+&\geq -I(a + \epsilon) \\
+&\geq  -\inf_{x \in G}I(x) \quad \text{by continuity of $I$, and since $a + \epsilon \in G$}
+\end{aligned}
+\end{equation}
+</div>
+<div id="outline-container-orge50f63c" class="outline-3">
+<h3 id="orge50f63c"><span class="section-number-3">2.1.</span> Examples</h3>
+<div class="outline-text-3" id="text-2-1">
+</div>
+<div id="outline-container-orgbfd5a1e" class="outline-4">
+<h4 id="orgbfd5a1e"><span class="section-number-4">2.1.1.</span> Sum of Gaussian variables</h4>
+<div class="outline-text-4" id="text-2-1-1">
+<p>
+Let \(Y \sim \mathcal{N}(\mu, \sigma^2)\) with
+\[
+\mathcal{M}_{Y}(\lambda) = \exp\!\left(\lambda \mu + \tfrac12 \sigma^2 \lambda^2\right)
+\implies
+\Lambda(\lambda) = \lambda\mu + \tfrac12\sigma^2 \lambda^2.
+\]
+</p>
+
+<p>
+Consider
+</p>
+\begin{equation}
+\label{org7e11715}
+%\label{eq-dist-x}
+X_N = \sum_{i = 1}^{N} Y_i.
+\end{equation}
+
+<p>
+For large \(N\),
+\[
+\mathbb{P}(X_N \in A) \sim \int_{A} \mathrm{e}^{-N I(x)} \mathrm{d}x,
+\]
+with
+\[
+I(x) = \sup_{\lambda}\{\lambda(x-\mu) - \tfrac12\sigma^2\lambda^2\} = \frac{(x-\mu)^2}{2\sigma^2}.
+\]
+Hence
+\[
+\mathbb{P}(X_N \in A) \sim \frac{1}{\sqrt{2\pi}\sigma}\int_A \exp\!\left(-\frac{N(x-\mu)^2}{2\sigma^2}\right)\,dx,
+\]
+so \(X_N \sim \mathcal{N}(\mu, \sigma^2/N)\) and coincides with the CLT scaling.
+</p>
+</div>
+</div>
+<div id="outline-container-org73cfe6b" class="outline-4">
+<h4 id="org73cfe6b"><span class="section-number-4">2.1.2.</span> Sum of Bernoulli variables</h4>
+<div class="outline-text-4" id="text-2-1-2">
+<p>
+Let \(Y \in \{0,1\}\) with \(\mathbb{P}(Y=1)=p\), and
+</p>
+\begin{equation}
+\label{orgd3bde86}
+%\label{eq-sum-ber}
+X_N = \sum_{i=1}^N Y_i.
+\end{equation}
+
+<p>
+Then \(\mathcal{M}_Y(\lambda) = 1 + p(\mathrm{e}^\lambda-1)\), so \(\Lambda(\lambda)=\ln(1+p(\mathrm{e}^\lambda-1))\) and
+\[
+I(x) = (x-1)\ln\frac{1-p}{1-x} + x\ln\frac{x}{p}.
+\]
+Thus, for large \(N\),
+\[
+\mathbb{P}(X_N \in A) = \int_A \mathrm{e}^{-N I(x)}\,dx.
+\]
+Expanding about \(x=p\):
+\[
+I(x) \simeq \frac{(x-p)^2}{2p(1-p)} + \mathcal{O}\big((x-p)^3\big),
+\]
+so locally \(X_N \approx \mathcal{N}\!\big(p,\,p(1-p)/N\big)\) but the global tail is asymmetric (not captured by CLT).
+</p>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-org74828d7" class="outline-2">
+<h2 id="org74828d7"><span class="section-number-2">3.</span> <span class="todo TODO">TODO</span> Stochastic process (taster): i.i.d increments</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+Let \(Y_k \in \mathbb{R}^d\) for \(k \in \mathbb{N}\) be i.i.d.s and consider the random variable
+</p>
+
+\begin{equation}
+\label{orgd1ec0ce}
+%\label{eq-x-stoch-iid}
+X^{N}_t = \frac{1}{N}\sum_{k = 1}^{\lfloor{N t}\rfloor} Y_k, \quad X^{N}_0 = 0
+\end{equation}
+
+<p>
+where w.l.o.g we take \(t \in [0, 1]\). For \(t = 1\), we have
+</p>
+
+\begin{equation}
+\label{org2118fd6}
+%\label{eq-x-stoch-iid-t1}
+X^{N}_t = \frac{1}{N}\sum_{k = 1}^{N} Y_k,
+\end{equation}
+
+<p>
+which satisfies and LDP with speed \(N\) with the rate function
+</p>
+
+\begin{equation}
+\label{orgf49b6c9}
+%\label{eq-x-stoch-iid-rate-t1}
+L(x) = \sup_{\lambda} {\left\{ x \cdot \lambda - \Lambda(p) \right\}},
+\end{equation}
+
+<p>
+Consider linear interpolation between the jumps, yields the polynomial approximation to the discrete path,
+</p>
+
+\begin{equation}
+\label{org645d15f}
+%\label{eq-poly-x-path}
+\tilde{X}^N_t = X^N_t + (t - N^{-1{\lfloor Nt\rfloor} ) Y_{\lfloor Nt\rfloor} + 1}
+\end{equation}
+
+<p>
+Consider a partition \(\Pi = {\left\{ t_0, \cdots t_m \right\}}\) where
+</p>
+
+\begin{equation}
+\label{org15bcb95}
+%\label{eq-partition}
+0 = t_0 < t_1  < \cdots < t_m = 1,
+\end{equation}
+
+<p>
+such that we have the increments between two time instances
+</p>
+
+\begin{equation}
+\label{orgcf8d4f6}
+\begin{aligned}
+%\label{eq-vel-def}
+V^N_{t_i} &\equiv X^N_{t_i} - X^N_{t_{i - 1}}  \\
+ &= \frac{1}{N}\left(( \sum_{k = 1}^{{ \lfloor N t_i \rfloor}} Y_k - \sum_{k = 1}^{{\lfloor N t_{t_{i - 1 \rfloor}}}} Y_k  \right) \\
+ &= \frac{1}{N}\sum^{\floor{N (t_i - t_{i - 1})}}_{k = 1}  Y_{k + \floor{N t_{i - 1}}}.
+\end{aligned}
+\end{equation}
+
+<p>
+Consider the change of measure, where for convenience drop the superscript notation e.g. \(V^N_{t_i} = V_{t_i}\)
+</p>
+
+\begin{equation}
+\label{org29a52b9}
+\begin{aligned}
+%\label{eq-com-v}
+\frac{\mathrm{d}\mathbb{P}^{(\lambda_i)}_{V_{t_i}}(v)}{\mathrm{d}\mathbb{P}_{V_{t_i}}(v)}
+&= \frac{\mathrm{e}^{\lambda_i N V_{t_i}}}{\mathbb{E}_{V_{t_i}}[e^{\lambda N V_{t_i}}]}, \\
+&= \frac{\mathrm{e}^{\lambda_i N V_{t_i}}}{\mathbb{E}_{Y}[e^{\lambda \sum^{{\lfloor N (t_i - t_{i-1}) \rfloor}}_{k = 1} Y_k}]},  \\
+&= \frac{\mathrm{e}^{\lambda_i N V_{t_i}}}{(\mathbb{E}_{Y}[e^{\lambda Y}])^{\floor{N(t_i - t_{i -1})}}} , \\
+&= \frac{\mathrm{e}^{\lambda_i N V_{t_i}}}{\left[ \mathcal{M}_{Y}(\lambda) \right]^{N (t_i - t_{i-1})}} , \\
+&= \mathrm{e}^{N (t_i - t_{i - 1}) \left[ \lambda_i (V_{t_i} / (t_i - t_{i - 1})) - \Lambda(\lambda) \right]},
+\end{aligned}
+\end{equation}
+
+<p>
+from which it follows that the \(V^N_{t_i}\) satisfies an LDP with speed \(N\) with the rate function \((t_i - t_{i - 1})L(v / (t_i - t_{i -1}))\) where \(L(x)\) is given in \eqref{eq-x-stoch-iid-rate-t1}. Given that each time slice is independent, then we have
+</p>
+
+\begin{equation}
+\label{org733ed85}
+%\label{eq-sum-ldp}
+J_{\Pi}(x_1, \cdots, x_m) = \sum^{m}_{i = 1}(t_i - t_{i - 1}) L((x_i - x_{i-1}) / (t_i - t_{i-1})),\quad  x_0 = 0
+\end{equation}
+
+<p>
+Letting
+</p>
+
+\begin{equation}
+\label{org8ee15c0}
+%\label{eq-vi}
+v_{t_i} = \frac{x_{t_i} - x_{t_{i-1}}}{t_i - t_{i-1}}
+\end{equation}
+
+\begin{equation}
+\label{orgbda6056}
+%\label{eq-part-sum-ldp-v}
+J_{\Pi}(x_1, \cdots, x_m) = \sum^{m}_{i = 1}(t_i - t_{i - 1}) L(v_{t_i}),\quad  x_0 = 0, \quad v_{t_i} = (x_i - x_{i-1}) / (t_i - t_{i-1})
+\end{equation}
+
+<p>
+becomes the action of the interpolated path. Notice as as we take the \(m \to \infty\), this eventually becomes the integral over the path
+</p>
+
+\begin{equation}
+\label{org6e7838b}
+%\label{eq-sum-to-inter-ldp-v}
+\text{``}J_{\Pi}[x_t] = \int^t_{0} L(\dot{x}_s) \mathrm{d} s \text{''},
+\end{equation}
+
+<p>
+but \(x_t\) will need to be replaced a suitably smooth function and not a stochastic path.
+</p>
+
+<p>
+Consider a collection of sets \(A_i \in \mathbb{R}^d\), for \(i = 1 \cdots m\), and take the product of these sets \(A = A_1 \times \cdots \times A_m\).
+</p>
+
+<p>
+Consider the map
+</p>
+
+\begin{equation}
+\label{orgf3fcd27}
+%\label{eq-eval-map}
+\mathcal{E}_{\Pi} : C[0, 1] \to \mathbb{R}^{dm}, \quad \mathcal{E}_{\Pi}(f(t)) \equiv {(f(t_1), \cdots f(t_m)) \in A}
+\end{equation}
+
+<p>
+which is used to define a function space
+</p>
+
+\begin{equation}
+\label{orge66fe6c}
+%\label{eq-cylinder}
+C_{\Pi}(A) \equiv \mathcal{E}^{-1}_{\Pi}(A) = {\left\{ \varphi \in C[0, 1]\,|\, (\varphi(t_1), \cdots, \varphi(t_m)) \in A \right\}}
+\end{equation}
+
+<p>
+and define the variable which
+</p>
+
+\begin{equation}
+\label{orgfd62432}
+%\label{eq-w-def}
+W^{N}_{\Pi} \equiv \mathcal{E}_{\Pi}(X^N_t)  \in \mathbb{R}^{dm}
+\end{equation}
+
+\begin{equation}
+\label{orgf10bc00}
+%\label{eq-prob-rel}
+\mathbb{P}(X^N_t \in C_{\Pi}(A)) =
+\mathbb{P}(\mathcal{E}(X^{N}_t) \in A) =
+\mathbb{P}(W^{N}_{\Pi} \in A)
+\end{equation}
+
+<p>
+Let us define the
+</p>
+
+\begin{equation}
+\label{org8bdfcbc}
+%\label{eq-action-def}
+I_{\Pi}(\varphi) \equiv  \sum^{m}_{i = 1} \Delta t_i L{\left( \frac{1}{\Delta t_i}(\varphi(t_i) - \varphi(t_{i - 1}) ) \right)}, \quad \Delta{t_i} =  t_i - t_{i-1}, t_0 = 0
+\end{equation}
+
+<p>
+We must now show that for
+</p>
+
+\begin{equation}
+\label{orga1f2c21}
+%\label{eq-upper-ldp-path}
+ -\inf_{x \in A^{\circ}} J_{\Pi}(x)
+\leq \liminf_{N \to \infty} \frac{1}{N} \ln{\mathbb{P}[X^N_t \in C_{\Pi}(A)]}
+\leq\limsup_{N \to \infty} \frac{1}{N} \ln{\mathbb{P}[X^N_t \in C_{\Pi}(A)]}
+\leq -\inf_{x \in \bar{A}} J_{\Pi}(x)
+\end{equation}
+
+<p>
+Let \(B(x_i, \delta_i) = {\left\{ y \in \mathbb{R}^d \,|\, |x_i - y| < \delta_i \right\}} \subset \mathbb{R}^d\) be an open ball centred at \(x_i\) of radius \(\delta_i > 0\), and let \(x_i \in A_i\) and choose \(\delta\) such that \(B(x_i, \delta) \subset A_i\)
+</p>
+
+\begin{equation}
+\label{org6c9fa86}
+\begin{aligned}
+%\label{eq-per-point-prob}
+\mathbb{P}[X^N_{t_i} \in A_i,\, \forall i] &\geq \mathbb{P}[|X^N_{t_i} - x_i| < \delta_i, \forall i] \geq \mathbb{P}[X^N_{t_i} \in B(x_i, \delta_i), \forall i]
+\end{aligned}
+\end{equation}
+
+<p>
+notice that we also have
+</p>
+
+\begin{equation}
+\label{orgba1cfae}
+\begin{aligned}
+%\label{eq-prob-match}
+\mathbb{P}{\left[ X^N_t \in \prod_{i}^m B(x_i, \delta_i) \right]}
+&= \mathbb{P}[X^N_{t_i} \in B(x_i, \delta_i), \forall i] \\
+&\geq \mathbb{P}[X^{N}_{t_i} - X^{N}_{t_{i-1}} \in B(v_i, \epsilon_i), \forall i] \\
+ &= \mathbb{P}[V^N_{t_i} \in B(v_i, \epsilon_i), \forall i] \\
+ &= \mathbb{P}{\left[ V^N \in \prod_{i}^{m} B(v_i, \epsilon_i) \right]}
+\end{aligned}
+\end{equation}
+
+<p>
+where we choose \(\epsilon_i > 0\) such that \(\sum_{i = 1}^{k} \epsilon_i < \delta_k\).
+Notice in terms of event sets we have,
+</p>
+
+\begin{equation}
+\label{org52446c7}
+%\label{eq-set-inclue}
+\left\{ V^N_t \in \prod^{m}_{i=1}B(v_i, \epsilon_i) \right\} \subset
+\left\{ X^N_t \in \prod^{m}_{i=1}B(x_i, \delta_i) \right\},
+\end{equation}
+
+<p>
+that is the set of events of the trajectory being in the cylinder \(\prod_{i} B(x_i, \delta_i)\) is larger than the increments belonging in cylinder \(\prod_{i} B(v_i, \epsilon_i)\). This can be seen by considering
+</p>
+
+<p>
+\[
+</p>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">X<sup>N</sup><sub>t<sub>k</sub></sub> - x<sub>k</sub></td>
+<td class="org-left">=</td>
+</tr>
+</tbody>
+</table>
+<p>
+\lp &sum;<sup>k</sup><sub>i = 1</sub>(V<sup>N</sup><sub>t<sub>i</sub></sub> - v<sub>i</sub>) \rp
+&le;
+ &sum;<sup>k</sup><sub>i = 1</sub>\lp V<sup>N</sup><sub>t<sub>i</sub></sub> - v<sub>i</sub> \rp
+ &lt; &sum;<sub>i = 1</sub><sup>k</sup> &epsilon;<sub>i</sub>
+ &le; &delta;<sub>k</sub>,
+\]
+since this is satisfied for each \(k\), then it follows the cylinder in the increments is smaller than the cylinder in trajectory.
+</p>
+
+\begin{equation}
+\label{org6126db6}
+\begin{aligned}
+%\label{eq-lower-bound-ball-path}
+\liminf_{N \to \infty} \frac{1}{N} \ln{\mathbb{P}[X^N_t \in C_{\Pi}(A)]} &\geq
+\liminf_{N \to \infty}\frac{1}{N} \ln{\mathbb{P}[V^N_t \in B(v_1, \cdots, v_m, \epsilon_1, \cdots, \epsilon_m)]} \\
+&\geq \inf_{s \in B{v, \delta}} \sum_{k = 1}^m \Delta t_k  L(s_k  / \Delta t_k )
+\end{aligned}
+\end{equation}
+
+<p>
+The set of all absolutely continuous functions,
+</p>
+
+\begin{equation}
+\label{orgc6a70a0}
+%\label{eq-lower-ldp-path}
+\end{equation}
+
+\begin{equation}
+\label{org4751139}
+%\label{eq-ac-paths}
+\mathcal{A}_{\mathrm{c}}  = {\left\{  \psi \in C[0, 1] \,\bigg| \, \sum^{m}_{k = 1}|t_{k} - t_{k-1}| \to 0 \implies
+\sum^{m}_{k = 1}|\psi(t_{k}) - \psi(t_{k-1})|  \to 0 \right\}}
+\end{equation}
+
+<p>
+that is they are continuous almost everywhere.
+</p>
+</div>
+<div id="outline-container-org184ee25" class="outline-3">
+<h3 id="org184ee25"><span class="section-number-3">3.1.</span> Upper Bound of Cramér's Theorem (Multidimensional Case)</h3>
+<div class="outline-text-3" id="text-3-1">
+<p>
+Let \(A \subset \mathbb{R}^d\) be closed, and define the empirical mean:
+\[
+X_N := \frac{1}{N} \sum_{i=1}^N Y_i
+\]
+with \(Y_i \in \mathbb{R}^d\) i.i.d. and \(\mathbb{P}\) their common law. Let \(\lambda \in \mathbb{R}^d\), and define the tilted measure:
+\[
+\frac{d\mathbb{P}^\lambda}{d\mathbb{P}}(x) = \frac{e^{N \langle \lambda, x \rangle}}{\mathbb{E}[e^{N \langle \lambda, X_N \rangle}]} = e^{N \langle \lambda, x \rangle - N \Lambda(\lambda)},
+\]
+where the log-moment generating function is:
+\[
+\Lambda(\lambda) := \log \mathbb{E}[e^{\langle \lambda, Y_1 \rangle}]
+\]
+</p>
+
+<p>
+We can write:
+</p>
+
+\begin{equation}
+\begin{aligned}
+\mathbb{P}(X_N \in A)
+&= \int_{\mathbb{R}^d} \mathbf{1}_A(x) \, \mathrm{d}\mathbb{P}(x) \\
+&= \int_{\mathbb{R}^d} \mathbf{1}_A(x) \, \mathrm{e}^{-N \langle \lambda, x \rangle + N \Lambda(\lambda)} \, \mathrm{d}\mathbb{P}^\lambda(x) \\
+&= \mathbb{E}^{\lambda} \left[ \mathbf{1}_A(X_N) \cdot \mathrm{e}^{-N \langle \lambda, X_N \rangle + N \Lambda(\lambda)} \right] \\
+&\leq \mathbb{E}^{\lambda} \left[ \mathbf{1}_A(X_N) \right] \cdot \sup_{x \in A} \mathrm{e}^{-N \langle \lambda, x \rangle + N \Lambda(\lambda)} \\
+&= \mathrm{e}^{-N \inf_{x \in A} (\langle \lambda, x \rangle - \Lambda(\lambda))} \cdot \mathbb{P}^\lambda[X_N \in A]
+\end{aligned}
+\end{equation}
+
+<p>
+Taking logarithms and the upper limit:
+\[
+\limsup_{N \to \infty} \frac{1}{N} \log \mathbb{P}(X_N \in A)
+\leq -\inf_{x \in A} \left( \langle \lambda, x \rangle - \Lambda(\lambda) \right)
+\]
+</p>
+
+<p>
+Since this holds for all \(\lambda \in \mathbb{R}^d\), we take the supremum over \(\lambda\) to get:
+\[
+\limsup_{N \to \infty} \frac{1}{N} \log \mathbb{P}(X_N \in A)
+\leq -\inf_{x \in A} I(x)
+\]
+where the rate function is given by the Legendre–Fenchel transform:
+\[
+I(x) \equiv \sup_{\lambda \in \mathbb{R}^d} \left( \langle \lambda, x \rangle - \Lambda(\lambda) \right)
+\]
+</p>
+</div>
+</div>
+<div id="outline-container-orgbebd189" class="outline-3">
+<h3 id="orgbebd189"><span class="section-number-3">3.2.</span> Lower Bound of Cramér's Theorem</h3>
+<div class="outline-text-3" id="text-3-2">
+<p>
+Let \(a \in A\), where \(A \subset \mathbb{R}^d\) is open. Fix \(\delta > 0\) such that the open ball \(B(a, \delta) \subset A\), where:
+\[
+B(a, \delta) := \{ x \in \mathbb{R}^d : \|x - a\| < \delta \}
+\]
+</p>
+
+<p>
+Then:
+\[
+\mathbb{P}(X_N \in A) \geq \mathbb{P}(X_N \in B(a, \delta))
+\]
+</p>
+
+<p>
+Using exponential tilting:
+\[
+\mathbb{P}(X_N \in B(a, \delta)) = \int \mathbf{1}_{B(a, \delta)}(x) \, d\mathbb{P}(x) = \int \mathbf{1}_{B(a, \delta)}(x) \, e^{-N \langle \lambda, x \rangle + N \Lambda(\lambda)} \, d\mathbb{P}^\lambda(x)
+\]
+</p>
+
+<p>
+Now for all \(x \in B(a, \delta)\):
+\[
+\langle \lambda, x \rangle \le \langle \lambda, a \rangle + \|\lambda\|\delta
+\]
+</p>
+
+<p>
+So we have:
+\[
+\mathbb{P}(X_N \in A) \geq \mathbb{P}^\lambda(X_N \in B(a, \delta)) \cdot \exp\big( -N \langle \lambda, a \rangle - N \|\lambda\| \delta + N \Lambda(\lambda) \big)
+\]
+</p>
+
+<p>
+Taking logs and limits, and assuming \(\mathbb{P}^\lambda(X_N \in B(a, \delta)) \to 1\) as \(N \to \infty\), we get:
+\[
+\liminf_{N \to \infty} \frac{1}{N} \log \mathbb{P}(X_N \in A)
+\geq -\langle \lambda, a \rangle + \Lambda(\lambda) - \|\lambda\| \delta
+\]
+</p>
+
+<p>
+Now, observe:
+\[
+-\langle \lambda, a \rangle + \Lambda(\lambda)
+\geq -\sup_{\lambda \in \mathbb{R}^d} \left( \langle \lambda, a \rangle - \Lambda(\lambda) \right)
+= -I(a)
+\]
+</p>
+
+<p>
+Finally, taking \(\delta \to 0\) and then the infimum over all \(a \in A\) gives:
+\[
+\liminf_{N \to \infty} \frac{1}{N} \log \mathbb{P}(X_N \in A)
+\geq -\inf_{x \in A} I(x)
+\]
+</p>
+
+<p>
+where
+\[
+I(x) := \sup_{\lambda \in \mathbb{R}^d} \left( \langle \lambda, x \rangle - \Lambda(\lambda) \right).
+\]
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-org96f4813" class="outline-2">
+<h2 id="org96f4813"><span class="section-number-2">4.</span> From linear generator to Hamilton-Jacobi</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+In large deviation theory we are always concerned with
+</p>
+
+<p>
+Suppose we have an observable \(\Psi(X_{t})\) that is extensive in \(N\), if there exists and \(f(x_{t})\) such that 
+</p>
+
+\begin{equation}
+\label{orgdcc9493}
+\begin{aligned}
+\frac{\mathrm{d}}{\mathrm{d}t} \ln{\mathbb{E}_{X}{\left[ \mathrm{e}^{N f(X_{t})} \right]}} = 
+\frac{\frac{\mathrm{d}}{\mathrm{d}t}\mathbb{E}_{X}{\left[ \mathrm{e}^{N f(X_{t})} \right]}}{\mathbb{E}_{X}{\left[ \mathrm{e}^{N f(X_{t})} \right]}}
+= \mathrm{e}^{-N f(x, t)} \left( \mathcal{L} \mathrm{e}^{Nf(x, t)} \right).
+\end{aligned}
+\end{equation}
+<p>
+We define a new operator 
+</p>
+\begin{equation}
+\label{orgfff0205}
+(\mathcal{H}f)(x, t) = \frac{\mathrm{d}}{\mathrm{d}t} \ln{\mathbb{E}_{X}{\left[ \mathrm{e}^{N f(X_{t})} \right]}}=  \mathrm{e}^{-N f(x, t)} \left( \mathcal{L} \mathrm{e}^{Nf(x, t)} \right).
+\end{equation}
+<p>
+and it describes the evolution of the 
+</p>
+</div>
+</div>
+<div id="outline-container-orgb172bb7" class="outline-2">
+<h2 id="orgb172bb7"><span class="section-number-2">5.</span> Useful Concepts</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+#+begin<sub>note</sub>
+</p>
+</div>
+<div id="outline-container-orgca24bd6" class="outline-4">
+<h4 id="orgca24bd6"><span class="section-number-4">5.0.1.</span> Change of Measure</h4>
+<div class="outline-text-4" id="text-5-0-1">
+<p>
+For any random variable \(X\) with the probability measure \(\mathbb{P}_{X}\), let \(Y = f(X)\) such that \(f(x)\) is a positive function then
+\[
+\frac{\mathrm{d}\mathbb{P}_{Y}}{\mathrm{d}\mathbb{P}_{X}} = \frac{f(X)}{\mathbb{E}_{X}[f(X)]},
+\]
+where \(\mathbb{E}_{X}[f(X)]\) is the expectation w.r.t. the measure \(\mathbb{P}_{X}\). This change of measure is called exponential tilting when \(f(X) = \mathrm{e}^{\lambda X}\).
+</p>
+</div>
+<ol class="org-ol">
+<li><a id="org46e4508"></a>Example of exponential tilting<br />
+<div class="outline-text-5" id="text-5-0-1-1">
+<p>
+Suppose \(X \sim \mathcal{N}(0, 1)\), take \(Y = \mathrm{e}^{\lambda X}\). Then
+\[
+\frac{\mathrm{d}\mathbb{P}_{Y}}{\mathrm{d}\mathbb{P}_{X}} = \mathrm{e}^{-\frac{1}{2}\lambda^2 + \lambda x},
+\]
+and the tilted density is
+\[
+\frac{1}{\sqrt{2 \pi}} \mathrm{e}^{-\frac{1}{2}(x - \lambda)^2}.
+\]
+#+end<sub>note</sub>
+</p>
+
+<p>
+#+begin<sub>note</sub>
+</p>
+</div>
+</li>
+</ol>
+</div>
+<div id="outline-container-orge52e035" class="outline-4">
+<h4 id="orge52e035"><span class="section-number-4">5.0.2.</span> Moment Generating function</h4>
+<div class="outline-text-4" id="text-5-0-2">
+<p>
+For any random variable \(X\) with probability measure \(\mathbb{P}_{X}\),
+\[
+\mathcal{M}_{X}(\lambda) = \mathbb{E}_{X}[\mathrm{e}^{\lambda  X}] = \int \mathrm{e}^{\lambda x} \mathrm{d}\mathbb{P}_X(x).
+\]
+Any moment can be obtained via
+\[
+\mathbb{E}_{X}[x^n] = \frac{1}{n!}\left.\frac{\mathrm{d}^n \mathcal{M}_{X}(\lambda)}{\mathrm{d}\lambda^n}\right|_{\lambda=0}.
+\]
+#+end<sub>note</sub>
+</p>
+
+<p>
+#+begin<sub>note</sub>
+</p>
+</div>
+</div>
+<div id="outline-container-orgeef68a6" class="outline-4">
+<h4 id="orgeef68a6"><span class="section-number-4">5.0.3.</span> Large Deviation Principle</h4>
+<div class="outline-text-4" id="text-5-0-3">
+<p>
+Given a set \(A\) there exists a convex function \(\Lambda(\lambda)\) and a good rate function
+\[
+I(x) \equiv \sup_{\lambda}{\left\{ x \lambda - \Lambda(\lambda) \right\}}
+\]
+such that
+\[
+-\inf_{x \in A^{\circ}} I(x)
+\leq \liminf_{N \to \infty} \frac{1}{N} \ln P(X_N \in A)
+\leq \limsup_{N \to \infty} \frac{1}{N} \ln P(X_N \in A)
+\leq -\inf_{x \in \bar{A}} I(x).
+\]
+Here \(A^{\circ}\) is the interior of \(A\) and \(\bar{A}\) is the closure of \(A\).
+#+end<sub>note</sub>
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-org484234a" class="outline-2">
+<h2 id="org484234a"><span class="section-number-2">6.</span> 1. Set-up and notation</h2>
+<div class="outline-text-2" id="text-6">
+<p>
+Let \(x:[0,2\pi]\to\mathbb{R}^d\) be a \(C^2\) reference path with \(\dot{x}(\theta) \neq 0\) for all \(\theta\).
+</p>
+
+<p>
+Let \(\hat{\tau}(\theta) := \dot{x}(\theta) / \|\dot{x}(\theta)\|\) be the unit tangent, and let \(N(\theta) \in \mathbb{R}^{d\times(d-1)}\) be a \(C^1\) orthonormal normal frame so that the columns of \(N(\theta)\) span \(\hat{\tau}(\theta)^\perp\).
+</p>
+
+<p>
+The map
+\[
+\Psi:(\theta,y) \mapsto x(\theta) + N(\theta)\,y,\quad
+\theta \in [0,2\pi],\ y \in \mathbb{R}^{d-1},
+\]
+is a tubular parametrisation in a neighbourhood of \(x([0,2\pi])\).
+</p>
+
+<p>
+Let \(H:\mathbb{R}^d\times\mathbb{R}^d\to(-\infty,\infty]\) be the Freidlin–Wentzell Hamiltonian, convex and lower semicontinuous in \(p\).
+Define the <b>normal Hamiltonian</b> at phase \(\theta\) by
+\[
+H_\perp(\theta,p) := H\big(x(\theta),\,N(\theta)p\big),\quad p \in \mathbb{R}^{d-1}.
+\]
+</p>
+</div>
+<div id="outline-container-org2e2a404" class="outline-3">
+<h3 id="org2e2a404"><span class="section-number-3">6.1.</span> 2. Static LDP polar identity</h3>
+<div class="outline-text-3" id="text-6-1">
+<p>
+For each \(\theta\), let \(\Lambda_\theta(p) := H_\perp(\theta,p)\), convex, lsc, and \(\Lambda_\theta(0)=0\).
+Its Legendre–Fenchel transform gives
+\[
+I_\theta(y) := \sup_{p \in \mathbb{R}^{d-1}} \{ p\cdot y - \Lambda_\theta(p) \}.
+\]
+Define the unit momentum body
+\[
+K_\theta := \{\, p : \Lambda_\theta(p) \le 1 \,\}.
+\]
+Define the 1-homogeneous cost
+\[
+\bar{I}_\theta(y) := \inf_{\tau > 0} \tau\, I_\theta\!\left(\frac{y}{\tau}\right).
+\]
+<b>Proposition (support–polar identity).</b> For each \(\theta\) and \(y\),
+\[
+\bar{I}_\theta(y) = \sup_{p \in K_\theta} p\cdot y =: h_{K_\theta}(y),
+\]
+hence the level sets are
+\[
+\{\, y : \bar{I}_\theta(y) \le c \,\} = c\,K_\theta^\circ,
+\]
+where \(K_\theta^\circ := \{\, y : \sup_{p\in K_\theta} p\cdot y \le 1 \,\}\) is the polar of \(K_\theta\).
+</p>
+</div>
+</div>
+<div id="outline-container-orgf26ebdc" class="outline-3">
+<h3 id="orgf26ebdc"><span class="section-number-3">6.2.</span> 3. Tube in function space</h3>
+<div class="outline-text-3" id="text-6-2">
+<p>
+Let \(\mathcal{Y} := C_{\mathrm{per}}([0,2\pi];\mathbb{R}^{d-1})\).
+For \(c>0\), define
+\[
+\mathscr{T}_c := \{\, y(\cdot) \in \mathcal{Y} : \bar{I}_\theta(y(\theta)) \le c\ \forall \theta \,\}.
+\]
+Equivalently,
+\[
+S_c(\theta) = \{\, y : \bar{I}_\theta(y) \le c \,\} = c\,K_\theta^\circ.
+\]
+The full tube in the physical space is
+\[
+\{\, x(\theta) + N(\theta)\, y(\theta) : y(\theta) \in S_c(\theta) \,\}.
+\]
+</p>
+</div>
+</div>
+<div id="outline-container-org41bd2eb" class="outline-3">
+<h3 id="org41bd2eb"><span class="section-number-3">6.3.</span> 4. Variational characterisation of a contour</h3>
+<div class="outline-text-3" id="text-6-3">
+<p>
+Pick a specific contour on \(\bar{I}_\theta(y)=c\) by
+\[
+\max_{y(\cdot)} \int_0^{2\pi} w(\theta)\cdot y(\theta)\,d\theta
+\quad\text{s.t.}\quad y(\theta) \in S_c(\theta)\ \forall\theta.
+\]
+Pointwise,
+\[
+y(\theta) = \frac{c}{h_{K_\theta}(u(\theta))}\,u(\theta),\quad u(\theta)=\frac{w(\theta)}{\|w(\theta)\|}.
+\]
+Thus the contour is
+\[
+\Gamma_c(\theta) = x(\theta) + N(\theta)\,\frac{c}{h_{K_\theta}(u(\theta))}\,u(\theta).
+\]
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-orgd757304" class="outline-2">
+<h2 id="orgd757304"><span class="section-number-2">7.</span> Large deviations principle in path space</h2>
+<div class="outline-text-2" id="text-7">
+<p>
+Suppose \(X^{\epsilon}_t \in \mathbb{R}^{d}\times[0,\infty)\) with \(\epsilon=1/N\), and study \(\epsilon\to0\). Let \(\mathcal{L}^{\epsilon}\) be the linear generator:
+</p>
+
+\begin{equation}
+\label{org5ac3af9}
+%\label{eq-generator-def-gen}
+(\mathcal{L}^{\epsilon} f)(x, t) = \lim_{\delta_t \to 0}
+\frac{1}{\delta_t} \Big\{\mathbb{E}[f(X_{t + \delta_t}, t + \delta t)] - f(x, t) \Big\}.
+\end{equation}
+
+<p>
+Define the tilted nonlinear generator:
+</p>
+
+\begin{equation}
+\label{org5fec3d7}
+%\label{eq-tilted-def-gen}
+(\mathcal{H}^{\epsilon} f)(x, t) = \mathrm{e}^{-f(x, t) / \epsilon} (\mathcal{L}^{\epsilon} \mathrm{e}^{ f / \epsilon})(x, t).
+\end{equation}
+
+<p>
+and
+</p>
+\begin{equation}
+\label{org34cc547}
+%\label{eq-tilted-def-gen-full}
+(\mathcal{G}^{\epsilon}_f g)(x, t) = \mathrm{e}^{-f(x, t) / \epsilon} (\mathcal{L}^{\epsilon} \mathrm{e}^{ f / \epsilon} g)(x, t).
+\end{equation}
+</div>
+<div id="outline-container-org8a4c75a" class="outline-3">
+<h3 id="org8a4c75a"><span class="section-number-3">7.1.</span> Tube Definition</h3>
+<div class="outline-text-3" id="text-7-1">
+<p>
+For a chemical master equation, the tilted Hamiltonian is
+</p>
+\begin{equation}
+\label{org64d0831}
+%\label{eq-master-tilt-gen}
+H(x, p) = \sum_{r} w_r(x) \big(\mathrm{e}^{\Delta_r \cdot p} - 1\big), \quad x, p \in \mathbb{R}^d.
+\end{equation}
+
+<p>
+Let \(\bar{x}:[0,T]\to\mathbb{R}^d\) be the most probable path and \(\mathcal{N}_t\) the normal bundle to \(\bar{x}(t)\). From \eqref{eq-master-tilt-gen} obtain
+</p>
+
+\begin{equation}
+\label{org9514b5e}
+%\label{eq-master-tilt-gen-orth}
+H_{\perp}(q; t) = \sum_{r} w_r(\bar{x}(t)) \big(\mathrm{e}^{\Delta_r \cdot q} - 1\big), \quad q \in \mathcal{N}(t).
+\end{equation}
+
+<p>
+Then \(y\) satisfies an LDP with good rate
+</p>
+\begin{equation}
+\label{org618ce8c}
+%\label{eq-rate-func-orth}
+I_{\perp}(y; t) := \sup_{q} \{ y\cdot q - H_{\perp}(q; t) \}.
+\end{equation}
+
+<p>
+Define cross-section and dual sets
+</p>
+\begin{equation}
+\label{org63539c7}
+%\label{eq-level-set-q}
+\mathcal{T}^*(c; t) := \{ q : \Psi_t(q) \le c \}, \qquad
+\Psi(q; t) = q \cdot \nabla_{q}H_{\perp}(q; t) - H_{\perp}(q; t),
+\end{equation}
+
+<p>
+and expanding from \eqref{eq-master-tilt-gen-orth}:
+</p>
+
+\begin{equation}
+\label{orgbf33aed}
+%\label{eq-cost-func-expand}
+\Psi(q; t) = \sum_{r}w_r(t)\big[\mathrm{e}^{\Delta_r \cdot q} (\Delta_r \cdot q - 1) + 1 \big].
+\end{equation}
+
+<p>
+Hence
+</p>
+\begin{equation}
+\label{org6321d58}
+\begin{aligned}
+%\label{eq-rate-limit-q}
+I_{\perp}(y; t) &= \sup_{q \in \mathcal{T}^*(c; t)}\{ y\cdot q - H_{\perp}(q; t) \}
+= \sup_{q \in \mathcal{T}^*(c; t)}\{ \nabla_{q}H_{\perp}(q; t) \cdot q - H_{\perp}(q; t) \}
+\le c.
+\end{aligned}
+\end{equation}
+
+<p>
+Parameterising \(q = s u\) with \(u \in \mathbb{S}^{d-1}\) gives
+</p>
+
+\begin{equation}
+\label{org525c940}
+%\label{eq-cost-func-expand-u}
+\Psi_{c, u}(s; t) = c -  \sum_{r}w_r(t)\big[ \mathrm{e}^{s \Delta_r \cdot u} (s \Delta_r \cdot u - 1) + 1 \big].
+\end{equation}
+
+<p>
+If \(c = -N^{-1}\ln\rho\) with \(\rho\in(0,1]\), then
+</p>
+\begin{equation}
+\label{orgf98808d}
+%\label{eq-prob-relation}
+\liminf_{N \to \infty} \frac{1}{N} \mathbb{P}(x_t \in \mathcal{T}(c; t)\ \forall t \in [0,T]) \ge -\rho.
+\end{equation}
+
+<p>
+Expanding about \(s=0\),
+</p>
+\begin{equation}
+\label{org0143304}
+%\label{eq-cost-func-expand-u-quad}
+\Psi_{c, u}(s; t) = c -  \sum_{r}s^2 w_r(t) u^{\trans} \Delta_r \Delta_r^{\trans} u + \mathcal{O}(s^3).
+\end{equation}
+</div>
+</div>
+</div>
+<div id="outline-container-org484e04e" class="outline-2">
+<h2 id="org484e04e"><span class="section-number-2">8.</span> Examples: quick references</h2>
+<div class="outline-text-2" id="text-8">
+</div>
+<div id="outline-container-orgbd17a3f" class="outline-3">
+<h3 id="orgbd17a3f"><span class="section-number-3">8.1.</span> Sum of Gaussian variables</h3>
+<div class="outline-text-3" id="text-8-1">
+<p>
+(see above)
+</p>
+</div>
+</div>
+<div id="outline-container-org1bb2b4c" class="outline-3">
+<h3 id="org1bb2b4c"><span class="section-number-3">8.2.</span> Sum of Bernoulli variables</h3>
+<div class="outline-text-3" id="text-8-2">
+<p>
+(see above)
+</p>
+
+
+
+\begin{equation}
+\label{orgc67d7e5}
+f(x)=\sum_{n=0}^{\infty} \frac{f^{(n)}(0)}{n!} x^n .
+\end{equation}
+
+
+
+<p>
+This is Eq. \eqref{orgc67d7e5} and that is \eqref{org36de99e}
+</p>
+
+<p>
+there is also \eqref{orgce2ffd4}
+</p>
+
+<p>
+<a href="#orgb65d378">No description for this link</a>
+Now a theorem and a proof, with a custom id for HTML linking:
+</p>
+
+<p>
+check out [BROKEN LINK: thm-cunt] and fig <a href="#orgb65d378">No description for this link</a>
+</p>
+
+<p>
+And a small figure generated from Python (requires <code>jupyter-python</code> kernel):
+</p>
+
+
+<div id="orgb65d378" class="figure">
+<p><img src="../assets/img/sine.png" alt="sine.png" />
+</p>
+</div>
+
+<p>
+We can reference it as Fig. <a href="#orgb65d378">No description for this link</a>.
+</p>
+
+<p>
+(trace-function 'org-export-resolve-link)
+(trace-function 'org-export-resolve-id-link)
+(trace-function 'org-export-resolve-fuzzy-link)
+</p>
+
+
+\begin{equation}
+\label{orgce2ffd4}
+\begin{aligned}
+\mathbb{P}(X_N \in F) &= \int \mathbb{1}_{A}(X_N)\, \mathrm{d}\mathbb{P}_{X}(X_N), \\
+ &= \mathcal{M}^{N}_{Y}(\lambda)\int \mathbb{1}_{A}(X_N) \mathrm{e}^{-\lambda N X_N}  \, \mathrm{d}\mathbb{P}^{(\lambda)}_{X}(x), \\
+ &= \mathrm{e}^{N \Lambda{(\lambda)}}\int \mathbb{1}_{A}(X_N)  \mathrm{e}^{-\lambda N X_N}  \, \mathrm{d}\mathbb{P}^{(\lambda)}_{X}(x), \\
+ &= \mathrm{e}^{N \Lambda{(\lambda)}}\mathbb{E}^{(\lambda)}_X \left[ \mathbb{1}_{A}(X_N)  \mathrm{e}^{-\lambda N X_N} \right]  \\
+ &\leq \mathrm{e}^{N \Lambda{(\lambda)}}\mathbb{E}^{(\lambda)}_X \left[ \mathrm{e}^{-\lambda N X_N} \right],  \\
+ &\leq \mathrm{e}^{N \Lambda{(\lambda)}}\mathbb{E}^{(\lambda)}_X \left[ \mathrm{e}^{-\lambda N \inf_{x \in F} x } \right],  \\
+ &\leq \mathrm{e}^{- N   \inf_{x \in F} \left\{ \lambda x  -  \Lambda{(\lambda)} \right\} }.
+\end{aligned}
+\end{equation}
+</div>
+</div>
+</div>
+
+      
+    </article>
+    <!-- notes-panel is created dynamically if missing -->
+  </main>
+  <footer class="noty-footer">
+    <div class="noty-footer-inner">
+  <p>Generated with <code>emacs-noty</code>.</p>
+</div>
+
+  </footer>
+  <script src="/assets/js/theme.js"></script>
+  <script src="/assets/js/site.js"></script>
+  <script src="/assets/js/refs.js"></script>
+  <script src="/assets/js/scroll-restore.js"></script>
+  <script src="/assets/js/load-math-macros.js"></script>
+  <script src="/assets/js/link-preview.js"></script>
+  <script src="/assets/js/mathjax-config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" id="MathJax-script"></script>
+
+</body>
+</html>

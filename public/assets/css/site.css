@@ -1,0 +1,292 @@
+/* ===========================
+   Computer Modern web fonts
+   =========================== */
+@import url('https://cdn.jsdelivr.net/gh/dreampulse/computer-modern-web-font@master/fonts.css');
+
+/* ===========================
+   Theme variables
+   =========================== */
+/* :root { */
+/*   --bg:#ffffff; --fg:#000000; */
+/*   --muted:#7c6f64; --border:#d5c4a1; */
+/*   --link:#076678; --accent:#b57614; */
+/*   --code-bg:#f2e5bc; --inline-bg:#ebdbb2; */
+/* } */
+
+/* :root.dark { */
+/*   --bg:#282828; --fg:#ebdbb2; */
+/*   --muted:#a89984; --border:#3c3836; */
+/*   --link:#83a598; --accent:#d79921; */
+/*   --code-bg:#1d2021; --inline-bg:#3c3836; */
+/* } */
+
+
+:root {
+  --bg: #ffffff;            /* bg-main */
+  --fg: #000000;            /* fg-main */
+  --muted: #595959;         /* fg-dim */
+  --border: #9f9f9f;        /* border */
+  --link: #0031a9;          /* blue */
+  --accent: #6f5500;        /* yellow */
+  --code-bg: #f2f2f2;        /* bg-dim */
+  --inline-bg: #c4c4c4;     /* bg-active */
+}
+
+:root.dark {
+  --bg: #000000;            /* bg-main (dark) */
+  --fg: #ffffff;            /* fg-main (dark) */
+  --muted: #989898;         /* fg-dim (dark) */
+  --border: #646464;        /* border (dark) */
+  --link: #2fafff;          /* blue (dark) */
+  --accent: #d0bc00;        /* yellow (dark) */
+  --code-bg: #1e1e1e;       /* bg-dim (dark) */
+  --inline-bg: #535353;     /* bg-active (dark) */
+}
+
+
+/* ===========================
+   Base
+   =========================== */
+html, body { height: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: "Computer Modern Sans","CMU Sans Serif",sans-serif;
+  line-height: 1.35;
+}
+
+/* ===========================
+   Header
+   =========================== */
+.header {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:.9rem 1.2rem; border-bottom:1px solid var(--border);
+}
+.header .brand a { color:var(--fg); text-decoration:none; font-weight:700; }
+.actions button { margin-left:.5rem; }
+
+/* ===========================
+   Layout: TOC | Content | Notes
+   =========================== */
+.page {
+  display: grid;
+  grid-template-columns: 100px minmax(0, 110ch) 100px; /* left | center | right */
+  gap: 2rem;
+  align-items: start;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 1.25rem 1.5rem;
+}
+
+/* Left: TOC */
+.toc {
+  position: sticky; top: 5rem; /* below header */
+  align-self: start;
+  max-height: calc(100vh - 6rem);
+  overflow: auto;
+  padding-right: 1rem;
+  border-right: 1px solid var(--border);
+  font-size: .95rem;
+}
+.toc h3 { margin:.2rem 0 .6rem; color:var(--muted); font-weight:600; }
+.toc ul { list-style:none; margin:0; padding:0; }
+.toc li { margin:.25rem 0; }
+.toc a { color:var(--fg); text-decoration:none; }
+.toc a:hover { text-decoration:underline; }
+
+/* Center: content (centered by column sizing) */
+.content {
+  max-width: 92ch;
+  width: 100%;
+  justify-self: center;
+  padding: 0 2rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+.content img { max-width:100%; height:auto; border-radius:6px; }
+
+/* Right: margin notes panel (JS creates #notes-panel) */
+#notes-panel {
+  position: sticky; top: 5rem;
+  align-self: start;
+  max-height: calc(100vh - 6rem);
+  overflow: auto;
+  border-left: 1px solid var(--border);
+  padding-left: .75rem;
+  font-size: .92rem;
+  color: var(--muted);
+}
+#notes-panel .notes-title {
+  margin: .2rem 0 .6rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+/* Hide inline notes once mirrored to the panel (JS) */
+.content .sidenote,
+.content .marginnote { display: none; }
+
+/* ===========================
+   Headings
+   =========================== */
+h1,h2,h3,h4 {
+  /* font-family:"Computer Modern Serif","CMU Serif",serif; */
+  line-height:1.25; margin:1.2em 0 .6em;
+}
+h1 { font-size:1.95rem; margin-top:.2rem; }
+h2 { font-size:1.55rem; }
+h3 { font-size:1.25rem; }
+h4 { font-size:1.05rem; color:var(--muted); }
+
+/* ===========================
+   Code
+   =========================== */
+code {
+  background:var(--inline-bg);
+  padding:.1rem .3rem;
+  border-radius:4px;
+  font-family:"CMU Typewriter Text",monospace;
+}
+pre.src{
+  background:var(--code-bg);
+  border:1px solid var(--border);
+  padding:.9rem 1rem;
+  border-radius:8px;
+  overflow:auto;
+}
+
+/* ===========================
+   Theorem-ish & Proof
+   =========================== */
+.theorem,.lemma,.proposition,.corollary,.definition,.remark{
+  /* border-left:4px solid var(--accent); */
+  /* background:var(--inline-bg); */
+  background:rgba(0,0,0,.02);
+  padding:.9rem 1rem;
+  margin:1rem 0;
+  font-family:"Computer Modern Sans","CMU Sans", sans;
+}
+
+.theorem-label, .lemma-label, .proposition-label,.corollary-label, .definition-label, .question-label, .insight-label, .remark-label, .figure-title, caption, .note-label, .todo-label{
+  font-weight:700; margin-bottom:.4rem;
+}
+
+.proof {
+  /* border-left:3px solid var(--border); */
+  padding:.75rem 1rem;
+  margin:1rem 0;
+  background:rgba(0,0,0,.02);
+}
+
+/* Prepend “Proof.” before proof content */
+.proof::before {
+  content: "Proof.";
+  font-weight: 700;
+  margin-right: .5rem;
+  display: block;
+  margin-bottom: .4rem;
+}
+
+
+.proof::after {
+    content:"□"; float:right;
+    background:rgba(0,0,0,.02);
+              }
+
+
+/* ===========================
+   Theorem-ish & Proof
+   =========================== */
+.insight{
+  /* border-left:4px solid var(--accent); */
+  /* background:var(--inline-bg); */
+  background:rgba(0,255,0,.02);
+  padding:.9rem 1rem;
+  margin:1rem 0;
+  font-family:"Computer Modern Sans","CMU Sans", sans;
+}
+
+/* ===========================
+   Theorem-ish & Proof
+   =========================== */
+.question{
+  /* border-left:4px solid var(--accent); */
+  /* background:var(--inline-bg); */
+  background:rgba(255,0,0,.02);
+  padding:.9rem 1rem;
+  margin:1rem 0;
+  font-family:"Computer Modern Sans","CMU Sans", sans;
+}
+
+
+.note{
+  /* border-left:4px solid var(--accent); */
+  /* background:var(--inline-bg); */
+  background:rgba(0,0,255,.02);
+  padding:.9rem 1rem;
+  margin:1rem 0;
+  font-family:"Computer Modern Sans","CMU Sans", sans;
+}
+
+
+.todo{
+  /* border-left:4px solid var(--accent); */
+  /* background:var(--inline-bg); */
+  background:rgba(255,0,0,.08);
+  padding:.9rem 1rem;
+  margin:1rem 0;
+  font-family:"Computer Modern Sans","CMU Sans", sans;
+}
+
+
+
+/* ===========================
+   Equation wrapper (when present)
+   =========================== */
+.eq.env { position: relative; }
+.eq.env > .eq-number {
+  float: right;
+  font-weight: 700;
+  margin-left: .5rem;
+}
+
+/* ===========================
+   Links & Footer
+   =========================== */
+a { color: var(--link); }
+a:hover { text-decoration: underline; }
+
+.postamble{
+  margin:2rem 0 3rem;
+  padding-top:.75rem;
+  border-top:1px solid var(--border);
+  color:var(--muted);
+  font-size:.9rem;
+}
+
+/* ===========================
+   Responsive (content only on narrow)
+   =========================== */
+@media (max-width: 1100px) {
+  .page { grid-template-columns: 1fr; }
+  .toc, #notes-panel { display: none; }
+  .content { padding: 0 1rem; }
+}
+
+
+.left-bar {
+  --bg:#ffffff;
+  --fg:#ffffff;
+}
+
+
+.left-bar:hover {
+    --bg:#ffffff;
+    --fg:#000000;
+}
+
+.figure {
+  margin-left: auto;
+  margin-right: auto;
+}

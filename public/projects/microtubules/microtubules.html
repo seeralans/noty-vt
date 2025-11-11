@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Issues with regularising the layer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="">
+  <meta name="keywords" content="">
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <link rel="stylesheet" href="/assets/css/modus-operandi.css" id="noty-theme">
+</head>
+<body>
+  <header class="noty-header">
+    <nav class="noty-nav">
+  <a href="/index.html" class="noty-nav-brand">Home</a>
+  <ul class="noty-nav-list">
+    <li><a href="/areas/index.html">Areas</a></li>
+    <li><a href="/projects/index.html">Projects</a></li>
+    <li><a href="/personal/index.html">Personal</a></li>
+    <li><a href="/pages/manual.html">Manual</a></li>
+  </ul>
+  <div class="noty-nav-actions">
+    <button class="theme-toggle" type="button" title="Toggle theme">🌓</button>
+    <button class="sidenote-toggle" type="button" title="Toggle notes">☰</button>
+  </div>
+</nav>
+
+  </header>
+  <main class="page">
+    <aside class="left-bar">
+      <div id="toc"></div>
+    </aside>
+    <article class="content noty-article">
+      <h1 class="noty-title">Issues with regularising the layer</h1>
+      <div id="outline-container-org39845ba" class="outline-2">
+<h2 id="org39845ba"><span class="section-number-2">1.</span> Regularising the hidden layer</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+From a practical point-of-view, to obtain numerical trajectories either from solving an ODE or SDE (Gaussian approximation), we require the regularisation of the switching function
+</p>
+\begin{equation}
+\label{orgf6641df}
+\begin{array}{ll}
+\lambda = \mathrm{sign}(\sigma(x))  &\sigma(x) \neq 0 \\
+\lambda \in (-1, 1), &\sigma(x) =  0
+\end{array}
+\end{equation}
+<p>
+over the layer \(|\sigma(x)| < \epsilon\). The regularisation must satisfy the properties given in the following definition
+</p>
+<div class="definition" id="orgb8aa770">
+<p>
+Let \(\lambda^{\epsilon}(\sigma(x))\) be the regularised family of \(\lambda\) with \(\epsilon > 0\) such that following properties hold:
+</p>
+<ol class="org-ol">
+<li>\(\forall \sigma \neq 0\), we must have \(\lambda^{\epsilon}(\sigma) \to \mathrm{sign}(\sigma)\)</li>
+<li>\(\forall |\sigma| < \epsilon\), we must have \(\lambda^{\epsilon}(\sigma) \in (-1, 1)\) <br /></li>
+<li>\(\lambda^{\epsilon}(0) = 0\) <br /></li>
+<li>\(\lambda^{\epsilon}(-\sigma) = -\lambda^{\epsilon}(\sigma)\)</li>
+</ol>
+
+</div>
+<p>
+There are many functions that can satisfy the properties layed out in <a href="#orgb8aa770">No description for this link</a>, 
+and obtaining a "correct" smoothing is of-course ill-posed. There is also the choice of smoothing over the entire real line or in such a way that for \(|\sigma| >= \epsilon\) we have \(\lambda(\sigma) = \pm 1\). For example the regularisation 
+</p>
+\begin{equation}
+\label{org915d92d}
+\lambda^{\epsilon}(\sigma) = \tanh(\sigma / \epsilon)
+\end{equation}
+<p>
+ensures satisfies all properties and is \(C^{\infty}\) but it never reaches \(\pm 1\). Howeer if we consider the asymptotic expansion away from \(0\), we have
+</p>
+\begin{equation}
+\label{org38fc8fd}
+\tanh(x/\epsilon) \simeq \mathrm{sign}(x)\big(1-2e^{-2|x|/\epsilon}+2e^{-4|x|/\varepsilon}-\cdots\big).
+\end{equation}
+<p>
+which shows that any errors are exponential suppressed. We can also consider functions such as 
+</p>
+\begin{equation}
+\label{org830a0b6}
+\lambda =
+\left\{
+\begin{array}{ll}
+ \mathrm{sign}(\sigma)  &|\sigma(x)| \geq \epsilon \\
+\Lambda(\sigma / \epsilon) , &|\sigma(x)| < \epsilon
+\end{array}
+\right.
+\end{equation}
+<p>
+where 
+</p>
+\begin{equation}
+\label{orgd613bc8}
+\Lambda(x) = a_1 x + a_3 x^3 + a_5 x^5 \cdots 
+\end{equation}
+<p>
+is an odd polynomial whose degree determines how smooth it is. e.g.  
+</p>
+\begin{equation}
+\label{orge7d3c0c}
+\Lambda(x) = x
+\end{equation}
+<p>
+gives a \(C^0\) smoothing over the layer, whereas
+</p>
+\begin{equation}
+\label{org2e66e7b}
+\Lambda(x) = x +
+\frac{1}{2}x^{3}
+-\frac{1}{2}x^{5}
+\end{equation}
+<p>
+gives a \(C^2\) regularisation.
+</p>
+
+<div class="insight" id="org2d37250">
+<p>
+Typically when perturbed the system follows the "linear" approximation, as discussed in Jeffrey2018. In other words if I take the \(\tanh\) approximation and then add noise I should basically see behaviour close to the linear approximation, for sufficently <b>large</b> noise. 
+</p>
+
+</div>
+
+
+
+
+
+<div id="org68dd5cb" class="figure">
+<p><img src="./figures/euler-solve.png" alt="euler-solve.png" />
+</p>
+<p><span class="figure-number">Figure 1: </span>Example time series (placeholder path). Parameters: \(x_0 = [0.1, 0.1, 0.1], j = 0.8, h = 0.8, g = 0.4502, \epsilon = 0.01\)</p>
+</div>
+
+
+
+<div id="org54f1d78" class="figure">
+<p><img src="../assets/img/sde-euler-solve.png" alt="sde-euler-solve.png" />
+</p>
+<p><span class="figure-number">Figure 2: </span>Example time series SDE (placeholder path). Parameters: \(x_0 = [0.1, 0.1, 0.1], j = 0.8, h = 0.8, g = 0.4502, \epsilon = 0.01\)</p>
+</div>
+</div>
+</div>
+<div id="outline-container-org279caa9" class="outline-2">
+<h2 id="org279caa9"><span class="section-number-2">2.</span> Testing Jacobian Computation</h2>
+<div class="outline-text-2" id="text-2">
+
+<div id="org0f7ceb4" class="figure">
+<p><img src="./figures/sde-tubes-no-int.png" alt="sde-tubes-no-int.png" />
+</p>
+<p><span class="figure-number">Figure 3: </span>Examples of stochastic trajectories no interaction.</p>
+</div>
+
+
+
+
+<div id="org8992c8e" class="figure">
+<p><img src="./figures/sde-tubes-int.png" alt="sde-tubes-int.png" />
+</p>
+<p><span class="figure-number">Figure 4: </span>Examples of stochastic trajectories with interaction.</p>
+</div>
+
+
+
+<div id="org09cc2f9" class="figure">
+<p><img src="./figures/tube-3d-no-int.png" alt="tube-3d-no-int.png" />
+</p>
+<p><span class="figure-number">Figure 5: </span>Stochastic trajectories in 3D phase space with tubes</p>
+</div>
+
+
+<div id="org375e1c2" class="figure">
+<p><img src="./figures/tube-3d-int.png" alt="tube-3d-int.png" />
+</p>
+<p><span class="figure-number">Figure 6: </span>Stochastic trajectories in 3D phase space  with tubes and interaction</p>
+</div>
+</div>
+</div>
+<div id="outline-container-org118d8f3" class="outline-2">
+<h2 id="org118d8f3"><span class="section-number-2">3.</span> Python Code</h2>
+</div>
+
+      
+    </article>
+    <!-- notes-panel is created dynamically if missing -->
+  </main>
+  <footer class="noty-footer">
+    <div class="noty-footer-inner">
+  <p>Generated with <code>emacs-noty</code>.</p>
+</div>
+
+  </footer>
+  <script src="/assets/js/theme.js"></script>
+  <script src="/assets/js/site.js"></script>
+  <script src="/assets/js/refs.js"></script>
+  <script src="/assets/js/scroll-restore.js"></script>
+  <script src="/assets/js/load-math-macros.js"></script>
+  <script src="/assets/js/link-preview.js"></script>
+  <script src="/assets/js/mathjax-config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" id="MathJax-script"></script>
+
+</body>
+</html>

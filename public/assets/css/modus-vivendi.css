@@ -1,0 +1,60 @@
+/* Modus Vivendi inspired dark theme */
+:root {
+  /* ===== Modus Vivendi (Dark) Core ===== */
+  --bg: #000000;            /* background main */
+  --fg: #ffffff;            /* foreground main */
+  --muted: #bfbfbf;         /* dimmed text */
+  --border: #4f4f4f;        /* border lines */
+  --link: #2fafff;          /* cyan-blue link */
+  --accent: #d0a215;        /* accent / golden amber */
+  --code-bg: #1a1a1a;       /* code block background */
+  --inline-bg: #242424;     /* inline code background */
+
+  /* ===== Semantic block colours ===== */
+  --theorem-bg:   #111111;  /* neutral near-black tint */
+  --insight-bg:   #003b2f;  /* deep teal hint for positive insight */
+  --todo-bg:      #3b0000;  /* dark red for questions/conflicts */
+  --note-bg:      #001f3b;  /* deep navy for notes */
+  --question-bg:  #3b2f00;  /* dark ochre for warnings/todos */
+
+  /* ===== Extra UI shades derived from theme ===== */
+  --header-bg: var(--theorem-bg);
+  --footer-bg: var(--theorem-bg);
+  --button-bg: var(--inline-bg);
+  --button-hover-bg: var(--code-bg);
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--fg);
+}
+
+a {
+  color: var(--link);
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+pre,
+code {
+  background-color: var(--code-bg);
+}
+
+.noty-header,
+.noty-footer {
+  background-color: var(--header-bg);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.noty-nav-actions button {
+  background-color: var(--button-bg);
+  color: var(--fg);
+  border: 1px solid var(--border);
+}
+
+.noty-nav-actions button:hover {
+  background-color: var(--button-hover-bg);
+}

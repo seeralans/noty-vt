@@ -1,0 +1,122 @@
+// emacs-noty main.js
+// Theme modes: auto (follow system), light, dark.
+// Uses Modus Operandi / Modus Vivendi CSS files.
+
+(function () {
+  const THEME_KEY = "noty-theme";       // legacy storage
+  const MODE_KEY = "noty-theme-mode";   // "auto" | "light" | "dark"
+  const linkEl = document.getElementById("noty-theme");
+
+  function themePath(name) {
+    return "/assets/css/" + name + ".css";
+  }
+
+  function currentThemeName() {
+    if (!linkEl) return null;
+    const href = linkEl.getAttribute("href") || "";
+    const m = href.match(/\/([^\/]+)\.css$/);
+    return m ? m[1] : null;
+  }
+
+  function setThemeHref(name) {
+    if (!linkEl || !name) return;
+    const href = themePath(name);
+    if (linkEl.getAttribute("href") !== href) {
+      linkEl.setAttribute("href", href);
+    }
+    // keep legacy key around for compatibility
+    localStorage.setItem(THEME_KEY, name);
+  }
+
+  function systemPrefersDark() {
+    return window.matchMedia &&
+           window.matchMedia("(prefers-color-scheme: dark)").matches;
+  }
+
+  function applyThemeForMode(mode) {
+    let theme;
+    if (mode === "light") {
+      theme = "modus-operandi-tinted";
+    } else if (mode === "dark") {
+      theme = "modus-vivendi-tinted";
+    } else {
+      // auto
+      theme = systemPrefersDark() ? "modus-vivendi-tinted" : "modus-operandi-tinted";
+    }
+    setThemeHref(theme);
+  }
+
+  function updateButtonLabel(btn, mode) {
+    if (!btn) return;
+    if (mode === "light") {
+      btn.textContent = "☀️";
+      btn.title = "Light theme";
+    } else if (mode === "dark") {
+      btn.textContent = "🌙";
+      btn.title = "Dark theme";
+    } else {
+      btn.textContent = "🌓";
+      btn.title = "Auto (follow system)";
+    }
+  }
+
+  function initialMode() {
+    // Prefer explicit mode if set
+    let mode = localStorage.getItem(MODE_KEY);
+
+    if (!mode) {
+      // Backwards compat: if user had an old stored theme, map it
+      const legacy = localStorage.getItem(THEME_KEY);
+      if (legacy === "modus-vivendi") {
+        mode = "dark";
+      } else if (legacy === "modus-operandi") {
+        mode = "light";
+      } else {
+        mode = "auto";
+      }
+      localStorage.setItem(MODE_KEY, mode);
+    }
+
+    if (mode !== "auto" && mode !== "light" && mode !== "dark") {
+      mode = "auto";
+      localStorage.setItem(MODE_KEY, mode);
+    }
+
+    return mode;
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    let mode = initialMode();
+    applyThemeForMode(mode);
+
+    const btn = document.querySelector(".theme-toggle");
+    updateButtonLabel(btn, mode);
+
+    // React to system theme changes only when in auto mode
+    const media = window.matchMedia("(prefers-color-scheme: dark)");
+    if (media && media.addEventListener) {
+      media.addEventListener("change", (e) => {
+        const currentMode = localStorage.getItem(MODE_KEY) || "auto";
+        if (currentMode === "auto") {
+          applyThemeForMode("auto");
+        }
+      });
+    }
+
+    if (btn) {
+      const cycle = ["auto", "light", "dark"];
+
+      btn.addEventListener("click", function () {
+        const current = localStorage.getItem(MODE_KEY) || "auto";
+        const idx = cycle.indexOf(current);
+        const next = cycle[(idx + 1) % cycle.length];
+
+        localStorage.setItem(MODE_KEY, next);
+        applyThemeForMode(next);
+        updateButtonLabel(btn, next);
+      });
+    }
+  });
+})();
+
+

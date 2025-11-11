@@ -1,0 +1,1538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>On weak noise approximations of chemical master equations.</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="">
+  <meta name="keywords" content="">
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <link rel="stylesheet" href="/assets/css/modus-operandi.css" id="noty-theme">
+</head>
+<body>
+  <header class="noty-header">
+    <nav class="noty-nav">
+  <a href="/index.html" class="noty-nav-brand">Home</a>
+  <ul class="noty-nav-list">
+    <li><a href="/areas/index.html">Areas</a></li>
+    <li><a href="/projects/index.html">Projects</a></li>
+    <li><a href="/personal/index.html">Personal</a></li>
+    <li><a href="/pages/manual.html">Manual</a></li>
+  </ul>
+  <div class="noty-nav-actions">
+    <button class="theme-toggle" type="button" title="Toggle theme">🌓</button>
+    <button class="sidenote-toggle" type="button" title="Toggle notes">☰</button>
+  </div>
+</nav>
+
+  </header>
+  <main class="page">
+    <aside class="left-bar">
+      <div id="toc"></div>
+    </aside>
+    <article class="content noty-article">
+      <h1 class="noty-title">On weak noise approximations of chemical master equations.</h1>
+      <p>
+\[
+\renewcommand{\bm}[1]{\boldsymbol{#1}}%
+\renewcommand{\ensuremath}[1]{{#1}}%
+\renewcommand{\note}[2][orange]{\colorbox{#1!20}{#2}}%
+%
+\renewcommand{\varvb}{\bm{v}}%
+\renewcommand{\varv}{v}%
+%
+% \DeclareBoldMathCommand\varv{v}%
+\renewcommand{\order}[1]{\mathcal{O}{({#1})}}%
+%
+\renewcommand{\ee}{{\mathrm{e}}}%
+\renewcommand{\acos}{\mathrm{acos}}%
+\renewcommand{\vphi}{\varphi}%
+\renewcommand{\veps}{\varepsilon}%
+\renewcommand{\vthe}{\vartheta}%
+%
+%
+\renewcommand{\lb}{\left(}%
+\renewcommand{\rb}{\right)}%
+%
+\renewcommand{\ls}{\left[}%
+\renewcommand{\rs}{\right]}%
+%
+\renewcommand{\lc}{\left\{}%
+\renewcommand{\rc}{\right\}}%
+%
+\renewcommand{\ld}{\left.}%
+\renewcommand{\rd}{\right.}%
+%
+\renewcommand{\la}{\left\langle}%
+\renewcommand{\ra}{\right\rangle}%
+%
+\renewcommand{\lp}{\left|}%
+\renewcommand{\rp}{\right|}%
+%
+\renewcommand{\acosh}{\mathrm{acosh}}%
+\renewcommand{\floor}[1]{{\lfloor{#1}\rfloor}}%
+%
+%
+\renewcommand{\ffrac}[2]{{#1}/{#2}}%
+\renewcommand{\carr}{\curvearrowright}%
+\renewcommand{\carl}{\curvearrowleft}%
+\renewcommand{\ztrans}[1]{\widetilde{#1}}%
+\renewcommand{\wt}{\widetilde}%
+\renewcommand{\sgn}{\mathrm{sgn}}%
+\renewcommand{\tr}{\mathrm{Tr}}%
+\renewcommand{\mat}[1]{\mathbf{#1}}%
+\renewcommand{\mmat}[1]{\underline{\bm{#1}}}%
+\renewcommand{\mvec}[1]{\bm{#1}}%
+\renewcommand{\nvec}{\mvec{n}}%
+\renewcommand{\xvec}{\mvec{x}}%
+%
+\renewcommand{\mdet}[1]{\left|#1\right|}%
+\renewcommand{\mrm}[1]{\ensuremath{\mathrm{{#1}}}}%
+\renewcommand{\rmd}{\ensuremath{\mathrm{{d}}}}%
+%
+\renewcommand{\trans}{\ensuremath{\scriptsize\mathsf{T}}}%
+\renewcommand{\thh}{{\ensuremath\mathrm{th}}}%
+\renewcommand{\grad}[2]{\ensuremath{{\nabla_{\!{{#1}}}}{#2}}}%
+%
+\renewcommand{\giv}{\,|\,}%
+\renewcommand{\matidx}[2]{{{#1}, {#2}}}%
+\renewcommand{\mbinom}[2]{{\ensuremath{\begin{pmatrix}{#1}\\{#2}\end{pmatrix}}}}%
+%
+%
+\renewcommand{\apref}[1]{Appendix~\ref{#1}}%
+\renewcommand{\checked}{{\color{green}\textbf{CHECKED}}\\}%
+\renewcommand{\changed}{{\color{red}\textbf{DISCUSS}}\\}%
+%
+%
+% symbols%
+\renewcommand{\sstate}[1][\nvec]{\ensuremath{\sigma_{{#1}}}}%
+%
+\renewcommand{\disp}{\ensuremath{g}}%
+%
+\renewcommand{\nt}[2][]{\ensuremath{N^{_{#1}}_{^{^\mathrm{#2}}}}}%
+\renewcommand{\ntb}[2][]{\ensuremath{{\mvec{N}}^{_{#1}}_{^{^\mathrm{#2}}}}}%
+%
+%
+\renewcommand{\xep}[2][]{\ensuremath{{\rho}^{_{#1}}_{^{^\mathrm{#2}}}}}%
+%
+\renewcommand{\xt}[1]{\ensuremath{{\color{sol_red}\xi}_{_{\mathrm{#1}}}}}%
+%
+\renewcommand{\xtt}[2][]{\ensuremath{{\color{sol_red}\xi}^{{#1}}_{_{\mathrm{#2}}}}}%
+\renewcommand{\xtd}[1]{\ensuremath{{\color{sol_red}\dot{\xi}}_{_{\mathrm{#1}}}}}%
+\renewcommand{\et}[2][\vphi , \vthe]{\ensuremath{{\color{sol_blue}\eta}_{_{\mathrm{#2}}}{\lb {#1} \rb}}}%
+%
+%
+\renewcommand{\jt}[1]{\ensuremath{J_{^{^\mathrm{#1}}}}}%
+\renewcommand{\jtt}[1]{\ensuremath{\tilde{J}_{^{^\mathrm{#1}}}}}%
+%
+%
+\renewcommand{\configs}[1][]{\ensuremath{\lc \sstate[\nvec] \rc_{{#1}}}}%
+\renewcommand{\motif}[3]{\ensuremath{\mathcal{N}^{{#1}}_{{#2}}({#3})}}%
+\renewcommand{\motiff}[1]{\ensuremath{n_{{#1}}}}%
+%
+%
+\renewcommand{\intpsym}{\varphi}%
+\renewcommand{\intmsym}{\pi}%
+\renewcommand{\intpv}{\mvec{\intpsym}}%
+\renewcommand{\intmv}{\mvec{\intmsym}}%
+\renewcommand{\intpsyms}{\bar{\intpv}}%
+\renewcommand{\intmsyms}{\bar{\intmv}}%
+\renewcommand{\intpvs}{\mvec{\intpsyms}}%
+\renewcommand{\intmvs}{\mvec{\intmsyms}}%
+%
+\renewcommand{\diffu}[3][]{\ensuremath{\frac{\mathrm{d}^{#1}{#2}}{\mathrm{d}{#3}^{#1}}}}%
+\renewcommand{\diffl}[3][]{\ensuremath{\frac{\mathrm{d}^{#1}}{\mathrm{d}{#3}^{#1}} {#2}}}%
+%
+\renewcommand{\pdiffu}[3][]{\ensuremath{\frac{\partial^{#1}{#2}}{\partial{#3}^{#1}}}}%
+\renewcommand{\pdiffl}[3][]{\ensuremath{\frac{\partial^{#1}}{\partial{#3}^{#1}} {#2}}}%
+%
+%
+\renewcommand{\mpdiff}[3][]{\ensuremath{\partial^{#1}_{#3}{#2}}}%
+%
+\renewcommand{\fpdiffu}[3][]{\ensuremath{\frac{\partial^{#1}{#2}}{\partial{#3}}}}%
+%
+%
+\renewcommand{\grad}[2][]{\ensuremath{{\nabla_{\!{{#1}}}}{#2}}}%
+%
+%
+\renewcommand{\ufunc}[1]{\ensuremath{u{\ls {#1} \rs}}}%
+\renewcommand{\ufuncr}{\ensuremath{u}}%
+\renewcommand{\ufuncf}[1]{\ensuremath{\frac{1}{2}\ls 1 - \tanh{\lb \frac{1}{2} {#1} \rb} \rs}}%
+%
+\renewcommand{\ew}[3]{\ensuremath{W^{{#1}}_{\mathrm{#2}}{\lb {#3} \rb}}}%
+\renewcommand{\iw}[3]{\ensuremath{w^{{#1}}_{\mathrm{#2}}{\lb {#3} \rb}}}%
+%
+%
+%
+%
+\renewcommand{\ewf}[4]{\ensuremath{W^{_\mathrm{{#1}}}_{^{\, \mathrm{{#2}}| {#3}}}{\lb {#4} \rb}}}%
+\renewcommand{\ewff}[5]{\ensuremath{W^{_{\mathrm{{#1}}| {#4}}}_{^{\, \mathrm{{#2}}| {#3}}}{\lb {#5} \rb}}}%
+%
+\renewcommand{\swf}[4][]{\ensuremath{N^{_\mathrm{{#1}}}_{^{\, \mathrm{{#2}}| {#3}}}{\lb {#4} \rb}}}%
+\renewcommand{\swff}[5][]{\ensuremath{N^{_{\mathrm{{#1}}| {#4}}}_{^{\, \mathrm{{#2}}| {#3}}}{\lb {#5} \rb}}}%
+%
+\renewcommand{\rcwf}[3]{\ensuremath{\tau^{_\mathrm{{#1}}}_{^{\, \mathrm{{#2}}| {#3}}}}}%
+\renewcommand{\rcwff}[4]{\ensuremath{\tau^{_{\mathrm{{#1}}| {#4}}}_{^{\, \mathrm{{#2}}| {#3}}}}}%
+%
+\renewcommand{\scwf}[3]{\ensuremath{\mvec{\Delta}^{_\mathrm{{#1}}}_{^{\, \mathrm{{#2}}| {#3}}}}}%
+\renewcommand{\scwff}[4]{\ensuremath{\mvec{\Delta}^{_{\mathrm{{#1}}| {#4}}}_{^{\, \mathrm{{#2}}| {#3}}}}}%
+%
+%
+\renewcommand{\edwf}[3]{\ensuremath{\Delta H^{_\mathrm{{#1}}}_{^{\, \mathrm{{#2}}| {#3}}}}}%
+\renewcommand{\edwff}[4]{\ensuremath{\Delta H^{_{\mathrm{{#1}}| {#4}}}_{^{\, \mathrm{{#2}}| {#3}}}}}%
+%
+\renewcommand{\gwf}[4][G]{\ensuremath{{#1}^{_\mathrm{{#2}}}_{^{\, \mathrm{{#3}}| {#4}}}}}%
+\renewcommand{\gwff}[5][G]{\ensuremath{{#1}^{_{\mathrm{{#2}}| {#5}}}_{^{\, \mathrm{{#3}}| {#4}}}}}%
+%
+%
+\renewcommand{\iwf}[4]{\ensuremath{w^{_\mathrm{{#1}}}_{^{ \mathrm{{#2}}| {#3}}}{\lb {#4} \rb}}}%
+\renewcommand{\iwfs}[3]{\ensuremath{w^{_\mathrm{{#1}}}_{^{ \mathrm{{#2}} }}{\lb {#3} \rb}}}%
+% w^{_\mathrm{D}}_{^{\mathrm{T} |  {i,j}}}(\vphi, \vtheta, \xt{TD})%
+%
+%
+\renewcommand{\enwf}[3]{\ensuremath{u^{_\mathrm{{#1}}}_{^{ \mathrm{{#2}}| {#3}}}}}%
+\renewcommand{\enwfs}[2]{\ensuremath{u^{_\mathrm{{#1}}}_{^{ \mathrm{{#2}} }}}}%
+%
+%
+\renewcommand{\sech}{\ensuremath{\mathrm{sech}}}%
+%
+\renewcommand{\idef}{\ensuremath{\overset{\,\mathrm{def}\,}{=}}}%
+\renewcommand{\prob}{\ensuremath{\mathbb{P}}}%
+%
+%
+\renewcommand{\wptt}[1]{\ensuremath{\iwf{T}{E}{1, 0}{{#1}}}}%
+\renewcommand{\wptd}[1]{\ensuremath{\iwf{D}{E}{1, 0}{{#1}}}}%
+\renewcommand{\wpdd}[1]{\ensuremath{\iwf{D}{E}{0, 1}{{#1}}}}%
+\renewcommand{\wpdt}[1]{\ensuremath{\iwf{T}{E}{0, 1}{{#1}}}}%
+%
+\renewcommand{\wmtt}[1]{\ensuremath{\iwf{E}{T}{1, 0}{{#1}}}}%
+\renewcommand{\wmtd}[1]{\ensuremath{\iwf{E}{D}{1, 0}{{#1}}}}%
+\renewcommand{\wmdd}[1]{\ensuremath{\iwf{E}{D}{0, 1}{{#1}}}}%
+\renewcommand{\wmdt}[1]{\ensuremath{\iwf{E}{T}{0, 1}{{#1}}}}%
+%
+%
+\renewcommand{\wptte}[1]{\ensuremath{\iwf{T}{D}{1, 0}{{#1}}}}%
+\renewcommand{\wpdde}[1]{\ensuremath{\iwf{D}{T}{0, 1}{{#1}}}}%
+\renewcommand{\wmtte}[1]{\ensuremath{\iwf{D}{T}{1, 0}{{#1}}}}%
+\renewcommand{\wmdde}[1]{\ensuremath{\iwf{T}{D}{0, 1}{{#1}}}}%
+%
+\renewcommand{\wpttt}[1]{\ensuremath{\iwf{T}{D}{2, 0}{{#1}}}}%
+\renewcommand{\wpddd}[1]{\ensuremath{\iwf{D}{T}{0, 2}{{#1}}}}%
+%
+\renewcommand{\wmttt}[1]{\ensuremath{\iwf{D}{T}{2, 0}{{#1}}}}%
+\renewcommand{\wmddd}[1]{\ensuremath{\iwf{T}{D}{0, 2}{{#1}}}}%
+%
+\renewcommand{\wpttd}[1]{\ensuremath{\iwf{T}{D}{1, 1}{{#1}}}}%
+\renewcommand{\wmttd}[1]{\ensuremath{\iwf{D}{T}{1, 1}{{#1}}}}%
+%
+\]
+</p>
+<div id="outline-container-org514e2a9" class="outline-2">
+<h2 id="org514e2a9"><span class="section-number-2">1.</span> Introduction</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+Given a many-body dynamical system, when we take the thermodynamic (also macroscopic) limit, i.e. \(0 <  \lim{N, V \to \infty} \frac{N}{V} < \infty\), we expect from the law of large numbers coarsed grained observales to concentrate around some typical path. These typical paths which can be thought of as the Laplace's saddle point approximation in function space, are smooth and are the leading order asymptotic approximation of the coarse grained observables. In fact deviations from these typical paths decay as \(N \to \infty\). The precise statement would be the following. Given a typical path \(\bar{\mvec{x}} \in C^2{\lb [0, T]; \mathbb{R}^d \rb}\) and a stochastic path \(\mvec{x} \in C{\lb [0, T]; \mathbb{R}^d \rb}\) we have the condition
+</p>
+\begin{equation}
+\label{org72186af}
+\lim_{N \to \infty} \frac{1}{N^{\alpha}}\sup_{t \in [0, T]}|x_t - \bar{x}(t)| = 0, \quad \text{for some } \alpha > 0.
+\end{equation}
+<p>
+Note that \(\mvec{x}\) is the intensive quantity rescaled w.r.t \(N\). However we may consider the second order corrections to the typically path that restore the leading order deviations away from the typical path, that is we consider the dynamics of \(\mvec{x}_t = \bar{\mvec{x}}(t) + N^{-\alpha} \mvec{y}_t\) for \(t \in [0, T]\), which reads that stochastic (meso or macro) observable while tracking the deterministic typical path \(\bar{\mvec{x}}(t)\) will have stochastic perturbations of \(\mathcal{O}(N^{-\alpha})\) away from it. The goal of these notes is to summarise the exisiting framework from the literature to study such second order correcton to the problem. The focus will be on practical utility as opposed to mathematical rigour but we may cite material where one can find the rigourous proofs if appropriate.
+</p>
+
+<p>
+A losse plan is to start from the a general potts model, define coarse grain observables, obtain a chemical master equation and derive effective rates using approprate approximations, use large-deviation theory to study the asymptotic behaviour for large system size. Illustrative examples such as the Glycolytic oscillator may be used.
+</p>
+</div>
+</div>
+<div id="outline-container-org5bee425" class="outline-2">
+<h2 id="org5bee425"><span class="section-number-2">2.</span> General Potts Model</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+Let us consider a Potts model on a \(d\) dimensional lattice with width \(\Omega\) where the state of the \(\mvec{x} \in {[\Omega]}^{d}\) is given by \(\sstate[\mvec{x}] \in \{1, \ldots, M\}\). The equilibrium dynamics are dictated by the Hamiltonian
+</p>
+\begin{equation}
+\label{org0067231}
+  H = \sum_{\langle \mvec{x}, \mvec{y} \rangle} J_{\sstate[\mvec{x}], \sstate[\mvec{y}]}
+  + \sum_{\mvec{x}}  h_{\sstate[\mvec{x}]},
+\end{equation}
+<p>
+where the first summation is over the edges in the lattice, \(J_{\sstate[\mvec{x}], \sstate[\mvec{y}]}\) is the local coupling and \(h_{\sstate}\) is external field contribution to the energy. The rates of a microscopic spin flip of the site \(\mvec{x}\) in state \(i\) to the state \(j\) whilst keeping the rest of the sites fixed is given by
+</p>
+\begin{equation}
+\label{org92b4b91}
+  R^{\sstate[\mvec{x}] = j}_{\sstate[\mvec{x}] = i}(\configs) = \frac{1}{\tau}
+  \left\{ 1 - \tanh\!\left( \frac{\beta}{2} \big(  \Delta H  + g \big) \right)\right\}.
+\end{equation}
+<p>
+where \(\tau_s\) defines the intrinsic time scale of the spin flip, \(\Delta H\) and \(g\) are, respectively, the change in the Hamiltonian from spin flip and the energy used to drive the system. Both of these parameters depend on the local neighbourhood of \(\sigma_{\mvec{x}}\). This is exactly the same as Galuber (NO_ITEM_DATA:glauber1963) but with the addition of the driving term.
+</p>
+</div>
+<div id="outline-container-org33ffdf9" class="outline-3">
+<h3 id="org33ffdf9"><span class="section-number-3">2.1.</span> Lattice Motifs</h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+The total number of unique transitions is \((M - 1)\times \text{number of unique motifs}\). A motif in our case can be denoted as \(G^{k_1\cdots k_M}_{i}\) which represents a centre site in state \(i\) surrounded by \(k_1\) sites in state 1, \(k_2\) sites in state 2 and so on. The centre site can flip to either one of the \(M-1\) states. This representation of the local environment is isotropic.
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-org0d01150" class="outline-2">
+<h2 id="org0d01150"><span class="section-number-2">3.</span> Effective Master Equation</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+We consider a set of coarse-grained observables
+</p>
+\begin{equation}
+\label{orgd958048}
+n_i  = F_i [\{ \sstate \}], \qquad \nvec = (n_1, \ldots, n_M),
+\end{equation}
+<p>
+where \(\{ \sstate \}\) is the configuration of the lattice and \(F_i: \{ \sstate \} \mapsto \mathbb{N}\) are projections from the configuration to the natural numbers. For example \(F_1[\configs] = \sum_{\sstate[] \in \configs} \delta_{\sstate[], 1}\) yields the total number of sites in state \(1\).
+</p>
+
+<p>
+For the coarse observables the evolution of the occupation probability is governed by the effective master equation
+</p>
+\begin{equation}
+\label{org61ad389}
+\diffl{P_{\Omega}(\nvec, t)}{t} = \sum_{s}\left[  W_s(\nvec - \mvec{\Delta}_s) P_{\Omega}(\nvec - \mvec{\Delta}_s, t) - W_s(\nvec) P_{\Omega}(\nvec , t) \right],
+\end{equation}
+<p>
+where we use the following notation. The 'size' of the system is given by 
+\(\Omega\) i.e. if it is a \(d\) dimensional lattice with width \(N\) then \(\Omega = N^d\). Each index \(s\) defines a unique transition with position dependent rate \(W_s(\nvec)\) and the shift induced by the transition \(\mvec{\Delta}_s\). Due to the local nature of the dynamics, each effective rate scales with the frequency of motifs on which it can act. Denoting \(\mathcal{N}(G_{s}\,|\, \nvec)\) as the total number of motifs with the topology \(G_s\), then the effective rate takes the form
+</p>
+\begin{equation}
+\label{org4fd8b0a}
+W_{s}(\nvec) =
+\frac{\mathcal{N}(G_s \mid \nvec)}{\tau_s}\,
+\left\{ 1 - \tanh\!\left[ \frac{\beta}{2} \big(  \Delta H_s   + g_s \big) \right]\right\}.
+\end{equation}
+<p>
+Typically, \(\mathcal{N}(G_s \mid \nvec)\) is not known explicitly, so one instead resorts to approximating it using it an appropriate closure. In the nect section we define two levels of approximations for lattice systems .
+</p>
+</div>
+<div id="outline-container-orgc285e09" class="outline-3">
+<h3 id="orgc285e09"><span class="section-number-3">3.1.</span> Approximations of the local neighbourhood for lattices</h3>
+<div class="outline-text-3" id="text-3-1">
+<p>
+For lattice systems with coordination number \(z\), it is conveniant to define the motif structure with \(\gwf{}{i}{\mvec{k}}\) which denotes a motif with a centre in the \(i^{\text{th}}\)  state, and \(\mvec{k} = (k_1, k_2, ... k_M)\) defining the nearest-neighbours, i.e. \(k_i\) neighbours in the state \(i\). Note that \(\sum_{i = 1}^{M} k_{i} = z\).
+</p>
+</div>
+<div id="outline-container-org79ab79b" class="outline-4">
+<h4 id="org79ab79b"><span class="section-number-4">3.1.1.</span> First-order motif approximaiton.</h4>
+<div class="outline-text-4" id="text-3-1-1">
+<p>
+We consider the observable \(\nvec\) where \(n_i\) is the total number of sites in state \(i\). On this level the total number of a lattice motif is approximated by
+</p>
+
+\begin{align}
+\label{org4dff4be}
+\mathcal{N}_1(\gwf{}{i}{\mvec{k}} \mid \nvec)
+&= n_i \frac{\binom{n_1}{k_1} \cdots \binom{n_i - 1}{k_i} \cdots \binom{n_M}{k_M}}{\binom{n_1 + \cdots + n_M - 1}{z}} \\
+&= \binom{z}{k_1\ \cdots \ k_M} \frac{n^{k_1}_1 \cdots n^{k_i + 1}_i\cdots n^{k_M}_{M}}{N^{d z}}.
+\end{align}
+</div>
+</div>
+<div id="outline-container-org0fafbd5" class="outline-4">
+<h4 id="org0fafbd5"><span class="section-number-4">3.1.2.</span> Second-order (pair) approximation.</h4>
+<div class="outline-text-4" id="text-3-1-2">
+<p>
+We use the observable \(\nvec = (n_1, \ldots, n_M, n_{11}, \ldots, n_{MM})\) where \(n_{ij}\) counts edges joining states \(i\) and \(j\):
+</p>
+
+\begin{align}
+\label{org1f4311e}
+\mathcal{N}_2(\gwf{}{i}{\mvec{k}} \mid \nvec)
+&= n_i \frac{\binom{n_{i1}/2}{k_1} \cdots \binom{n_{ii}}{k_i} \cdots \binom{n_{iM}/2}{k_M}}{\binom{z n_i / 2}{z}} \\
+&= \binom{z}{k_1\ \cdots \ k_M} \frac{n_i (n_{1i} / 2)^{k_1} \cdots (n_{ii})^{k_i} \cdots (n_{iM} / 2)^{k_M}}{\left(\frac{z n_i}{2}\right)^z}.
+\end{align}
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-org4ca7b12" class="outline-2">
+<h2 id="org4ca7b12"><span class="section-number-2">4.</span> Dynamics of Macroscopic Observables</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+Usually our interest does not lie in the analysis of the discrete system for small system size but instead we wish to see the evolution of the observables as \(\Omega \to \infty\). Thus it is usefull to define observables that are intensive with respect to \(\Omega\) as
+</p>
+\begin{equation}
+\label{orgdd9f1b4}
+\mvec{\intpv} \idef \lim_{\nvec , \Omega \to \infty} \frac{\nvec}{\Omega}
+\end{equation}
+<p>
+as well as the intensive rates via the limit
+</p>
+\begin{equation}
+\label{orgfa1a08c}
+w_{s}(\intpv)
+\idef \lim_{\nvec , \Omega \to \infty} \frac{1}{\Omega} W_{s}(\nvec).
+\end{equation}
+<p>
+Lastly it is convenient to define the occupation probability density of the intensive variables as
+</p>
+\begin{equation}
+\label{org60ece51}
+\mathcal{P}_{\epsilon}(\intpv, t) \idef P_{\Omega}(\intpv / \epsilon, t) = P_{\Omega}(\Omega\intpv, t)
+\end{equation}
+<p>
+where obviously \(\epsilon = 1/\Omega\).
+</p>
+</div>
+<div id="outline-container-org036aa22" class="outline-3">
+<h3 id="org036aa22"><span class="section-number-3">4.1.</span> Intensive quantities for lattice systems</h3>
+<div class="outline-text-3" id="text-4-1">
+<p>
+For lattice systems it is convenient to fix the dimension \(d\) and take the limit
+</p>
+\begin{equation}
+\label{orga99d73c}
+\vphi_{i} \idef \lim_{\substack{N \to \infty \\ \nvec \to \infty}}  N^{-d} n_i.
+\end{equation}
+<p>
+to define the concentration of sites in state \(i\), and for the pair concentration it may be useful to define it as
+</p>
+\begin{align}
+\vphi_{ij} &\equiv \lim_{N \to \infty} \frac{n_{ij}}{\frac{z n_i}{2}}
+=  \frac{2}{z\,\vphi_{i}}\lim_{N \to \infty}  N^{-d} n_{ij}.
+\end{align}
+
+<p>
+The motif approximation in the large-\(N\) limit yields the non-linearity in the ODEs. For the first-order approximation,
+</p>
+
+\begin{equation}
+\label{org182c9b6}
+\chi_1 = \lim_{N \to \infty} N^{-d} \mathcal{N}_1(\gwf{}{i}{\mvec{k}} \mid \nvec)
+= \binom{z}{k_1\ \cdots \ k_M} \big(\vphi_1^{k_1}\cdots \vphi_i^{k_i+1}\cdots \vphi_M^{k_M}\big).
+\end{equation}
+</div>
+</div>
+<div id="outline-container-intensive-master-equation" class="outline-3">
+<h3 id="intensive-master-equation"><span class="section-number-3">4.2.</span> Intensive Master equation</h3>
+<div class="outline-text-3" id="text-intensive-master-equation">
+<p>
+The effective master equation can be recast as
+</p>
+\begin{equation}
+\label{org7d9519e}
+ \mpdiff{\mathcal{P}_{\epsilon}(\intpv, t)}{t}
+= \frac{1}{\epsilon}\sum_s \left[ w_s\left(\intpv - \epsilon \mvec{\Delta}_s \right)
+\mathcal{P}_{\epsilon}\left(\intpv - \epsilon \mvec{\Delta}_{s}, t\right)
+- w_s(\intpv) \mathcal{P}_{\epsilon}(\intpv, t)\right],
+\end{equation}
+<p>
+or as 
+</p>
+\begin{equation}
+\label{org49661e7}
+\mpdiff{\mathcal{P}_{\epsilon}({\intpv}, t)}{t}
+= (\mathcal{A}^{\dagger}_{\epsilon} \mathcal{P}_{\epsilon})(\intpv, t)
+\end{equation}
+<p>
+where
+</p>
+\begin{equation}
+\label{org3155f96}
+(\mathcal{A}^{\dagger}_{\epsilon}f)(\intpv, t) = 
+\frac{1}{\epsilon}\sum_s \left[ w_s\left(\intpv - \epsilon \mvec{\Delta}_s \right)
+f\left(\intpv - \epsilon \mvec{\Delta}_s, t\right)
+- w_s(\intpv) f(\intpv, t)\right],
+\end{equation}
+<p>
+is the (unscaled) forward generator which propgates the probability. Notice analgously we also have the backward (unscaled) generator defined as (NO_ITEM_DATA:oksendal2013book)  
+</p>
+\begin{equation}
+\label{orgdf46573}
+(\mathcal{A}_{\epsilon}f)(\intpv, t) = \lim_{\delta_t \to 0} \frac{1}{\delta_t} 
+{\bigg\{ \mathbb{E}[f(\intpv_{t + \delta_{t}}) \mid \intpv_{t} =  \intpv] - f(\intpv) \bigg\}}.
+\end{equation}
+<p>
+Suppose we have \(u(\intpv, t) = \mathbb{E}[f(\intpv_{t})]\), then 
+</p>
+\begin{equation}
+\label{org90442d4}
+\mpdiff{u(\intpv, t)}{t} = (\mathcal{A}_{\epsilon}u)(\intpv, t)
+\end{equation}
+<p>
+\(\mathcal{A}_{\epsilon}\) propagates observables, its defined via
+</p>
+\begin{equation}
+\label{org92406ad}
+(\mathcal{A}_{\epsilon}f)(\intpv, t) = 
+\frac{1}{\epsilon}\sum_s w_{s}(\intpv) \left[ f(\intpv + \epsilon \mvec{\Delta}_s, t) - 
+f(\intpv, t) \right],
+\end{equation}
+<p>
+and is dervied by multipliying \eqref{org7d9519e} with \(f(\intpv)\) and integrating over \(\intpv\) e.g. (not quite noationally correct but the procedure is analgous)
+</p>
+\begin{equation}
+\label{org6cf1a32}
+\begin{aligned}
+\mpdiff{\mathbb{E}[f(\mvec{x}_t)]}{t} &= 
+\int f(\intpv) \mpdiff{\mathcal{P}_{\epsilon}(\intpv, t)}{t} \rmd \intpv \\
+ &= \frac{1}{\epsilon}
+\int f(\intpv) \sum_s \left[ w_s\left(\intpv - \epsilon \mvec{\Delta}_s \right)
+\mathcal{P}_{\epsilon}\left(\intpv - \epsilon \mvec{\Delta}_{s}, t\right)
+- w_s(\intpv) \mathcal{P}_{\epsilon}(\intpv, t)\right]
+ \rmd \mvec{x}, \\
+&= \frac{1}{\epsilon}
+\int  \sum_s \left[f(\intpv + \epsilon \mvec{\Delta}_s) w_s\left(\intpv  \right)
+\mathcal{P}_{\epsilon}\left(\intpv, t\right)
+- f(\intpv)w_s(\intpv) \mathcal{P}_{\epsilon}(\intpv, t)\right]
+ \rmd \mvec{x}, \\
+&= \frac{1}{\epsilon}
+\int  \sum_s\mathcal{P}_{\epsilon}\left(\intpv, t\right)w_s\left(\intpv  \right) \left[f(\intpv + \epsilon \mvec{\Delta}_s) 
+- f(\intpv)\right],
+ \rmd \mvec{x}
+\end{aligned}
+\end{equation}
+<p>
+FIX: This needs to be connected properly with \(u(x, t)\). One can also consider heuristically
+</p>
+\begin{equation}
+\label{orgc9bd627}
+\mathbb{E}_{\intpv}[f(\intpv_{t + \delta t})\,|\, \intpv_0 = \intpv]  =
+\sum_{s} f(\intpv_t + \epsilon \Delta_s) w_s(\intpv_t) \delta t + f(\intpv_t)( 1 -  \delta t \sum_{s} w_s(\intpv_t))
+\end{equation}
+<p>
+and inserting into \eqref{orgdf46573}. Both \(\mathcal{A}_{\epsilon}\) and \(\mathcal{A}^{\dagger}_{\epsilon}\) satisfy the semigroup property
+\[
+\mathcal{P}_{\epsilon}(\intpv, t) = \lb \ee^{t \mathcal{A}^{\dagger}_{\epsilon}}\mathcal{P}_{\epsilon} (\cdot, t = 0)\rb, \quad \text{and} \quad
+f(\intpv, t) = \lb \ee^{t \mathcal{A}_{\epsilon}}f (\cdot, t = 0)\rb,
+\]
+as well as the dual pairing \(\langle f, \mathcal{A}^{\dagger}_{\epsilon} \mathcal{P}_{\epsilon} \rangle = \langle \mathcal{A}_{\epsilon} f,  \mathcal{P}_{\epsilon} \rangle\), where \(\langle f, g \rangle = \int_{D} f(\intpv) \overline{g(\intpv)} \mathrm{d}\intpv\). These are elementary facts and may be found in (NO_ITEM_DATA:gardiner2009book) or (NO_ITEM_DATA:oksendal2013book).
+</p>
+
+<p>
+In the following section we will assume that the family of probability measures for \(\epsilon > 0\) and whose density is given by \(\mathcal{P}_{\epsilon}(\intpv, t)\) is exponentially tight. To show that this is indeed the case for our CME, we must show that for all \(\delta > 0\) and \(t \in [0, T]\), there exisits a compact set \(A_{\delta, t} \subset [0, 1]^d\) such that 
+</p>
+\begin{equation}
+\label{org04b93c4}
+\limsup_{\epsilon \to 0} \epsilon \ln{\mathbb{P}_{\epsilon, t}[\intpv \notin A_{\delta, t}]} \leq -\delta,
+\end{equation}
+<p>
+where 
+\[
+\mathbb{P}_{\epsilon, t}[\intpv \in A] = \int_{A} \mathcal{P}_{\epsilon}(\intpv, t) \mathrm{d} \intpv.
+\]
+However, if we can show that there exisits an LDP with a <i>good</i> rate function then (by definition), the probability must be concentrated and exponentially tight. 
+</p>
+</div>
+</div>
+<div id="outline-container-sec-exp-obs" class="outline-3">
+<h3 id="sec-exp-obs"><span class="section-number-3">4.3.</span> Exponential Observables</h3>
+<div class="outline-text-3" id="text-sec-exp-obs">
+<p>
+The starting point for the our approach is the modes assumption that are system permits the exisitance of observables that scale exponentially. For example suppose we have an extensive observable \(F: \mathbb{N}^d \mapsto [0, \infty)\), then this must satisfy the relation 
+</p>
+\begin{equation}
+\label{org68f6de4}
+\lim_{{\epsilon \to 0}} \epsilon  \ln F(\nvec_t)  
+= g(\intpv_t)
+\implies F(\nvec_{t}) \asymp \ee^{g(\intpv_t) / \epsilon},
+\end{equation}
+<p>
+for some bounded \(g: \mathbb{R}^d \to \overline{\mathbb{R}}\). The boundedness is necessary to ensure that the scaling does not become super exponential. Clearly each \(F\) results in unique \(g\), however, each \(g\) yeilds a equivalent class of functions
+</p>
+\begin{equation}
+\label{orgf49d9a5}
+\mathcal{F}^g = 
+\lc F: \mathbb{N}^d  \mapsto [0, \infty) \,\bigg|\,  \forall \text{ compact } A \in \mathbb{R}^d, \sup_{\intpv \in A} \lp \epsilon \ln{F(\lfloor \intpv / \epsilon \rfloor)} - g(\intpv) \rp  \to 0 \text{ as } \epsilon \to 0 \rc.
+\end{equation}
+<p>
+Note that the we take, as is usual in large diveiation theory, to case seperate when the obserable is zero in order to define properly the log of zero case which we will see later.
+</p>
+
+<p>
+Given that we we will not be addressing any subexponential factors then it is convenient to select an arbitrary \(F^{g} \in \mathcal{F}^{g}\) in the following steps. Thus variations in \(g\) changes the equivalence class and vice versa, or in less formal terms we treat the pairing between \(F\) and \(g\) as `unique' as we are only interested in features common to all function in \(\mathcal{F}_g\).  
+</p>
+
+<p>
+Now suppose we define  
+</p>
+\begin{equation}
+\label{orgbaf521d}
+f^g_{\epsilon}(\intpv)  \idef  F^g(\lfloor \intpv / \epsilon \rfloor) = F^g(\nvec),
+\end{equation}
+<p>
+and
+</p>
+\begin{equation}
+u^{g}_{\epsilon}(\intpv, t)  \idef \mathbb{E}[ f^g_{\epsilon}(\intpv_t ) \,|\, \intpv_0 = \intpv] = \mathbb{E}[ \ee^{g(\intpv_t) / \epsilon} \,|\, \intpv_0 = \intpv],
+\end{equation}
+<p>
+then if  \eqref{org68f6de4} is satisfied then there exists a function \(v^g(\intpv, t)\) such that 
+</p>
+\begin{equation}
+\label{org3425f9d}
+v^g(\intpv, t) \idef \lim_{\epsilon \to 0} \epsilon  \ln {\ls u^g_{\epsilon}(\intpv, t) \rs} \implies u^g_{\epsilon}(\intpv, t) \asymp \ee^{v^g(\intpv, t) / \epsilon }.
+\end{equation}
+
+
+<p>
+Notice that the relationship between \(u^g_{\epsilon}(\intpv, t)\) and \(v^g(\intpv, t)\)
+parallels that of \(f^g_{\epsilon}(\intpv_t)\) and \(g(\intpv_t)\). It follows from
+</p>
+\begin{equation}
+\label{org04278f0}
+\begin{aligned}
+\epsilon \ln[u^g_{\epsilon}(\intpv, t)] &\to v^g(\intpv, t),
+\end{aligned}
+\end{equation}
+<p>
+that
+</p>
+\begin{equation}
+\label{org1db9cda}
+\begin{aligned}
+\epsilon \mpdiff{\ln[u^g_{\epsilon}(\intpv, t)]}{t} =  \frac{\epsilon \mpdiff{u^{g}_{\epsilon}(\intpv, t)}{t}}{u^{g}_{\epsilon}(\intpv, t)}  &\to \mpdiff{v^g(\intpv, t)}{t}.
+\end{aligned}
+\end{equation}
+<p>
+as \(\epsilon \to 0\). Thus the evolution of observables under the tilted process is given by nonlinear generator
+</p>
+\begin{equation}
+\label{org69baaa5}
+\begin{aligned}
+(\mathcal{H}_{\epsilon} v^g)(\intpv, t) &\idef  \ee^{-v^g(\intpv, t) / \epsilon} (\mathcal{A}_{\epsilon} \ee^{v^g(\cdot, t) / \epsilon })(\intpv, t), \\
+ &= \frac{1}{\epsilon}\ee^{-v^g(\intpv, t) / \epsilon} \sum_{s} { w_s(\intpv) \ls \ee^{v^g(\intpv + \epsilon \mvec{\Delta}_s, t) / \epsilon} - \ee^{v^g(\intpv, t) / \epsilon}  \rs },
+\end{aligned}
+\end{equation}
+<p>
+and the scaled version is defined as the limit
+</p>
+\begin{equation}
+\label{orgb64accd}
+(\mathcal{H}_{} v^g)(\intpv, t) \idef \lim_{\epsilon \to 0} \epsilon (\mathcal{H}_{\epsilon} v^g)(\intpv, t) = 
+\sum_{s} { w_s(\intpv) \ls \ee^{\mvec{\Delta}_s \cdot \mpdiff{v^g(\intpv, t)}{\intpv}} - 1  \rs }.
+\end{equation}
+<p>
+Hence, the evolution of the scaled cumulunt generating function is given by 
+</p>
+\begin{equation}
+\label{org7f187dc}
+\mpdiff{v^g(\intpv, t)}{t} - (\mathcal{H}_{} v^g)(\intpv, t) = 0,
+\end{equation}
+<p>
+where it is important to highlight the negative sign of the nonlinar generator. This equation is the large deviation analogue of the backward Kolmogorov equation, it describes the mean exponential growth rate of an observable.
+</p>
+</div>
+</div>
+<div id="outline-container-org7474027" class="outline-3">
+<h3 id="org7474027"><span class="section-number-3">4.4.</span> Connecting to the probability density</h3>
+<div class="outline-text-3" id="text-4-4">
+<p>
+In order to connect the exponential observables to the probability, we will employ the following theorem stated without proof (check (NO_ITEM_DATA:fengkurtz2006book) and (NO_ITEM_DATA:dembozeitouni2010book) for the proof).
+</p>
+
+<div class="theorem" id="org3d35b41">
+<p>
+Let \(\{\intpv_t\}_{\epsilon}\) be a sequence of random variables parameterised by \(\epsilon\) for a fixed value of \(t\) and with \(\intpv_{0} = \intpv\). Then if \(\intpv_t\) is exponentially tight and such that the limit 
+</p>
+\begin{equation}
+\label{org82ae2bf}
+v^{g}(\intpv, t) \idef \lim_{\epsilon \to 0}\epsilon
+\ln{\lb \mathbb{E}[\ee^{g(\intpv_t)/\epsilon} \,|\, \intpv_0  = \intpv] \rb}
+\end{equation}
+<p>
+for all bounded \(g: \mathbb{R}^d \to \mathbb{R}\) then \(\{\intpv_t\}_{\epsilon}\) satisfies an LDP with a good rate function  
+</p>
+\begin{equation}
+\label{orgce27adc}
+V(\intpv, t) = \sup_{g}{\lc g(\intpv) - v^g(\intpv, t) \rc}.
+\end{equation}
+
+</div>
+<p>
+While I will not state the proof of <a href="#org3d35b41">No description for this link</a>, the following serves as a sketch and highlights that the former hinges on Laplace's principle in function space. From \eqref{orgbaf521d} and \eqref{org3425f9d}, we must have  
+</p>
+\begin{equation}
+\label{orge82b007}
+ v^g(\intpv, t) = \lim_{\epsilon \to 0} \epsilon \ln \mathbb{E}[\ee^{g(\intpv_{t}) / \epsilon} \,|\, \intpv_0 = \intpv] ,
+\end{equation}
+<p>
+for all bounded \(g\) for such observables, we know that they must be exponentailly concentrating which can be seen from 
+</p>
+\begin{equation}
+\label{org670699b}
+u^{g}_{\epsilon}(\intpv, t) \asymp \int \ee^{g(\intpv) / \epsilon}
+\mathcal{P}_{\epsilon}(\intpv, t) 
+\mathrm{d}\intpv,
+\end{equation}
+<p>
+where in the integral in order balance the exponential observable the probability must itself have exponential tails.
+</p>
+
+<div class="remark" id="orgfc0fb15">
+<p>
+The relation \eqref{orgf1b0de7} is the Bryc inversion of Varadhan’s lemma which states that if a sequence \(\{\mvec{X}_\epsilon\}\) satisfies an LDP with
+rate \(I\), then
+\(\epsilon\ln\mathbb E[e^{g(\mvec{X}_\epsilon)/\epsilon}]\to \sup_{\mvec{x}}\{g(\mvec{x})-I(\mvec{x})\}\).
+Bryc’s theorem provides the converse, that is, if the scaled log-Laplace transforms
+\(v_{\epsilon}^{g}(\mvec{x}, t)\) converge to a limit \(v^{g}(\mvec{x}, t)\), then the family \(\{\mvec{X}_\epsilon\}\) obeys
+an LDP with rate function \(I(\mvec{x})=\sup_g\{g(\mvec{x})-v^g(\mvec{x})\}\).
+In our setting, \(v^g(\intpv,t)\) plays the role of \(v^{g}(\mvec{x})\) as our process is parameterised by t, and
+\(V(\intpv,t)\) in \eqref{orgf1b0de7} is precisely this Legendre–Fenchel dual.
+Thus the large-deviation structure of the CME arises as a direct application of
+the Bryc–Varadhan duality to the semigroup generated by
+\eqref{org92406ad}.
+</p>
+
+</div>
+
+<p>
+Using <a href="#org3d35b41">No description for this link</a> we obtain 
+</p>
+\begin{equation}
+\label{orgeedb89f}
+-\lim_{\epsilon \to 0} \epsilon \ln \mathcal{P}_{\epsilon}(\intpv, t) = V(\intpv, t),
+\end{equation}
+<p>
+where 
+</p>
+\begin{equation}
+\label{orgf1b0de7}
+V(\intpv, t) = \sup_{g}{\lc g(\intpv)  - v^g(\intpv, t)\rc}.
+\end{equation}
+<p>
+is the rate function.  It can be shown that the evolution of \(V(\intpv, t)\)  is governed by the forward Hamilton-Jacobi equation
+</p>
+\begin{equation}
+\label{org0c7a2ab}
+\mpdiff{V(\intpv, t)}{t} + (\mathcal{H}_{} V)(\intpv, t) = 0.
+\end{equation}
+<div class="todo" id="org33dda08">
+<p>
+To do this one needs to use \eqref{orgf1b0de7} and the notion of sub and supppa viscosity solutions to show that there exisists a unique viscosity solution that satisfies \eqref{org0c7a2ab}. The notion of viscosity solution are the appropriate framework here as the \(V(\intpv, t)\) corresponding to the free energy landscape may not be smooth. This development can be found in (NO_ITEM_DATA:fengkurtz2006book).
+</p>
+
+</div>
+
+
+<div class="remark" id="orgb370ad9">
+<p>
+The function \(v^g(\intpv,t)\) is the scaled log–Laplace transform (or cumulant
+generating functional) of the process \(\intpv_t^\epsilon\) at time \(t\), conditioned
+on the initial state \(\intpv_0=\intpv\):
+\[
+v^g(\intpv,t)
+=\lim_{\epsilon\to0}\epsilon\ln
+\mathbb E_{\intpv}\!\left[\ee^{g(\intpv_t)/\epsilon}\right].
+\]
+For each fixed \(t\), the mapping \(g\mapsto v^g(\intpv,t)\) coincides with the
+log–Laplace functional appearing in Bryc’s theorem.  Hence
+\eqref{orgf1b0de7} is a time–parametrised form of the Bryc formula, where
+\(V(\intpv,t)\) is the associated rate function and \(v^g(\intpv,t)\) its
+log–Laplace dual.  Dynamically, \(v^g\) evolves according to the nonlinear
+Hamilton–Jacobi equation
+\(\mpdiff{v^g}{t} = \mathcal H(\intpv, \pdiffl{v^g}{\intpv} )\),
+which expresses the infinitesimal version of this duality.
+</p>
+
+</div>
+
+
+
+<div class="remark" id="org1c304dc">
+<p>
+I have always found the terminology "backward" and "forward" for the two equations very confusing. They are simply two ways of representing the semigroup \(\ee^{t\mathcal{A}}\), with one acting on the observable "backward" the other on the density "forward", but both are evolutions forward in time.
+</p>
+
+</div>
+<p>
+Both the forward and backward equation are manifestly the same Hamiltonian structure, with the difference only being a sign change. Defining the Hamiltonian as 
+</p>
+\begin{equation}
+\label{org58f7c4a}
+\mathcal{H}(\intpv, \intmv) \idef \sum_{s} { w_s(\intpv) \ls \ee^{\mvec{\Delta}_s \cdot \intmv} - 1  \rs},
+\end{equation}
+<p>
+and letting \(\intmv = \mpdiff{v^g(\intpv, t)}{\intpv}\) be the conjugate momenta in the backward equation then the corresponding  Hamiltonian present in \eqref{org7f187dc} is given by 
+</p>
+\begin{equation}
+\label{org7eb0569}
+\mathcal{H}_{\text{bwd.}}(\intpv, \intmv) = -\mathcal{H}(\intpv, \intmv).
+\end{equation}
+<p>
+Analagously, letting \(\intmv = \mpdiff{V(\intpv, t)}{\intpv}\) be the conjugate momenta in the forward equation then the corresponding  Hamiltonian present in \eqref{org0c7a2ab} is given by
+</p>
+\begin{equation}
+\label{org0639ba9}
+\mathcal{H}_{\text{fwd.}}(\intpv, \intmv) = \mathcal{H}(\intpv, \intmv).
+\end{equation}
+</div>
+</div>
+<div id="outline-container-sec-connecting-fw" class="outline-3">
+<h3 id="sec-connecting-fw"><span class="section-number-3">4.5.</span> Extending large-deviation principle to path space and the emergence of smooth most-probable paths</h3>
+<div class="outline-text-3" id="text-sec-connecting-fw">
+<p>
+Thus far we have only considered LDP for one-time quantities either an observable \(u^{g}_{\epsilon}(\intpv, t)\) or the occupation probability \(\mathcal{P}_{\epsilon}(\intpv, t)\), where the corresponding rate functions are, respectively, \(v^{g}_{\epsilon}(\intpv, t)\) and \(V(\intpv, t)\) satisfies the backward and forward Hamilton–Jacobi equations \eqref{org0c7a2ab} and \eqref{org7f187dc} with Hamiltonian \eqref{org58f7c4a}. To lift the LDP to parth space we employ the Dawson-Gartner theorem (Thm. 3.3. in (NO_ITEM_DATA:dawsongartner1987)) which adapted to our scenario states that if a LDP princple exisits for a finite partition \({\lc t_1 \cdots t_{M} \rc}\) where \(0 < t_1 < \cdots t_{M} = t\) for any positive integer \(M\), then a LDP exists on an appropriate path-space. The proof relies on the so-called contraction princple which we will not go into, check <a href="large-deviations.html#orge853cab">LDP Paths</a> for more detail. However we must still walk thorugh some of the construction to understand what the path space actually is.
+</p>
+
+<p>
+Let
+</p>
+\begin{equation}
+\label{org5e9da02}
+\Pi_{M} = \big\{ (t_1, \ldots, t_{M}) \,\big|\, 0 < t_1 < \cdots < t_M = t \big\},
+\end{equation}
+<p>
+denote the set of all ordered partitions of the interval \([0,t]\) with \(M\) points.
+Let \(\mathcal{K}\) be the set of all functions \(f : [0,t] \to \mathbb{R}^d\).
+For each partition \(\pi_M \in \Pi_M\) we define the projection
+</p>
+\begin{equation}
+\label{orgf71b4f9}
+\mathcal{E}_{\pi_M} : \mathcal{K} \to (\mathbb{R}^{d})^M,
+\qquad
+\mathcal{E}_{\pi_M}(f) = \big(f(t_1),\ldots,f(t_M)\big),
+\end{equation}
+<p>
+and one partition \(\pi_M\) is said to be a refinement over another \(\pi_{M'}\) if \(\pi_M' \subset \pi M\) with \(M > M'\). Let 
+</p>
+\begin{equation}
+\label{orgabd3f33}
+\rho_{\pi_{M'},\pi_M} : (\mathbb R^d)^M \longrightarrow (\mathbb R^d)^a{M'}
+\end{equation}
+<p>
+that removes all of the interlaced coordinates, i.e.   
+\[
+\rho_{\pi_{M'},\pi_M}(\intpv_{t_1}, \ldots, \intpv_{t_{M}}) = (\intpv_{t'_1}, \cdots, \intpv_{t'_{M'}}).
+\]
+With \(\Pi = \bigcup_M \Pi_M\) denoting the set of all finite partitions,  the path space on which the LDP exisits via the Dawson–Gärtner theorem  via
+the limit
+</p>
+\begin{equation}
+\label{org15713d2}
+\mathcal{K}' = 
+\bigcap_{\substack{\pi, \pi' \in \Pi \\ \pi' \subset \pi}}{\lc  f \in \mathcal{K} \,|\, \rho_{\pi', \pi}(\mathcal{E}_{\pi}(f)) = \mathcal{E}_{\pi'}(f)\rc}
+\subset \mathcal{K},
+\end{equation}
+<p>
+where \(\pi\) is refinement of \(\pi'\). In other words, \(\mathcal{K}'\) consists of all trajectories whose finite-time evaluations are mutually compatible across all partitions. Notice that \(\mathcal{K}'\) is smaller than \(\mathcal{K}\) but it is not even \(C([0, t]; \mathbb{R}^d)\) let alone the \(C^2([0, t]; \mathbb{R}^d)\) that we often work with when using WKB analysis.
+</p>
+
+<div class="todo" id="orgf5a7ad0">
+<p>
+Need to fix the space construction. 
+</p>
+
+</div>
+
+<p>
+To connect this construction with our jump process let us consider the following. We know the our stochastic process defined by the (intensive) CME yields piecewise-constant trajectories with jumps of order \(O(\epsilon)\). Let \(\mathcal{D}([0,t];\mathbb{R}^d) \subset \mathcal{K}'\) denote the space of such piecewise-constant-cadlag paths. For an LDP to hold in \(\mathcal{D}([0,t];\mathbb{R}^d)\) then there must exist compact subsets \(A_i \subset \mathbb{R}^d\) for \(i=1,\ldots,M\) on which the projected occupation probability concentrates, which in our case the concentration is exponentially tight. If \(\hat{\mathcal{D}}  \subset  \mathcal{D}([0,t];\mathbb{R}^d)\) is a concentrated subset, then 
+</p>
+\begin{equation}
+\label{org5d4ff6f}
+\mathcal{E}_{\pi_M}(f) \in \prod_i A_i, \quad \forall f \in \hat{\mathcal{D}}, \quad
+\forall \pi_M \in \Pi_M
+\end{equation}
+<p>
+and there exists a \(\mu_i > 0, \cdots \mu_M > 0\) such that 
+\[
+\mathbb{P}[|\intpv_i - f(t_i)| > \mu_i] \leq C_1 \ee^{-C_2 \mu_i / \epsilon},\quad  i = 1, \cdots, M.
+\]
+Further for each \(f = \hat{\mathcal{D}}\) and for each finite \(\delta_1 > 0, \cdots, \delta_{M} > 0\) and there exists \(g \in C^n([0, t]; \mathbb{R}^d)\) such that 
+</p>
+\begin{equation}
+\label{org99825ed}
+g(t_i) \in A_i, \quad | f(t_i) - g(t_i) | > \delta_i, \quad i = 1, \cdots, M
+\end{equation}
+<p>
+Since the probabilities are exponentially tight, then 
+</p>
+\begin{equation}
+\label{orgc225a69}
+\sup_{f \in \hat{\mathcal{D}}} {\mathbb{P}[| \intpv_{t_i}  - f(t_{i}) | > \mu_{i}]}
+<
+{\mathbb{P}[| \intpv_{t_i}  - g(t_{i}) | < {\delta_i + \mu_i}]}
+< R^i_1\ee^{- R^i_2 (\delta_i + \mu_i) / \epsilon}
+\end{equation}
+<p>
+for some \(g \in C^{n}([0, t]; \mathbb{R}^d)\) and with \(R^i_1, R^i_2 , \mu_i > 0\). Since \eqref{orgc225a69} must hold for any finite projection and since the stochastic paths are cadlag, we have a finite \(\mu > 0\) and \(\delta >0\) such that
+</p>
+\begin{equation}
+\label{org7e0b2d1}
+\mathbb{P}\ls \sup_{s \in [0, t]}|\intpv_s - f(s)| > \mu \rs
+\leq
+\mathbb{P}\ls\sup_{s \in [0, t]}|\intpv_s - g(s)| > \delta + \mu \rs
+\leq 
+ R_1\ee^{- R_2 (\delta + \mu) /  \epsilon}
+\end{equation}
+<p>
+where
+</p>
+\begin{equation}
+\label{orgbd15f9d}
+\sup_{s \in [0, t]}| f(s) - g(s)| < \delta.
+\end{equation}
+<p>
+Since \eqref{org7e0b2d1} must be true for all non-negative \(\delta\) then the concentrated paths can be approximated by a smooth path of arbitrary smoothness to arbitrary degree eventhough smooth paths themselves have no support in the probability measure. In other words, despite the microscopic trajectories being piecewise constant, their probabilities become exponentially concentrated on paths which get arbitrarily close, in the sense of a supremum norm,  to continuous and smooth paths as \(\epsilon\to 0\). This fact must be emphasised especially since the continuous paths are a zero measure-set on the space of paths for any finite \(\epsilon\) and that the statement only holds asymptotically and because of exponential tightness. The immediate consequence of this is that to study the leading order asymptotics, namely the concentrated paths one can restrict the path space to \(C^n([0,t];\mathbb{R}^d)\)
+</p>
+<div class="remark" id="orge5673b8">
+<p>
+Before we proceed it is important to point out that while a smooth path can represent the leading order asymptotics, the LDP via Dawson-G{\''a}rtner theorem actually holds in a much larger space. This space is called the space of absolutely continuous  functions on the interval \([0, t]\) which is defined as
+</p>
+\begin{equation}
+\label{org29b6a49}
+\mathcal{AC}([0, t]; \mathbb{R}^d) =
+ {\lc  f:[0, t] \mapsto \mathbb{R}^d \,\big|\,
+\forall \epsilon > 0, \exists \delta >0,   \pi_M \text{ s.t. } 
+\sum_{i = 1}^M(t_{i-1} - t_{i})  <  \delta  \implies \sum_{i = 1}^M(f(t_{i-1}) - f(t_{i}))  <  \epsilon   \rc}.
+\end{equation}
+<p>
+Remember that \(\pi_M\) is a finite (ordered) partition of the interval \([0, t]\). 
+</p>
+
+</div>
+
+
+<p>
+The leading order asymptotics that is smooth curves around which the paths concentrate as \(\epsilon \to 0\) are most often call the most probable paths and we can obtain them via a variational form of Hamilton-Jacobi equation shown in in \eqref{org7f187dc}. That equation written in the more familiar form 
+</p>
+\begin{equation}
+\label{org8e59470}
+\mpdiff{V(\intpv,t)}{t} + \mathcal H(\intpv,\mpdiff{V}{\intpv} ) = 0,
+\end{equation}
+<p>
+naturally suggests an underlying variational principle. However, the trajectories \(\intpv_s\) with \(s \in [0, t]\) being paramterised time, are stochastic so to consider properly the variational structure we will first introduce a sufficiently smooth representation restriction of the path space as we have already discussed in what sense the smoothed paths and the stochastic paths are related. 
+</p>
+
+<p>
+Let us introduce
+</p>
+\begin{equation}
+\label{org1d5db0d}
+\intpvs_s \in {\lc C^2([0, t]; \mathbb{R}^d)\,|\, \intpvs_0 = \intpv_0, \intpvs_t = \intpv_t  \rc},\quad
+\intmvs_s \in {\lc C([0, t]; \mathbb{R}^d)\,|\, \intmvs_0 = \intmv_0, \intmvs_t = \intmv_t  \rc},
+\end{equation}
+<p>
+and given that \(\mathcal{H}(\intpvs, \intmvs)\) is convex in \(\intmvs\), the conjugate momenta, we can obtain a corresponding Lagrangian via the the Legendre transform
+</p>
+\begin{equation}
+\label{org1715f03}
+\mathcal{L}(\intpvs, \dot{\intpvs}) = \sup_{\intmvs}{\lc \dot{\intpvs}\cdot\intmvs -
+\mathcal{H}(\intpvs, \intmvs) \rc},
+\end{equation}
+<p>
+where \(\dot{(\bullet)} = \mathrm{d}(\bullet) / \mathrm{d}s\). Then the action of a given path \(\intpvs_s\) is simply
+</p>
+\begin{equation}
+\label{org3088fe7}
+\mathcal{S}_{t}[\intpvs_s] = \int_0^t \mathcal{L}(\intpvs_s, \dot{\intpvs}_s)\mathrm{d}s,
+\end{equation}
+<p>
+whose minimisation over all of the yeilds
+</p>
+\begin{equation}
+\label{orgdd7c664}
+V(\intpvs, t) = \inf_{\intpvs_s} \mathcal{S}_t[\intpvs_s].
+\end{equation}
+<div class="remark" id="orgeb4ccc1">
+<p>
+Notice that in this case it is in fact the minimal action unlike analytic mechanics where it is usually the stationary action.
+</p>
+
+</div>
+<p>
+The minimal action paths solves Eule-Lagrange equation 
+</p>
+\begin{equation}
+\label{org22815d3}
+\mpdiff{\mathcal{L}(\intpvs, \dot{\intpvs})}{\intpvs} -
+\diffl{\mpdiff{\mathcal{L}(\intpvs, \dot{\intpvs})}{\dot{\intpvs}}}{t} = 0,
+\end{equation}
+<p>
+which also be obtained via Hamilton's equations
+</p>
+\begin{equation}
+\label{org0128196}
+\dot{\intpvs} = \mpdiff{\mathcal{H}(\intpvs, \intmvs)}{\intmvs},
+\qquad
+\dot{\intmvs} = -\mpdiff{\mathcal{H}(\intpvs, \intmvs)}{\intpvs}.
+\end{equation}
+<p>
+Since orbits generated by \eqref{orgd0134c1} yield the smallest values of \(V(\intpvs, t)\), they must for all time exists on the mode of the distribution, and hence they are caled the most-probable paths. This fact coupled with the fact that our probability measures are exponentiall tight, tells us that the stochastic paths are concentrated around the most-probable paths.
+</p>
+<div class="todo" id="orgb0c92c3">
+<ul class="org-ul">
+<li>add some explanation of what happens when we have degenerate minima.</li>
+<li>add explnation of zero momenta manifold and relaxation trajectories.</li>
+</ul>
+
+</div>
+<p>
+While this gives us the leading order asymptotics of the path-space LDP, it obviously does not capture the stochastic sample-path variations that one might observe for \(0 < \epsilon \ll 1\). Given that the leading order approximation to a stochastic path is given by an ODE one might expect that the next order correction would be given by an SDE whose noise  vanishes as \(\epsilon \to 0\). which is precisely what Freidlin-Wentzell theory enables us to do as we show in the next section.
+</p>
+
+<p>
+-&#x2014; Completed to here &#x2013;&#x2014;
+</p>
+
+<div class="todo" id="org0bc93d0">
+<p>
+Need to add the fact that you dont need to Dawson-Gartner, Kurtz just generalises it&#x2026;
+</p>
+
+</div>
+</div>
+</div>
+<div id="outline-container-sec-connecting-fw" class="outline-3">
+<h3 id="sec-connecting-fw"><span class="section-number-3">4.6.</span> Connecting with Freidlin–Wentzell Theory</h3>
+<div class="outline-text-3" id="text-sec-connecting-fw">
+<p>
+Freidlin-Wentzell theory can be used. It relates the LDP in path space to an SDE thus providing a dynamical viewpoint and a way to analyse sample-paths in the large deviation regime (\(\epsilon \to 0\)).
+</p>
+
+
+
+
+<p>
+While this takes us from LDP on a single snapshot to and LDP on the space of trajectories i.e. \(C[0, t]\) space of continuous functions, it does not provide an interpretation on what is happening to the stochastic trajectories as \(\epsilon \to 0\). This is precicely where 
+</p>
+
+
+
+<p>
+In the macroscopic limit, the stochastic paths being to concentrate around some typical path. Thus we have and LDP which defined precisely we have
+</p>
+\begin{equation}
+\label{orgadbdd63}
+{\lim_{\delta \to 0}\lim_{\epsilon \to 0 } -\epsilon \ln \ls P(\left\|\mvec{n}_t / \Omega - \intpv(t) \right\|^{t}_{0} < \delta ) \rs}
+= \mathcal{S}[\intpv_t]
+= 
+\int^{t}_{0} L(\intpv(s), \dot{\intpv}(s)) \mrm{d} s,
+\end{equation}
+<p>
+where \(\left\| \cdot \right\|^{t}_{0}\) is the supremum norm, i.e. \(\sup_{s \in [0, t]} | f(s) |\), and \(L(\intpv(s), \dot{\intpv}(s))\) is a suitable Lagrangian such that minimisation of the action \(U[\intpv(t)]\) yields the most-probable paths.
+</p>
+
+<p>
+Consider a weak-noise SDE given by 
+</p>
+\begin{equation}
+\label{orge2a3f05}
+\rmd \intpv_t = \mvec{a}(\intpv_t) \rmd t + \alpha(\epsilon) \mmat{b}(\intpv, t) \rmd \mvec{W}_t,
+\end{equation}
+<p>
+where \(\mvec{a}: \mathbb{R}^d \mapsto \mathbb{R}^d\) is the deterministic drift field, \(\alpha(\epsilon)\) is a gauge function such that \(\epsilon \to 0 \implies \alpha(\epsilon) \to 0\) and \(\mvec{W}_t\) is the Wiener process. The linear generator corresponding to this SDE is  
+</p>
+\begin{equation}
+\label{org4ec36a9}
+(\mathcal{A}_{\epsilon}f)(\intpv, t) =
+\mpdiff{f(\intpv, t)}{\intpv} \cdot \mvec{a}(\intpv, t) +
+\frac{\alpha^2(\epsilon)}{2}\mmat{b}(\intpv, t)^{\trans}  \mpdiff[2]{f(\intpv, t)}{\intpv} \mmat{b}(\intpv, t),
+\end{equation}
+<p>
+from which the non-linear generator can be obtained
+</p>
+\begin{equation}
+\label{orgf5501fe}
+\begin{aligned}
+(\mathcal{H}_{\epsilon}f)(\intpv, t) &=
+\ee^{-f(\intpv, t) / \epsilon}
+(\mathcal{L}_{\epsilon}f)(\intpv, t)
+\ee^{f(\intpv, t) / \epsilon} \\
+&=
+\frac{1}{\epsilon}
+\ls
+\mpdiff{f(\intpv, t)}{\intpv} \cdot \mvec{a}(\intpv, t) +
+\frac{\alpha^2(\epsilon)}{2}\mmat{b}(\intpv, t)^{\trans}  \mpdiff[2]{f(\intpv, t)}{\intpv} \mmat{b}(\intpv, t) + 
++\mmat{b}(\intpv, t)^{\trans}  \mpdiff[2]{f(\intpv, t)}{\intpv} \mmat{b}(\intpv, t)
+\rs
+\end{aligned}
+\end{equation}
+
+
+
+
+
+
+<div class="remark" id="org8fe16fa">
+<p>
+Because the Markov semigroup already composes local transitions, the large-deviation principle at fixed time extends naturally to trajectories.
+Freidlin–Wentzell theory makes this extension rigorous: it guarantees exponential tightness and identifies the path-space rate functional whose marginal at time \(t\) is the function \(V(x,t)\) solving the Hamilton–Jacobi equation.
+</p>
+
+</div>
+
+
+
+<p>
+We now extend this picture to the level of <b><b>paths</b></b> in time, following the Freidlin–Wentzell (FW) framework.
+</p>
+
+<p>
+Freidlin–Wentzell theory answers this in the affirmative for a broad class of
+small-noise Markov processes (including the density-dependent jump processes
+arising from the CME).  It provides an LDP on path space with rate functional
+\(S_{[0,T]}[\phi]\) built from the Lagrangian \(L\), and shows that the
+finite-time rate \(V(\intpv,t)\) can be recovered from this path-space functional.
+In the remainder of this section we outline this connection and make explicit
+the form of \(L\) and \(S_{[0,T]}\) in the present setting.
+</p>
+
+
+<p>
+In the macroscopic limit (\(\epsilon \to 0\) or equivalently \(\Omega \to \infty\)), the stochastic
+process \(\intpv_t^\epsilon \in \mathbb{R}^d\) generated by \eqref{org92406ad} concentrates around the
+deterministic trajectory \(\bar{\intpv}(t)\) satisfying the mean-field equation
+\[
+\dot{\bar{\intpv}}(t)
+= \sum_s w_s(\bar{\intpv}(t))\, \mvec{\Delta}_s.
+\]
+Rare fluctuations away from this typical path occur with exponentially small probability,
+and FW theory quantifies these probabilities in terms of a <b><b>path-space LDP</b></b>:
+</p>
+\begin{equation}
+\label{org22db330}
+\boxed{
+\lim_{\delta \to 0}\,\lim_{\epsilon \to 0}\,
+-\epsilon \ln \mathbb{P}\!\left(
+  \sup_{0 \le s \le t}
+  \left|\intpv_s^\epsilon - \phi_s\right| < \delta
+\right)
+= S_{[0,t]}[\phi],
+}
+\end{equation}
+<p>
+where \(S_{[0,t]}[\phi]\) is the <b><b>action functional</b></b>
+</p>
+\begin{equation}
+S_{[0,t]}[\phi]
+= \int_0^t L(\phi_s, \dot{\phi}_s)\, \mathrm{d}s,
+\end{equation}
+<p>
+and the <b><b>Lagrangian</b></b> \(L\) is defined as the convex dual of the Hamiltonian \eqref{org58f7c4a}:
+</p>
+\begin{equation}
+L(\intpv, \dot{\intpv})
+= \sup_{\intmv \in \mathbb{R}^d}
+  \Big\{ \intmv \!\cdot\! \dot{\intpv}
+       - \mathcal{H}(\intpv, \intmv) \Big\}.
+\end{equation}
+
+<p>
+The action \(S_{[0,t]}[\phi]\) measures the exponential cost for the system to realise a
+fluctuation path \(\phi\). In this framework, the one-time rate function \(V(\intpv, t)\) obtained earlier
+is recovered as the <b><b>minimal action</b></b> required to reach \(\intpv\) at time \(t\):
+</p>
+\begin{equation}
+\label{org8388499}
+V(\intpv, t)
+= \inf_{\phi:\,\phi_0 = \intpv_0,\, \phi_t = \intpv}
+S_{[0,t]}[\phi].
+\end{equation}
+<p>
+That is, \(V(\intpv, t)\) is the value function of the variational problem on path space.
+Equivalently, \(V\) is the viscosity solution of the forward Hamilton–Jacobi equation
+\eqref{org0c7a2ab} with initial condition \(V(\intpv,0)=0\) at \(\intpv=\intpv_0\) and \(+\infty\) elsewhere.
+</p>
+
+<p>
+The corresponding <b><b>characteristic equations</b></b> associated with the variational problem are
+the Hamilton equations
+</p>
+\begin{equation}
+\label{org75c6cec}
+\dot{\intpv} = \pdiffl{\mathcal{H}(\intpv, \intmv)}{\intmv},
+\qquad
+\dot{\intmv} = -\pdiffl{\mathcal{H}(\intpv, \intmv)}{\intpv},
+\qquad
+\intmv(s) = \mpdiff{V(\intpv(s), s)}{\intpv}.
+\end{equation}
+<p>
+Solutions to these equations describe the <b><b>most probable paths</b></b> (instantons) connecting
+the initial state \(\intpv_0\) to a final state \(\intpv\) at time \(t\). They coincide with the
+extremals of the action functional \(S_{[0,t]}[\phi]\).
+</p>
+
+<div class="remark" id="orga26dd1e">
+<p>
+Freidlin–Wentzell theory thus provides the path-space interpretation of the large-deviation
+structure already encoded in the nonlinear generators. The function \(V(\intpv,t)\) derived
+earlier as a Legendre transform now appears as the value function of a classical
+action principle with Hamiltonian \(\mathcal{H}(\intpv,\intmv)\).
+</p>
+
+</div>
+
+<div class="remark" id="orgf9a1bd7">
+<p>
+In the diffusion case, e.g.
+</p>
+\begin{equation}
+\rmd \intpv_t = \mvec{a}(\intpv_t)\, \rmd t  + \sqrt{\epsilon}\, \mmat{b}(\intpv_t)\, \rmd W_t,
+\end{equation}
+<p>
+the same structure holds with
+\[
+\mathcal{H}(\intpv,\intmv)
+= \mvec{a}(\intpv)\!\cdot\!\intmv + \frac{1}{2}\,\intmv^\top
+  (\mmat{b}\mmat{b}^\top)(\intpv)\,\intmv,
+\quad
+L(\intpv,\dot{\intpv})
+= \tfrac{1}{2}\,
+  \big(\dot{\intpv}-\mvec{a}(\intpv)\big)^\top
+  (\mmat{b}\mmat{b}^\top)^{-1}(\intpv)
+  \big(\dot{\intpv}-\mvec{a}(\intpv)\big),
+\]
+and \(S_{[0,t]}[\phi]\) reduces to the familiar quadratic Onsager–Machlup action.
+</p>
+
+</div>
+
+
+<p>
+The structure present in [BROKEN LINK: sec-conc-prob-den] and [BROKEN LINK: sec-conc-prob-den] points to the presence of a large deviation principle in the chemical process in the large system limit \(\Omega \to \infty\), or equivalently small noise limit \(\epsilon \to 0\).
+</p>
+
+<p>
+Indeed, the Hamilton–Jacobi equations \eqref{org7f187dc} and \eqref{org0c7a2ab}
+together with the Legendre transform \eqref{orgf1b0de7}
+define the characteristic Hamiltonian
+\eqref{org58f7c4a}, which is the generator of a convex dual pair
+\[
+\mathcal{H}(\intpv,\intmv)
+= \sum_s w_s(\intpv)\big(\ee^{\mvec{\Delta}_s\!\cdot\!\intmv}-1\big),
+\qquad
+\mathcal{L}(\intpv,\dot{\intpv})
+= \sup_{\intmv\in\mathbb{R}^d}\!\big\{
+\intmv\!\cdot\!\dot{\intpv}-\mathcal{H}(\intpv,\intmv)
+\big\}.
+\]
+</p>
+
+
+<p>
+In the macroscopic limit, the stochastic paths being to concentrate around some typical path. Thus we have and LDP which defined precisely we have
+</p>
+\begin{equation}
+\label{org4cbfdb6}
+{\lim_{\delta \to 0}\lim_{\Omega \to \infty } -\Omega \ln \ls P(\left\|\mvec{n}_t / \Omega - \intpv(t) \right\|^{t}_{0} < \delta ) \rs}
+= \mathcal{U}[\intpv(t)]
+= 
+\int^{t}_{0} L(\intpv(s), \dot{\intpv}(s)) \mrm{d} s,
+\end{equation}
+<p>
+where \(\left\| \cdot \right\|^{t}_{0}\) is the supremum norm, i.e. \(\sup_{s \in [0, t]} | f(s) |\), and \(L(\intpv(s), \dot{\intpv}(s))\) is a suitable Lagrangian such that minimisation of the action \(U[\intpv(t)]\) yields the most-probable paths.
+</p>
+
+
+\begin{equation}
+\label{org3b940c3}
+\rmd \intpv_t = \mvec{a}(\intpv_t) \rmd t + \alpha(\epsilon) \mmat{b}(\intpv, t) \rmd W
+\end{equation}
+
+
+
+
+
+<p>
+Consequently, the law of the intensive process
+\(\intpv_t^\epsilon\) generated by \eqref{org92406ad}
+satisfies an LDP on the path space
+\(C([0,T];\mathbb{R}^d)\) equipped with the supremum norm:
+</p>
+\begin{equation}
+\label{org690eafc}
+\boxed{
+\mathbb{P}\!\left(\intpv^\epsilon_{\cdot}\approx\phi_{\cdot}\right)
+\asymp
+\exp\!\left[-\frac{1}{\epsilon}
+\int_0^T L(\phi_s,\dot{\phi}_s)\,\mathrm{d}s\right].
+}
+\end{equation}
+
+<p>
+The corresponding rate functional,
+\[
+S_{[0,T]}[\phi]
+=\int_0^T L(\phi_s,\dot{\phi}_s)\,\mathrm{d}s,
+\]
+assigns an exponential cost to each trajectory \(\phi\).
+For the one-time marginal this implies
+</p>
+\begin{equation}
+\label{org2e554fd}
+\mathcal{P}_{\epsilon}(\intpv,t)
+\asymp
+\exp\!\big[-V(\intpv,t)/\epsilon\big],
+\qquad
+V(\intpv,t)
+= \inf_{\phi:\phi_t=\intpv} S_{[0,t]}[\phi],
+\end{equation}
+<p>
+and the rate \(V(\intpv,t)\) satisfies the forward Hamilton–Jacobi
+equation \eqref{org0c7a2ab} with Hamiltonian \eqref{org58f7c4a}.
+</p>
+
+<div class="remark" id="org2510b2b">
+<p>
+This result is a direct consequence of the general
+Freidlin–Wentzell–Kurtz framework for density-dependent Markov
+jump processes
+(see e.g. <b>Kurtz</b>, 1978; <b>Feng &amp; Kurtz</b>, 2006),
+which ensures that the family of generators
+\eqref{org92406ad} yields a good rate function in path space with speed
+\(1/\epsilon\).  The corresponding Hamiltonian coincides with the
+nonlinear generator derived above, confirming that the CME obeys a
+large deviation principle consistent with the exponential-observable
+construction.
+</p>
+
+</div>
+</div>
+</div>
+<div id="outline-container-org83489fa" class="outline-3">
+<h3 id="org83489fa"><span class="section-number-3">4.7.</span> Connecting with Freidlin-Wentzell Theory</h3>
+<div class="outline-text-3" id="text-4-7">
+<p>
+What we have discussed so far are distribution and observable 
+</p>
+
+
+<p>
+In the macroscopic limit, the stochastic paths being to concentrate around some typical path. Thus we have and LDP which defined precisely we have
+</p>
+\begin{equation}
+\label{orgf9d32ce}
+{\lim_{\delta \to 0}\lim_{\Omega \to \infty } -\Omega \ln \ls P(\left\|\mvec{n}_t / \Omega - \intpv(t) \right\|^{t}_{0} < \delta ) \rs}
+= \mathcal{U}[\intpv(t)]
+= 
+\int^{t}_{0} L(\intpv(s), \dot{\intpv}(s)) \mrm{d} s,
+\end{equation}
+<p>
+where \(\left\| \cdot \right\|^{t}_{0}\) is the supremum norm, i.e. \(\sup_{s \in [0, t]} | f(s) |\), and \(L(\intpv(s), \dot{\intpv}(s))\) is a suitable Lagrangian such that minimisation of the action \(U[\intpv(t)]\) yields the most-probable paths.
+</p>
+
+
+\begin{equation}
+\label{org08a5fdc}
+\rmd \intpv_t = \mvec{a}(\intpv_t) \rmd t + \alpha(\epsilon) \mmat{b}(\intpv, t) \rmd W
+\end{equation}
+</div>
+</div>
+<div id="outline-container-orgafc413d" class="outline-3">
+<h3 id="orgafc413d"><span class="section-number-3">4.8.</span> Most probable paths</h3>
+<div class="outline-text-3" id="text-4-8">
+<p>
+Suppose I consider the forward equation, i.e. \eqref{org0c7a2ab}, \(V(\intpv, t)\) takes the role of the action which prescribes a cost for a trajectory in the system to connect with the initial state  \(\intpv_0\) to the final state \(\intpv\) at \(t\). Letting \(s \in [0, t\) denote parameterised time and \(\dot{(\bullet)} = \diffl{(\bullet)}{s}\), the characteristics of the first order\eqref{org0c7a2ab} satisfies Hamilton's equations given by
+</p>
+\begin{equation}
+\label{orgd0134c1}
+\dot{\intpv} = \pdiffl{\mathcal{H}(\intpv, \intmv)}{\intmv},\quad
+\dot{\intmv} = -\pdiffl{\mathcal{H}(\intpv, \intmv)}{\intpv}.
+\end{equation}
+<p>
+The orbits afforded by \eqref{orgd0134c1} are the extremal action paths, hence they are the most probable paths that the stochastic system takes in the large system size limit (NO_ITEM_DATA:geqian2012). A chemical system is of course is not a mechanical system when modelled with a master quation, but the analogy with a mechanical system still useful in the large system size regime. The position has a clear meaning in that it encodes the state of the system but the meaning of the conjugatge momenta is less clear. From my understanding the momenta \(\intmv\) corresponds to the ``strength'' of the tilt of the measure, i.e. the bias strength with which we sample from the tails of the distribution of the increments (velocity).  A useful picture might be the following, imagine the observable is represented by a particle whos position is \(\intpv\), of course the system connected to bath. Now in this case one can take \(\intmv\) as the momenta the bath particles impart on the observable particle, or equivalently the inverse inertia of the observable particle.
+</p>
+
+<div class="todo" id="orge6237ba">
+<p>
+Give more insight to why the conjugate momentum is related to the 'stochasticness', this is of course because the LDP is for increments check out <a href="large-deviations.html#orge853cab">LDP Paths</a> to get an understanding of whats happening.
+</p>
+
+</div>
+
+<p>
+The prescription used in this section ties together the microscopic generator, and the large deviation structure manifesting in the observables and probability through a single scaling principle in the observables. This avoids the typical WKB ansatz in the probability that one employs which at least to me seems to be black magic, I see no reason for it other than the fact that exponentials usually solve differential equations. Here the derivation hinges only on the existence of observables that grow exponentially for large system size and everything else follows naturally via large deviation results. 
+</p>
+</div>
+</div>
+<div id="outline-container-org20c1966" class="outline-3">
+<h3 id="org20c1966"><span class="section-number-3">4.9.</span> Relaxation Trajectories</h3>
+<div class="outline-text-3" id="text-4-9">
+<p>
+Relaxation trajectories exist on the manifold \(\intmv = 0\) (fluctuation trajectories have \(\intmv \neq 0\)). For a trajectory \((\intpv_s,\intmv_s)\):
+</p>
+
+<p>
+See also Fig. [BROKEN LINK: fig-relaxation_traj_diagram].
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-org0db651d" class="outline-2">
+<h2 id="org0db651d"><span class="section-number-2">5.</span> Gaussian fluctuations</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+A path generated by [BROKEN LINK: eq-most_probable_paths] and parameterised by \(s\) is
+</p>
+
+\begin{equation}
+\label{org6e5afca}
+\overline{\intpv}_{t} = \int^{t}_0  \dot{\intpv}\,\mathrm{d}{s}, \qquad
+\overline{\intmv}_{t} = \int^{t}_0  \dot{\intmv}\,\mathrm{d}{s}.
+\end{equation}
+
+<p>
+(… expansion details omitted …)
+</p>
+</div>
+</div>
+<div id="outline-container-org413072b" class="outline-2">
+<h2 id="org413072b"><span class="section-number-2">6.</span> Gaussian cylinder around a toy limit cycle</h2>
+<div class="outline-text-2" id="text-6">
+<p>
+Consider
+</p>
+\begin{equation}
+\label{org9df41ae}
+\begin{cases}
+\dot{r} = \alpha r - r^2, \\
+\dot{\theta} = v,
+\end{cases}
+\end{equation}
+<p>
+with steady states \(r^*=0,\alpha\). The system undergoes a transcritical bifurcation at \(\alpha=0\); see Fig. [BROKEN LINK: fig-transcrit-bif].
+</p>
+
+<p>
+Transforming to Cartesian with \(x=r\cos\theta\), \(y=r\sin\theta\) yields
+</p>
+
+\begin{align}
+\label{org04e70ef}
+\begin{bmatrix}
+  \dot{x} \\
+  \dot{y}
+\end{bmatrix}
+&=
+\begin{bmatrix}
+\cos{\theta} & -r\sin{\theta} \\
+\sin{\theta} &  r\cos{\theta}
+\end{bmatrix}
+\begin{bmatrix}
+  \dot{r} \\
+  \dot{\theta}
+\end{bmatrix} \\
+&= r^2
+\begin{bmatrix}
+\alpha x - v y - x r\\
+\alpha y - v x - y r
+\end{bmatrix}.
+\end{align}
+</div>
+<div id="outline-container-org3da1484" class="outline-3">
+<h3 id="org3da1484"><span class="section-number-3">6.1.</span> Stochastic Differential Equation (SDE) setup</h3>
+<div class="outline-text-3" id="text-6-1">
+<p>
+Consider
+</p>
+\begin{equation}
+\label{orgc42e60b}
+\mathrm{d}x_t = a(x_t)\,\mathrm{d}t + b(x_t)\,\mathrm{d}W_t,
+\end{equation}
+<p>
+and invoke Itô’s lemma (details omitted here). The normal/tangent projections and variance calculations then yield the Gaussian tube construction (see your derivations above).
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-orgce87eae" class="outline-2">
+<h2 id="orgce87eae"><span class="section-number-2">7.</span> Worked figures (images)</h2>
+<div class="outline-text-2" id="text-7">
+
+<div id="org0e7be71" class="figure">
+<p><img src="figures/time_tube.png" alt="time_tube.png" />
+</p>
+<p><span class="figure-number">Figure 1: </span>A time tube \(x\).</p>
+</div>
+
+<p>
+<a href="figures/phase_portrait_a_0.4_b_0.6_n0_0_100_100.pdf">figures/phase_portrait_a_0.4_b_0.6_n0_0_100_100.pdf</a>
+</p>
+
+<p>
+<a href="figures/time_series_t_a_0.8_b_0.6_n0_0_100_100.pdf">figures/time_series_t_a_0.8_b_0.6_n0_0_100_100.pdf</a>
+</p>
+</div>
+</div>
+<div id="outline-container-org813d279" class="outline-2">
+<h2 id="org813d279"><span class="section-number-2">8.</span> Glycolytic Oscillator</h2>
+<div class="outline-text-2" id="text-8">
+<p>
+Consider the scheme
+</p>
+
+\begin{equation}
+\label{org2cd4b9f}
+\begin{aligned}
+   &Y \overset{a}{\to} X \\
+   &U \overset{b}{\to} Y \\
+   &X \overset{c}{\to} V \\
+   &2X + Y \overset{d}{\to} X
+\end{aligned}
+\end{equation}
+
+<p>
+Let \(\mvec{n} = (n_X, n_Y, n_U, n_V)\); in a well-mixed case the rates are
+</p>
+
+\begin{align}
+\label{org79844f5}
+W_a(\mvec{n}) &=  a n_Y, &
+W_b(\mvec{n}) &=  b n_U, &
+W_c(\mvec{n}) &=  c n_X, &
+W_d(\mvec{n}) &=  d n_Y \frac{n_X^2}{\Omega^2}.
+\end{align}
+
+<p>
+Stoichiometric vectors:
+</p>
+
+\begin{align}
+\label{org9094826}
+\mvec{\Delta}_a &=  (1, -1, 0, 0)^{\trans}, &
+\mvec{\Delta}_b &=  (0, 1, -1, 0)^{\trans}, \\
+\mvec{\Delta}_c &=  (-1, 0, 0, 1)^{\trans}, &
+\mvec{\Delta}_d &=  (1, -1, 0, 0)^{\trans}.
+\end{align}
+
+<p>
+Master equation:
+</p>
+
+\begin{equation}
+\label{orgcd75587}
+\diffl{P_{\Omega}(\mvec{n}, t)}{t} = \sum_{s \in \{a,b,c,d\}}
+\left[ W_s(\mvec{n} - \mvec{\Delta}_s) P_{\Omega}(\mvec{n} - \mvec{\Delta}_s, t)
+- W_s(\mvec{n}) P_{\Omega}(\mvec{n}, t) \right].
+\end{equation}
+
+<p>
+(… macroscopic limit, Hamiltonian form, Jacobian, Lyapunov, etc., follow as in your draft …)
+</p>
+</div>
+</div>
+<div id="outline-container-org4d65d87" class="outline-2">
+<h2 id="org4d65d87"><span class="section-number-2">9.</span> References</h2>
+<div class="outline-text-2" id="text-9">
+</div>
+</div>
+
+      
+    </article>
+    <!-- notes-panel is created dynamically if missing -->
+  </main>
+  <footer class="noty-footer">
+    <div class="noty-footer-inner">
+  <p>Generated with <code>emacs-noty</code>.</p>
+</div>
+
+  </footer>
+  <script src="/assets/js/theme.js"></script>
+  <script src="/assets/js/site.js"></script>
+  <script src="/assets/js/refs.js"></script>
+  <script src="/assets/js/scroll-restore.js"></script>
+  <script src="/assets/js/load-math-macros.js"></script>
+  <script src="/assets/js/link-preview.js"></script>
+  <script src="/assets/js/mathjax-config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" id="MathJax-script"></script>
+
+</body>
+</html>

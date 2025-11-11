@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if ! command -v browser-sync >/dev/null 2>&1; then
+  echo "Please install browser-sync first: npm install -g browser-sync"
+  exit 1
+fi
+
+# Go to repo root (one level up from scripts/)
+cd "$(dirname "$0")"/..
+
+DOC_ROOT="public"
+
+browser-sync start \
+  --server "$DOC_ROOT" \
+  --files "$DOC_ROOT/**/*" \
+  --no-open \
+  --reload-delay 200 \
+  --reload-debounce 400
