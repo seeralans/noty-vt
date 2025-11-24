@@ -1,6 +1,7 @@
 #+TITLE: On stochastic differential equations with piecewise smooth drift and noise amplitudes.
 #+OPTIONS: num:t
 #+SLUG: pwsde
+#+INCLUDE: "_macros.org"
 #+bibliography: ../bib/references.bib
 #+cite_export: csl ../csl/chicago-author-date.csl
 #+LATEX_HEADER: \usepackage{amsmath,amsthm,amssymb}
@@ -19,9 +20,9 @@
 
 #+PROPERTY: header-args :eval no
 
-* Introduction 
+* Introduction
 Consider the the autonomous general piecewise stochastic differential equation
-#+NAME: eq-general-psde
+#+name: eq-general-psde
 \begin{equation}
 \mathrm{d}x_t = a(x_t, \lambda_t) \mathrm{d}t + \sqrt{\epsilon} b(x_t, \lambda_t) \mathrm{d}W_t,
 \end{equation}
@@ -30,13 +31,13 @@ $b(\cdot) \in \mathbb{R}^d$, and $\mathrm{d}W_t$ is a Wiener increment. Of cours
 
 
 Let the discontinuity $\sigma: \mathbb{R}^d \mapsto \mathbb{R}$ be a scalar function used to define the discontinuity surface
-#+NAME: eq-disc-surf
+#+name: eq-disc-surf
 \begin{equation}
 \mathcal{D} = {\left\{ x \in \mathbb{R}^d \,|\, \sigma(x) = 0 \right\}},
 \end{equation}
 notice that $\lambda_{t} = \mathrm{sign}(\sigma(x_{t}))$ is now stochastic. The dynamics of $x_t$ together with $\lambda_t$ is a stochastic slow-fast system. Recall that
 for deterministic system, the fast dynamics of the switching variable is given via $\dot{\lambda} = \epsilon^{-1}\nabla \sigma \cdot \dot{x}^{{\scriptsize\mathsf{T}}}$, this comes from regularising the sign function into something of the form
-#+NAME: eq-lambda-reg
+#+name: eq-lambda-reg
 \begin{equation}
 \lambda^{(\epsilon^{\beta})}(x) = 
 \left\{
@@ -50,7 +51,7 @@ for deterministic system, the fast dynamics of the switching variable is given v
 and then taking the derivative with respect to time. Note that this regularisation is obviously not unique, any choose of $\beta > 0$, would work as we are interested in only the singular limit as it pertains to resolving the sliding mode.
 
 For stochastic system one must employ Ito's lemma which yeilds
-#+NAME: eq-lambda-slow-ito
+#+name: eq-lambda-slow-ito
 \begin{equation}
 \mathrm{d}\lambda_t = \frac{1}{\epsilon} \left[
 \nabla \sigma \cdot
@@ -62,7 +63,7 @@ For stochastic system one must employ Ito's lemma which yeilds
 \mathrm{d}x_t^{\scriptsize{\mathsf{T}}} \right],
 \end{equation}
 clearly for non planar discontinuity surfaces the additional Ito correction will yeild additional drift terms, while for planar discontinuity surfaces we obtain a simple projection onto the normal. For this introduction let us assume we have a planar discontinuity surface with $\sigma(x) = n \cdot x$ where $n \in \mathbb{R}^{d}$ is a constant vector, which gives us 
-#+NAME: eq-lambda-slow
+#+name: eq-lambda-slow
 \begin{equation}
 \mathrm{d}\lambda_t = 
 \frac{1}{\epsilon}
@@ -73,7 +74,7 @@ n\cdot b(x_t, \lambda_t)
 \mathrm{d}W_t,
 \end{equation}
 Suppose we wish to analyse the fast subsystem, let us consider the rescaling time with $t = \epsilon^{\alpha} \tau$, where $\epsilon, \alpha > 0$. Rescaling [[eq-lambda-slow]] we obtain 
-#+NAME: eq-lambda-fast
+#+name: eq-lambda-fast
 \begin{equation}
 \mathrm{d}\lambda_{\tau} = 
 \epsilon^{\alpha - 1}
@@ -89,7 +90,7 @@ $$
 \quad \text{as} \quad \epsilon \to 0.
 $$
 This follows from the fact that the dynamics of $\lambda_{\tau}$ exist in an $\epsilon$ layer around the discontinuity surface and because the noise amplitude in [[eq-general-psde]] is $\mathcal{O}(\sqrt{\epsilon})$. In the microtubule example the lattice size $N$ affixes indpendently the size of the layer with $\epsilon = 1/N$ which corresponds to one lattice site, as well as the Gaussian noise amplitude which is $O(1/\sqrt{N})$. The slow subsystem under the fast time scale is given by 
-#+NAME: eq-general-psde-fast
+#+name: eq-general-psde-fast
 \begin{equation}
 \mathrm{d}x_{\tau} = \epsilon^{\alpha} a(x_{\tau}, \lambda_{\tau}) \mathrm{d}{\tau} + \epsilon^{\alpha + \frac{1}{2}} b(x_{\tau}, \lambda_{\tau}) \mathrm{d}W_{\tau},
 \end{equation}
@@ -98,12 +99,30 @@ $$
 \frac{\epsilon^{\frac{1}{2}}|b^{(n)(x_{\tau}, \lambda_{\tau})}|}{|a^{(n)(x_{\tau}, \lambda_{\tau})}|} \to 0, 
 \quad \text{as} \quad \epsilon \to 0.
 $$
+While analysing the fast subsystem and the multiple timescales problem is in itself an interesting endeavour, our goal is only to analyse the fast dynamics only as far as it pertains to resolving the slow dynamics at the discontinuity sets.
 
 
+* Stochastic Sliding Dynamics
+Let us define $\nu_t = \sigma(x_t)$, clearly following the same reasoning as above we have
+#+name: eq-nu
+\begin{equation}
+\rmd \nu_t = 
+\mpdiff{\sigma}{x} \cdot \rmd x_t + \frac{1}{2} \rmd x_t\mpdiff[2]{\sigma}{x} \rmd x^{\trans}_t
+\end{equation}
 
-** Example
+
+1. Solve for the steady state densite $P(\nu \giv x )$ 
+
+When we have stochastic switching parameter, the mean switching paramter
+$\bar{\lambda}(x)$ may not always correspond to the steady $\lambda^*(x)$ the
+one obtains by closing the fast dynamics. A sufficient and not necessary
+condition for $\bar{\lambda}(x) = \lambda^{*}(x)$ would be to have equal noise
+amplitudes on either side of the discontinuity.
+
+
+* Example
 Let us start of with the following simple example inspired by the microtubule project
-#+NAME: eq-sde-linear
+#+name: eq-sde-linear
 \begin{equation}
 \begin{pmatrix}
 \mathrm{d}x_{t} \\
@@ -131,7 +150,7 @@ Let us start of with the following simple example inspired by the microtubule pr
 B(\lambda_{t}) \mathrm{d}W_t,
 \end{equation}
 where
-#+NAME: eq-complete-diff-mat
+#+name: eq-complete-diff-mat
 \begin{equation}
 B(\lambda_t) = \frac{1}{2} \left[ \Sigma^+ +\Sigma^- +
 \lambda_t (\Sigma^+ -\Sigma^-) \right],
@@ -142,7 +161,7 @@ is the convex combination of of the noise amplitude, and as usual $\lambda \in [
 #+caption: Scematic of toy PSDE.
 [[../assets/img/psde_toy_grow.svg]]
 The discontinuity surface is defined via the zero set of $\sigma(x, y) = 1 - x - y$, that is $\mathcal{D} = {\left\{(x, y) \in \mathbb{R}^2 \,|\, \sigma(x,y) = 0 \right\}}$, it caps the growth. This corresponds with exactly the no-interaction limit of the single filament microtubule. We also have the SDE
-#+NAME: eq-lambda-sde-linear-slow
+#+name: eq-lambda-sde-linear-slow
 \begin{equation}
 \mathrm{d}\lambda_t = \frac{1}{\epsilon}\left[\lambda_t (v^- -  v^+) - v^+ - v^- \right]\mathrm{d}t
 + \frac{1}{\sqrt{\epsilon}}B^{(n)}(\lambda_t) \mathrm{d}W_t
@@ -152,12 +171,12 @@ $$
 \lambda^{*} = \frac{v^+ + v^-}{v^- - v^+} \in (-1, 1),\quad \text{with}\quad v^- < 0 < v^+.
 $$
 unsuprisingly this is exactly equivalent to obtaining the evolution of ${\mathbb{E}[ \lambda_{t} ]}$ using  [[eq-lambda-sde-linear-slow]] and then taking steady state value. Substituting $\lambda^{*}$ into [[eq-sde-linear]] we obtain the dynamics near the discontinuity surface. Suppose now we consider the dynamics near the steady state $(1/2, 1/2)$, let $r_t = n \cdot (x_t - 1/2, y_t -1/2) / ||n||$ and $s_t = m \cdot (x_t - 1/2, y_t - 1/2) / ||m||$ where $m = (-1, 1)$ and is tangent to $\mathcal{D}$. Using Ito's lemma we obtain 
-#+NAME: eq-norm-sde-slow
+#+name: eq-norm-sde-slow
 \begin{equation}
 \mathrm{d}r_t =  \sqrt{\frac{\epsilon}{2}} B^{(n)}(\lambda^{*}) \mathrm{d}W_{t}
 \end{equation}
 and 
-#+NAME: eq-tang-sde-slow
+#+name: eq-tang-sde-slow
 \begin{equation}
 \begin{aligned}
 \mathrm{d}s_t &=  \sqrt{2}(x_{t} - y_{t})\mathrm{d}t + \sqrt{\frac{\epsilon}{2}} B^{(m)}(\lambda^{*}) \mathrm{d}W_{t} \\
@@ -165,10 +184,198 @@ and
 \end{aligned}
 \end{equation}
 The latter is clearly an Ornstein-Uhlenbeck process with the stationary density
-#+NAME: eq-tang-stat-prob
+#+name: eq-tang-stat-prob
 \begin{equation}
 P(s) = 
 \end{equation}
+
+
+
+#+begin_src jupyter-python :session sde :exports none :eval yes :results drawer file :file stoch-traj :cache nil
+import numpy as np
+import matplotlib.pyplot as pp
+covp = np.eye(2) 
+covm = np.eye(2) 
+gam = 0.0
+vm = -1
+vp =  vm * (gam - 1) / (1 + gam)
+ep = 0.01
+num_traj = 1
+max_t = 200
+dt = 0.001
+ap = np.array([vp, vp])
+am = np.array([vm, vm])
+ap_func = lambda t, z: z @ np.array([[-1, 1], [1, -1]]) + ap
+am_func = lambda t, z: z @ np.array([[-1, 1], [1, -1]]) + am 
+covp_func = lambda t, z: covp
+covm_func = lambda t, z: covm
+z0 = [0.5, 0.5]
+args = (ap_func, am_func, covp_func, covm_func, ep)
+s_dat = euler_maruyama(drift, diff, z0, 0.0, max_t, dt, trajectories=num_traj, args=args)
+
+fig, axs = pp.subplots(ncols=2, figsize=[6, 2])
+for ti in range(num_traj):
+  axs[0].plot(s_dat[0], s_dat[1][ti, :, 0], c="k", alpha=0.1)
+axs[0].set_xlabel(r"$t$")  
+axs[0].set_ylabel(r"$x$")  
+
+for ti in range(num_traj):
+  axs[1].plot(s_dat[1][ti, :, 0], s_dat[1][ti, :, 1], c="k", alpha=0.1)
+
+disc_line = np.array((np.linspace(0, 1, 100), 1 - np.linspace(0, 1, 100)))
+disc_line_upper_bound = disc_line + ep * np.array((np.cos(np.pi/4), np.sin(np.pi/4)))[:, None]
+disc_line_lower_bound = disc_line - ep * np.array((np.cos(np.pi/4), np.sin(np.pi/4)))[:, None]
+axs[1].plot(disc_line[0, :], disc_line[1, :], linewidth=0.2)
+axs[1].plot(disc_line_upper_bound[0, :], disc_line_upper_bound[1, :], linewidth=0.2)
+axs[1].plot(disc_line_lower_bound[0, :], disc_line_lower_bound[1, :], linewidth=0.2)
+
+axs[1].set_xlabel(r"$x$")  
+axs[1].set_ylabel(r"$y$")  
+axs[1].set_xlim([0, 1])
+axs[1].set_ylim([0, 1])
+fig.tight_layout()
+#+end_src
+
+#+RESULTS:
+[[file:stoch-traj.png]]
+
+
+[[file:pwsde-assets/stoch-traj.png]]
+
+
+
+
+
+#+RESULTS:
+[[file:./.ob-jupyter/a3663d97b1387268b6dbd49f983d00f27fe8ee94.png]]
+
+#+begin_src jupyter-python :session sde :exports none :eval yes :results drawer file :cache nil
+n_vec = np.array([-1, -1])
+atpp = 0.5 *np.dot(n_vec, app)
+atmm = 0.5 *np.dot(n_vec, amm)
+
+covtpp = np.dot(n_vec, covpp) * 0.5
+covtmm = np.dot(n_vec, covmm) * 0.5
+
+lam_drift = lambda t, lam, _: atpp + lam * atmm
+lam_diff = lambda t, lam, _ : np.array([covtpp + lam[0] * covtmm])
+
+
+sig = n_vec @ covp @ covp @ n_vec[:, None]
+coeff = np.sqrt(-atmm / sig  / np.pi)
+prob_ss = lambda lam: coeff * np.exp(atmm / sig * (lam - atpp / -atmm)**2)
+
+
+slam_bins = np.linspace(-2, 2, 400)
+lam_s_dat = euler_maruyama(lam_drift, lam_diff, np.array([0.0]), 0.0, max_t*4, dt*0.5, trajectories=1)
+slam_mean, slam_prob_centre, slam_prob = running_time_average_and_empirical_density(lam_s_dat[0], lam_s_dat[1][0, :, 0], slam_bins)
+fig, ax = pp.subplots(figsize=[4, 2])
+ax.scatter(slam_prob_centre, slam_prob)
+ax.plot(slam_prob_centre, prob_ss(slam_prob_centre), zorder=99, c='r')
+fig.tight_layout()
+fig.savefig('lam-thing.png', bbox_inches='tight')
+ax.set_xlabel(r"\lambda")
+#+end_src
+
+#+RESULTS:
+[[file:./.ob-jupyter/b1c16925dc2218a401e5b9bec5254969760af6c0.png]]
+
+
+
+
+
+#+caption: Using the x,y trajectory to compute the lambda trajectory
+#+begin_src jupyter-python :session sde :exports none :eval yes :results drawer file :cache nil
+
+orth_traj = 1 - s_dat[1][:, :, 0] - s_dat[1][:, :, 1]
+t_vals = s_dat[0]; orth_vals = orth_traj[0]
+
+lforth_vals = (np.abs(orth_vals) < ep) * orth_vals/ep + (np.abs(orth_vals) >= ep) * np.sign(orth_vals)
+
+orth_bins = np.linspace(-10*ep, 10*ep, 100)
+orth_mean, orth_prob_centre, orth_prob = running_time_average_and_empirical_density(t_vals, orth_vals, orth_bins)
+
+
+lforth_bins = np.linspace(-1.1, 1.1, 100)
+lforth_mean, lforth_prob_centre, lforth_prob = running_time_average_and_empirical_density(t_vals, lforth_vals, lforth_bins)
+
+fig, axs = pp.subplots(figsize=[5, 3], nrows=2)
+ax = axs[0]
+ax.plot(orth_prob_centre, orth_prob)
+ax.plot(ep*np.ones(100), np.linspace(0, np.max(orth_prob), 100))
+ax.plot(-ep*np.ones(100), np.linspace(0, np.max(orth_prob), 100))
+
+axs[1].scatter(slam_prob_centre, slam_prob)
+fig.tight_layout()
+#+end_src 
+
+#+RESULTS:
+[[file:./.ob-jupyter/78d418459362c16b99e52b615697315e3c578b64.png]]
+
+
+#+caption: Test
+[[file:./pwsde-assets/lam-thing.png]]
+
+
+
+#+begin_src jupyter-python :session sde :exports none :eval yes :results yes file :file ex-ss
+# lam_space = np.linspace(-2, 2, 100)
+# fig, ax = pp.subplots()
+# ax.plot(lam_space, prob_ss(lam_space, v, sig))
+# ax.set_xlabel(r"\lambda")
+# ax.set_ylabel(r"P_{ss}(\lambda)")
+# fig.savefig("pwsde-assets/ex-ss.png", bbox_inches="tight")
+#+end_src
+
+#+RESULTS[1027ea2a06dd05d94b2b29721938a3bc41f2b581]:
+
+
+
+
+
+
+
+
+#+begin_src jupyter-python :session sde :exports none :eval yes :results yes
+import numpy as np
+import matplotlib.pyplot as pp
+covp = np.eye(2) 
+covm = np.eye(2) 
+gam = 0.0
+vm = -1
+vp =  vm * (gam - 1) / (1 + gam)
+ep = 0.01
+num_traj = 60
+max_t = 5
+dt = 0.001
+ap = np.array([vp, vp])
+am = np.array([vm, vm])
+ap_func = lambda t, z: z @ np.array([[-1, 1], [1, -1]]) + ap
+am_func = lambda t, z: z @ np.array([[-1, 1], [1, -1]]) + am 
+covp_func = lambda t, z: covp
+covm_func = lambda t, z: covm
+z0 = [1.0, 0.0]
+args = (ap_func, am_func, covp_func, covm_func, ep)
+s_dat = euler_maruyama(drift, diff, z0, 0.0, max_t, dt, trajectories=num_traj, args=args)
+args = (ap_func, am_func, covp_func, covm_func, ep*0.1)
+mpp_dat = euler_maruyama(drift, lambda t, z, *args: z*0, z0, 0.0, max_t, dt, trajectories=1, args=args)[1][0]
+
+
+
+t_vals = s_dat[0]
+state_vals = s_dat[1]
+mean_state_vals = state_vals.mean(0)
+fig, ax = pp.subplots()
+for ti in range(num_traj):
+    ax.plot(t_vals, state_vals[ti, :, 0], c='k', alpha=0.1)
+ax.plot(t_vals, mean_state_vals[:, 0])
+
+#+end_src
+
+#+RESULTS[c578ad8fd1a283651af92a8aeea093b56b5bd310]:
+[[file:./.ob-jupyter/e8f80330a428e205f4df3f2edd03c0226c3c7ff9.png]]
+
+
 
 
 * Understanding [[https://www.sciencedirect.com/science/article/pii/S0167278922001671?casa_token=CpEZCgN3GWgAAAAA:pSx8GzP48UUk2bQ5vytjX8PetKp6ca52FX8nIxXhwNUqKVonT-nZbdMoYtRNlNvgp7vWqln7][Hill et.al. 2022]]
@@ -422,5 +629,8 @@ pp.plot(x_space, np.sqrt(v / np.pi / sig_diff**2) * np.exp(-v * (x_space - 1)**2
 
 #+RESULTS[5a26d48b862ce485343b97ff78c4a96ecc72908a]:
 [[file:./.ob-jupyter/c37cfd97dfed35d2302001d2baac18723569ea70.png]]
+
+
+
 
 
