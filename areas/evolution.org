@@ -1,0 +1,596 @@
+#+title: Statistical Mechanics of Evolution
+#+OPTIONS: num:t
+#+SLUG: smoe
+#+bibliography: ../bib/references.bib
+#+cite_export: csl ../csl/chicago-author-date.csl
+#+LATEX_HEADER: \usepackage{amsmath,amsthm,amssymb}
+#+LATEX_HEADER: \usepackage[nameinlink,noabbrev]{cleveref}
+
+#+LATEX_HEADER: \newtheorem{theorem}{Theorem}[section]
+#+LATEX_HEADER: \newtheorem{lemma}[theorem]{Lemma}
+#+LATEX_HEADER: \newtheorem{proposition}[theorem]{Proposition}
+#+LATEX_HEADER: \newtheorem{corollary}[theorem]{Corollary}
+#+LATEX_HEADER: \theoremstyle{definition}\newtheorem{definition}[theorem]{Definition}
+#+LATEX_HEADER: \theoremstyle{remark}\newtheorem*{remark}{Remark}
+#+LATEX_HEADER: \crefname{lemma}{lemma}{lemmas}
+#+LATEX_HEADER: \Crefname{lemma}{Lemma}{Lemmas}
+#+LATEX_HEADER: \input{customcommands.tex}
+#+LATEX_HEADER: \newcommand{\cunt}{\mathbb{R}}
+#+INCLUDE: "_macros.org"
+
+* Overview
+A long-term research programme to build a rigorous mathematical theory of evolution
+as a stochastic process on an infinite-dimensional state space, coupling:
+
+- trait distributions (densities or measures),
+- dynamic environment fields,
+- feedback between population and environment,
+- mutation, migration, selection,
+- demographic and environmental noise,
+- external physical constraints (physics, energy input, etc.).
+
+Core objectives:
+
+- Define invariant and quasi-invariant measures on trait–environment state spaces.
+- Characterise metastable structures corresponding to species or phenotype clusters.
+- Describe convergent evolution as measure concentration on robust attractors.
+- Develop a large deviation theory for macro-evolutionary transitions.
+- Identify universality classes of evolutionary dynamics.
+
+
+
+
+
+* Conceptual framework
+Let $x \in \mathbb{R}$ be the physical space, and $\xi \in \mathbb{R}$ the space of traits for the animal population. 
+Then $u : \mathbb{R} \times \mathbb{R} \to [0,\infty)$ denotes the population density, so that at each time $t$ we have 
+$u_t(\cdot,\cdot) \in H_u$, an appropriate function space (for example $H_u = L^2(\mathbb{R} \times \mathbb{R})$ or a Sobolev space on $\mathbb{R}^2$).
+
+Let $\eta \in \mathbb{R}$ represent an environmental trait, mirroring $\xi$ for the animals, and let 
+$v : \mathbb{R} \times \mathbb{R} \to [0,\infty)$ be the density of the environment field, so that $v_t(\cdot,\cdot) \in H_v$ for a suitable function space $H_v$.
+
+We introduce a small parameter $\epsilon > 0$ that controls the separation of timescales between the animal dynamics and the environment,
+and a gauge function $\alpha(\epsilon)$ with $\alpha(\epsilon) \to 0$ as $\epsilon \to 0$. 
+The coupled dynamics are given abstractly by the SPDE system
+#+NAME: eq-proposed-model
+\begin{equation}
+\begin{aligned}
+\mathrm{d}u_t(x,\xi)
+  &= \bigl[ A_u u_t + F_u(u_t, v_t) \bigr](x,\xi)\,\mathrm{d}t
+     + \bigl[ G_u(u_t, v_t)\,\mathrm{d}W_t^u \bigr](x,\xi), \\[0.7em]
+\mathrm{d}v_t(x,\eta)
+  &= \sqrt{\alpha}\bigl[ A_v v_t + F_v(u_t, v_t) \bigr](x,\eta)\,\mathrm{d}t + \alpha \bigl[ G_v(u_t, v_t)\,\mathrm{d}W_t^v \bigr](x,\eta),
+\end{aligned}
+\end{equation}
+where
+- $A_u : D(A_u) \subset H_u \to H_u$ and $A_v : D(A_v) \subset H_v \to H_v$ are (typically) linear operators 
+      (for example, diffusion operators in $x$ and possibly in $\xi$ or $\eta$),
+- $F_u : H_u \times H_v \to H_u$ and $F_v : H_u \times H_v \to H_v$ are nonlinear functionals describing eco--evolutionary drift 
+      (selection, interaction, feedback),
+- $G_u$ and $G_v$ are noise coefficient operators, and $W_t^u$, $W_t^v$ are cylindrical Wiener processes on suitable Hilbert spaces.
+The factor $\alpha$ present in the evolution of $v_t$ is to ensure that the environment evolves on a slower time scale than $u_t$ as $\epsilon \to 0$. The different powers are of course due to the different time scales naturally present in a Weiner noise and to preseve the Ito table. 
+
+
+
+** Objects
+- $A(t)$: population trait distribution
+  - either as a density $u_t(x, \xi)$ on space $x$ and trait $\xi$,
+  - or as a probability measure on trait space (possibly with spatial index).
+- $E(t)$: environment fields
+  - resources, abiotic conditions, temperature, etc.
+- $S$: external constraints
+  - physics, solar input, planetary parameters, etc.
+    
+** Mathematical realisations
+- Coupled SPDE systems on space × trait domains.
+- Spatial Fleming–Viot measure-valued processes with selection and mutation.
+- Infinite-dimensional SDEs with ecological feedback in the drift term.
+
+** Biological interpretation
+- Fitness landscapes are emergent properties of the generator (drift + noise).
+- Species correspond to metastable attractors or basins in the stochastic dynamics.
+- Convergent evolution corresponds to repeated occupation of the same attractors
+  from different initial conditions and histories.
+
+* Conceptual issues and how they map to mathematics
+
+** Issue 1: “Predefined minima” and predestination
+Concern:
+- If the dynamics have fixed minima, it looks as though species are predetermined.
+
+Mathematical reframing:
+- Attractors are properties of the generator, not Platonic “species”.
+- Evolution is the random trajectory that:
+  - selects which attractors are realised,
+  - determines basins actually visited,
+  - determines the time spent in each basin.
+
+Mathematical tools:
+- Invariant and quasi-invariant measures.
+- Metastability and basins of attraction.
+- Ergodic components of infinite-dimensional Markov processes.
+
+** Issue 2: Fixed vs wandering parameters
+Concern:
+- Fixed parameters theta:
+  - single “landscape”; why this one?
+- Wandering parameters theta(t):
+  - ensemble average over landscapes; does this wash out structure?
+
+Key points:
+- Ergodicity relates time averages to the invariant measure,
+  not to a uniform distribution.
+- Selection and constraints bias the invariant measure heavily.
+- Feedback A–E breaks symmetries and generates structure.
+
+Mathematical tools:
+- Ergodic theory for SPDE / measure-valued processes.
+- Parameter dependence and structural stability of invariant measures.
+
+** Issue 3: Convergent evolution vs ergodicity
+Concern:
+- Naively, ergodic systems “explore everything”; but we observe convergence
+  to similar body plans (e.g. crabs, camera eyes).
+
+Resolution:
+- Invariant measures can be extremely non-uniform.
+- Large deviation barriers make many regions of state space effectively inaccessible.
+- Convergent evolution is evidence of:
+  - robust, structurally stable attractors,
+  - large basins of attraction in phenotype space.
+
+Mathematical tools:
+- Support and concentration of invariant measures.
+- Freidlin–Wentzell theory and quasipotential.
+- Large deviations and metastability in infinite dimensions.
+
+** Issue 4: Fine-tuning and “uniqueness”
+Concern:
+- Why does the invariant measure concentrate on particular macro-phenotypes?
+- Why these stable forms, not others?
+
+Resolution ideas:
+- Universality classes:
+  - broad ranges of parameters generate similar macro-attractors.
+- Structural stability:
+  - attractors persist under small parameter changes.
+- Conditioning:
+  - we are implicitly conditioning on worlds that support long-lived evolution.
+
+Mathematical tasks:
+- Show robustness of attractors under parameter perturbations.
+- Identify coarse structures that are invariant across model variants.
+- Describe “typical” behaviour within a class of generators.
+
+* Candidate model classes
+
+** Trait–environment SPDE systems
+Objects:
+- u(t, x, xi): population density over space x and trait xi.
+- e(t, x): environment field over space x.
+
+Dynamics:
+- Diffusion in x and possibly xi.
+- Selection terms depending on u and e.
+- Feedback from u to e (resource consumption, modification of environment).
+- Demographic and environmental noise.
+
+Why this class matters:
+- Direct mathematical realisation of the A–E–S picture.
+- Fits naturally into SPDE frameworks (Da Prato–Zabczyk, Hairer, Walsh).
+- Good testbed for:
+  - existence and uniqueness theory,
+  - invariant measures,
+  - SPDE-based LDP.
+
+** Spatial Fleming–Viot processes
+Objects:
+- At each spatial site (or continuous space), a probability measure on trait space.
+- Global state is a measure-valued process indexed by space.
+
+Mechanisms:
+- Resampling (genetic drift).
+- Mutation.
+- Migration between sites.
+- Selection.
+
+Why this class matters:
+- Already rigorously developed.
+- Direct roots in population genetics.
+- Spatial Fleming–Viot with selection and mutation (Dawson–Greven)
+  is very close to the envisioned eco-evo population piece.
+- Existing LDP work (Dawson–Feng) gives a foundation for rare-event analysis.
+
+** Adaptive dynamics in high or infinite-dimensional trait spaces
+Idea:
+- Start from adaptive dynamics (trait substitution sequences) in finite-dimensional traits.
+- Extend to:
+  - function-valued traits,
+  - high-dimensional phenotype vectors.
+
+Why this class matters:
+- Bridges existing biological theory with the more abstract SPDE and MV frameworks.
+- Could provide:
+  - deterministic PDE/IDE limits,
+  - intuition about branching and singular strategies in more complex settings.
+
+* Mathematical foundations and references
+
+** Functional analysis and PDE
+
+1. Haim Brezis – “Functional Analysis, Sobolev Spaces and Partial Differential Equations”
+   - Why:
+     - Core reference for Sobolev spaces, weak solutions, variational methods.
+     - Basis for understanding deterministic PDE before adding noise.
+
+2. Henrik Meinlschmidt – “A Primer on Functional Analytic Methods for PDE”
+   - Why:
+     - Compact, focused overview of the FA tools actually used for PDE analysis.
+     - Good as a quick reference while doing SPDE.
+
+3. Renardy and Rogers – “An Introduction to Partial Differential Equations”
+   - Why:
+     - Combines classical PDE techniques with functional analytic viewpoint.
+     - Builds intuition for behaviour of solutions and boundary-value problems.
+
+Key topics to extract:
+- Sobolev spaces, embeddings, trace theorems.
+- Weak formulations of PDE and energy estimates.
+- Semigroup theory for linear operators (heat semigroups etc.).
+- Compactness methods and existence proofs.
+
+** Stochastic partial differential equations (SPDE)
+
+1. Da Prato and Zabczyk – “Stochastic Equations in Infinite Dimensions”
+   - Why:
+     - Standard reference for infinite-dimensional SDE/SPDE.
+     - Covers:
+       - abstract evolution equations,
+       - mild solutions,
+       - invariant measures and ergodicity,
+       - Markov semigroups in Hilbert spaces.
+
+2. Martin Hairer – “An Introduction to Stochastic PDEs” (lecture notes)
+   - Why:
+     - Concrete, example-driven introduction.
+     - Builds intuition via familiar SPDEs like the stochastic heat equation.
+
+3. J.B. Walsh – “An Introduction to Stochastic Partial Differential Equations”
+   - Why:
+     - Classic Saint-Flour notes.
+     - Introduces SPDE in the Walsh sense (martingale measure, space-time white noise),
+       often used in population models.
+
+4. Lorenzo Zambotti – SPDE survey articles
+   - Why:
+     - Overviews modern SPDE results, including existence, uniqueness, regularity,
+       and connections to statistical mechanics.
+
+Key tools to learn:
+- Mild solutions via semigroups.
+- Construction of cylindrical Wiener processes.
+- Existence and uniqueness arguments in Hilbert/Banach space settings.
+- Conditions and methods for invariant measures and ergodicity of SPDE.
+
+** Measure-valued processes and superprocesses
+
+1. Edwin Perkins – “Dawson–Watanabe Superprocesses and Measure-Valued Diffusions”
+   - Why:
+     - Foundational reference on superprocesses.
+     - Shows how branching particle systems converge to measure-valued limits.
+
+2. Donald Dawson – “Measure-Valued Markov Processes” (Saint-Flour)
+   - Why:
+     - General framework for measure-valued Markov processes.
+     - Martingale problem formulation, which is key for rigorous definitions.
+
+3. Stewart Ethier – “Fleming–Viot Processes in Population Genetics”
+   - Why:
+     - Connects the Fleming–Viot class directly to population genetics concepts.
+     - Helps bridge abstract measure-valued theory and biological interpretation.
+
+4. Dawson and Greven – “Spatial Fleming–Viot Models with Selection and Mutation”
+   - Why:
+     - Spatial structure + selection + mutation in a measure-valued population model.
+     - Very close to the envisioned population part of the eco-evo system.
+     - Techniques:
+       - duality,
+       - multiscale analysis,
+       - ergodic behaviour.
+
+5. “Measure-Valued Processes, Stochastic Partial Differential Equations, and Interacting Systems”
+   - Why:
+     - Collection connecting measure-valued processes, SPDE, and interacting particle systems.
+     - Good for cross-pollination of techniques.
+
+Key concepts:
+- State space: probability measures on trait spaces (possibly with space index).
+- Martingale problem and generator for Fleming–Viot and superprocesses.
+- Known invariant measures in neutral and selected cases.
+- Duality methods and genealogical interpretations.
+
+** Large deviations and metastability
+
+1. Amir Dembo and Ofer Zeitouni – “Large Deviations Techniques and Applications”
+   - Why:
+     - Standard monograph on large deviations.
+     - Foundation for:
+       - rate functions,
+       - variational formulae,
+       - contraction principle.
+
+2. M.I. Freidlin and A.D. Wentzell – “Random Perturbations of Dynamical Systems”
+   - Why:
+     - Classic text on small-noise limits of dynamical systems.
+     - Concepts:
+       - quasipotential,
+       - exit times from basins,
+       - metastable transitions.
+
+3. Dawson and Feng – “Large Deviations for the Fleming–Viot Process” (Parts I and II)
+   - Why:
+     - Large deviations for measure-valued evolutionary processes.
+     - Very close to what is needed for trait-distribution dynamics.
+
+4. LDP for SPDE (e.g. works by Fatheddin and others)
+   - Why:
+     - Provide examples of LDP in infinite-dimensional SPDE contexts.
+     - Technically useful when coefficients are non-Lipschitz.
+
+Key ideas:
+- Rate functionals on path space.
+- Quasipotential as an effective “landscape” for metastable wells.
+- Relation between invariant measures and LDP via Laplace principle.
+- Interpretation of macro-evolutionary transitions as rare paths minimising an action functional.
+
+* Eco-evolutionary literature and context
+
+** Eco-evo SPDE / field-theoretic approaches
+
+- Bhat (2025) – stochastic field theory for quantitative traits.
+  - Describes multivariate trait distributions via field-theoretic methods.
+  - Shows that biologists are already informally using SPDE-like formulations.
+  - Your work can provide rigorous existence, invariant measures, and LDP for these models.
+
+** Spatial eco-evo dynamics
+
+- Boussange et al. (2022) – eco-evolutionary dynamics on spatial graphs.
+  - Eco-evo model on networks, focusing on how space drives differentiation.
+  - Suggests graph-based models as discrete precursors to continuum SPDE/MV limits.
+
+- Höckerstedt et al. (2022) – spatial eco-evolutionary host–parasite dynamics.
+  - Combines ecological interactions and trait evolution in space.
+  - Motivates coupling between trait distributions and environmental or host fields.
+
+** Strategic and multivariate trait eco-evo models
+
+- Roy (2024) – eco-evolutionary dynamics of strategic species.
+  - Formalises strategic interactions and eco-evo feedback.
+  - Useful for thinking about interaction structure in the generator.
+
+- Multivariate trait / G-matrix drift / quantitative genetics literature.
+  - Studies evolution of multivariate traits and covariance structure.
+  - Connects to the desire to treat traits as high-dimensional or function-valued,
+    where your infinite-dimensional framework applies.
+
+* Long-term research programme (10–15 years)
+
+** Pillar 1: Foundations
+- Choose one or two core model classes:
+  - a coupled trait–environment SPDE,
+  - a spatial Fleming–Viot model with selection and mutation.
+- Prove:
+  - well-posedness (existence, uniqueness),
+  - basic qualitative properties (mass conservation, positivity, etc.).
+- Clarify:
+  - state space structure,
+  - natural topologies and metrics.
+
+** Pillar 2: Invariant measures and ergodicity structure
+- Prove existence of invariant or quasi-invariant measures.
+- Study support and concentration:
+  - where in trait–environment space does the system spend most time?
+- Identify:
+  - macro-phenotype sectors,
+  - multiple ergodic components,
+  - effective broken ergodicity at macro scale.
+- Interpret:
+  - species and convergent evolution as features of these invariant structures.
+
+** Pillar 3: Large deviations and macro-evolution
+- Prove LDP for:
+  - eco-evo SPDE,
+  - or spatial Fleming–Viot with selection.
+- Identify rate functional and quasipotential.
+- Describe:
+  - typical vs atypical evolutionary paths,
+  - rare transitions between metastable basins.
+- Interpret:
+  - major innovations, adaptive shifts, and convergent patterns
+    as rare events within this framework.
+
+** Pillar 4: Universality and structural stability
+- Study parameter families and model variants.
+- Show:
+  - existence of universality classes (macro-attractors stable across models),
+  - robustness of attractors to perturbations in parameters and modelling choices.
+- Connect:
+  - theory to empirical convergent evolution,
+  - e.g. repeated evolution of similar forms under broadly similar constraints.
+
+* Proposal-sized extracts (2–3 years each)
+
+- Invariant measures for a simplified trait–environment SPDE.
+  - Specific model, precise existence and basic qualitative properties.
+
+- Large deviations for a spatial Fleming–Viot process with selection.
+  - Extend Dawson–Feng to more structured cases.
+
+- Metastability and species clusters in a measure-valued eco-evo model.
+  - Characterise metastable trait clusters,
+  - connect them to ecological or phenotypic interpretations.
+
+* Reading roadmap (two years)
+
+** Year 1: Foundations and orientation
+- Functional analysis and PDE:
+  - Brezis (Sobolev chapters),
+  - Meinlschmidt (overview).
+- SPDE basics:
+  - Hairer (core sections),
+  - Walsh (introduction and main examples).
+- Measure-valued processes:
+  - Perkins (first half for intuition).
+- Eco-evo context:
+  - Bhat, Boussange, Höckerstedt, Roy (read and summarise).
+
+** Year 2: Deepening and specialisation
+- SPDE in depth:
+  - Da Prato and Zabczyk (Part I).
+- Measure-valued processes:
+  - Ethier (Fleming–Viot survey),
+  - Dawson (Saint-Flour notes).
+- Large deviations:
+  - Dembo and Zeitouni (Chapters 1–4),
+  - Freidlin–Wentzell (quasipotential).
+- LDP for evolutionary processes:
+  - Dawson–Feng (Fleming–Viot LDP papers).
+- Begin:
+  - define a first toy eco-evo model and aim for a small rigorous result.
+
+* Criticisms and Defences
+A structured list of potential weaknesses in the research vision, followed by corresponding defences. 
+This is written from the perspective of an applied mathematician with background in mathematical physics 
+working on biological systems (microtubules), moving into SPDE and eco–evolutionary modelling.
+
+** Scope vs Feasibility
+*** Criticism
+The overall programme appears too large: SPDE well-posedness, invariant measures, large deviations, 
+metastability, universality, and biological interpretation. A panel may argue that this is too broad for a 3–5 year fellowship.
+
+*** Defence
+The broad picture is a long-term vision. The proposal itself is decomposed into independent, realistic work packages:
+- WP1: well-posedness for a specific coupled SPDE;
+- WP2: existence/uniqueness of invariant measures under explicit assumptions;
+- WP3: LDP for a simplified measure-valued (Fleming–Viot) component.
+Each WP is achievable and corresponds to a standalone publication. The large programme is a roadmap, not a workload.
+
+** Background vs Difficulty
+*** Criticism
+The technical areas (SPDE, functional analysis, measure-valued processes, LDPs) are demanding. Reviewers may question whether the applicant has the background.
+
+*** Defence
+Early work packages require only standard techniques (analytic semigroups, Lipschitz drift/noise, compactness arguments).
+The project includes structured skill acquisition in Year 1, supported by current research on microtubule SPDE models.
+Existing experience in mathematical physics ensures comfort with PDE, variational methods, and operator theory. 
+The first publications do not require deep SPDE machinery.
+
+** 3. Precision of Mathematical Goals
+*** Criticism
+The abstract formulation may seem vague: no explicit theorems, assumptions, or domain specifications.
+
+*** Defence
+The proposal includes precise target theorems, e.g.:
+- existence and uniqueness of mild solutions in \(H_u \times H_v\);
+- existence (and possibly uniqueness) of invariant measures under coercivity;
+- LDP for a spatial Fleming–Viot process.
+All operators (A_u, A_v) and spaces (H_u, H_v) are specified in the formal work plan. 
+The vision is broad but the mathematical goals are explicitly defined.
+
+** Novelty vs Existing Literature
+*** Criticism
+Parts of the framework resemble Dawson–Greven (spatial FV), Dawson–Feng (LDP), or eco–evo SPDE in biology.
+Reviewers may question novelty.
+
+*** Defence
+Novelty lies in unifying:
+- continuous traits,
+- continuous environmental traits,
+- spatial structure,
+- rigorous SPDE formulation,
+- feedback loops between fields.
+Existing works handle subsets; none treat fully continuous eco–evolutionary SPDE with two interacting function-valued fields, 
+nor do they analyse invariant measures + metastability for such systems.
+
+** Biological Anchoring
+*** Criticism
+The biological motivation might appear too generic (e.g. convergent evolution) and vaguely connected to the SPDE.
+
+*** Defence
+Each term in the SPDE has a direct biological analogue:
+- spatial diffusion = dispersal,
+- trait diffusion = mutation,
+- feedback F_u and F_v = resource–consumer or niche-modifying interactions,
+- environmental trait η = temperature/resource quality dimension.
+The project captures mechanisms seen in consumer–resource systems, host–parasite systems, and convergent evolution patterns.
+Biological relevance is grounded in mechanism, not metaphor.
+
+** Notation and Modelling Consistency
+*** Criticism
+Minor inconsistencies (v vs η, choice of H_u, timescale direction) may suggest lack of polish.
+
+*** Defence
+All symbols are now fixed and consistent. 
+Final SPDE is written in a standard Da Prato–Zabczyk framework with:
+- explicit H_u and H_v,
+- consistent domains for A_u and A_v,
+- explicit Lipschitz and growth assumptions.
+Early notation inconsistencies were part of exploratory drafting; the final model is clean and rigorous.
+
+** Methodological Risk
+*** Criticism
+Full LDP or metastability for highly nonlinear SPDE may be too ambitious.
+
+*** Defence
+The proposal is structured with fallback cases:
+- start with simplified, globally Lipschitz SPDE;
+- if needed, reduce to the measure-valued component for LDP;
+- metastability can be studied for a reduced slow–fast limit.
+This is standard practice in probability proposals. The “hard” results are optional extensions.
+
+** Timescale Separation Scaling
+*** Criticism
+The α(ε)-scaling for the environment may look ad hoc or loosely justified.
+
+*** Defence
+The chosen scaling is standard in slow–fast SPDE:
+- drift scales like ε,
+- noise scales like √ε,
+from the Brownian scaling W_{εt} = √ε W_t.
+This is consistent with homogenisation (Pavliotis–Stuart), Cerrai’s SPDE averaging theorems, and classical Khasminskii theory.
+The scaling is mathematically grounded.
+
+** Outputs and Success Criteria
+*** Criticism
+It may be unclear what the concrete deliverables are.
+
+*** Defence
+The project lists four realistic and self-contained outputs:
+1. well-posedness for a coupled eco–evo SPDE;
+2. invariant measures for the same system;
+3. LDP for a spatially structured FV model;
+4. metastability analysis for the slow–fast regime.
+Each is a natural paper-scale result deliverable within the fellowship.
+
+** Interdisciplinary Positioning
+*** Criticism
+Risk that pure mathematicians see it as too biological, and biologists see it as too abstract.
+
+*** Defence
+The project provides two complementary entry points:
+- A fully rigorous mathematical formulation (SPDE, measure-valued processes, invariant measures, LDP),
+- A mechanistic biological mapping (mutation, dispersal, niche feedback, convergent evolution).
+This allows the proposal to be read from either angle. The applicant’s background in mathematical physics ensures fluency in both directions.
+
+
+* Notes and log
+Use this section as a living notebook:
+
+- Paper summaries (per chapter or per paper).
+- Definitions and standard results you expect to reuse.
+- Sketches of model definitions and their generators.
+- Draft conjectures and theorem statements.
+- Notes towards fellowship proposals (Royal Society, Humboldt, DFG etc.).
+
+
+

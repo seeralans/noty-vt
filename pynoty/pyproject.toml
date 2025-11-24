@@ -1,0 +1,10 @@
+# pyproject.toml at repo root
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pynoty"
+version = "0.0.1"
+description = "Helpers for noty notes"
+dependencies = []
