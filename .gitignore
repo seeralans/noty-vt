@@ -1,9 +1,12 @@
 *.html
-/areas/ltximg/*.png
 *.bbl
 *.log
 *.aux
-/areas/auto/
+**/auto/**/*
 *.blg
-/areas/ltximg/
-/areas/pwsde-assets/.ob-jupyter/8edef3270ca05e89f3941123104c076f194d0160.png
+**/ltximg/**/*
+**/\.*/**/*
+**/public/**/*
+*.tex
+**/\#*
+*.out

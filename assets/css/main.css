@@ -460,3 +460,58 @@ div.figure img,
   pointer-events: none;  /* don’t steal hover from the link */
 }
 
+.noty-download-pdf[href=""] { display: none; }
+
+/* Collapsible code blocks */
+.noty-code details {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--code-bg);
+  margin: 0.8rem 0;
+}
+
+.noty-code details > summary {
+  list-style: none;
+  cursor: pointer;
+  user-select: none;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  color: var(--fg);
+}
+
+.noty-code details > summary::-webkit-details-marker { display: none; }
+
+.noty-code details .org-src-container,
+.noty-code details pre {
+  margin: 0;
+  border: 0;
+  background: transparent;
+  border-top: 1px solid var(--border);
+  padding: 0.75rem 0.9rem;
+  overflow: auto;
+  border-radius: 0 0 8px 8px;
+}
+
+.noty-code summary .noty-code-pill {
+  font-family: "CMU Typewriter Text", monospace;
+  font-size: 0.85rem;
+  padding: 0.05rem 0.4rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--inline-bg);
+  color: var(--fg);
+}
+
+/* Header button style aligns with others */
+.noty-nav-actions .code-toggle-all {
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0.2rem 0.6rem;
+  background: var(--inline-bg);
+  color: var(--fg);
+  font-size: 0.9rem;
+  cursor: pointer;
+}
