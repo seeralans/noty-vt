@@ -1,0 +1,863 @@
+#+TITLE: Emacs-Lisp Cheatsheet
+#+OPTIONS: num:t
+#+SLUG: pwsde
+
+
+* Emacs Lisp Cheat Sheet for Programmers
+A practical reference for people who already know C / Rust / Python and want to be productive in Emacs Lisp, with an emphasis on debugging, documentation, and “Emacs-y” preferred patterns.
+
+---
+
+* Orientation / Mental Model
+Emacs- Lisp is the language of your editor. You are not just scripting a program; you're extending and reshaping a live environment.
+
+** Quick Reference
+- Code is written in prefix form: =(fn arg1 arg2 ...)=
+- Everything happens inside a running Emacs session.
+- Code is usually evaluated directly from buffers: =eval-last-sexp=, =eval-defun=, =eval-buffer=.
+- Emacs Lisp is dynamically typed, garbage collected, and very dynamic (hot-reload everything).
+- Files are ordinary Lisp libraries ending with =(provide 'feature-name)=.
+
+** Explanation
+*** Emacs as a Lisp machine
+- Emacs is essentially a Lisp interpreter with a text UI attached.
+- You can redefine functions and run new code without restarting.
+- Source code, running environment, and “configuration” are all the same thing: Emacs Lisp.
+
+*** Homoiconicity and metaprogramming
+- Lisp code is represented by native Lisp data structures (lists, symbols).
+- You can construct and manipulate program fragments as data, then =eval= them.
+- Macros operate on code-as-data to extend the language itself.
+
+*** Interactive development workflow
+- Edit a function, then call =eval-defun= (=C-M-x=) to update it live.
+- Test it immediately with =M-:= (=eval-expression=), =ielm=, or by invoking commands.
+- This loop is shorter than “compile–run” in typical compiled languages.
+
+---
+
+* Syntax & Core Data Types
+Core syntax and values you’ll see everywhere.
+
+** Quick Reference
+- Function call: =(fn arg1 arg2 ...)=
+- Quote data (don’t evaluate): ='(1 2 3)=
+- Backquote template: =`(1 ,x ,@xs)=
+- Common types:
+  - Integers: =42=
+  - Floats: =3.14=
+  - Strings: ="hello"=
+  - Symbols: ='foo=
+  - Lists: ='(1 2 3)=
+  - Vectors: =[1 2 3]=
+  - Hash tables: =(make-hash-table :test 'equal)=
+- Equality:
+  - =eq= : identity (symbols, same cons cell)
+  - =equal= : structural equality
+  - == (number)= : numeric comparison
+
+** Explanation
+*** Quoting and backquoting
+- Plain quote: ='(1 2 3)= means “a list of 1, 2, 3”, not “call 1”.
+- Backquote lets you build structured expressions:
+  #+begin_src elisp
+  (let ((x 10)
+        (xs '(1 2 3)))
+    `(add ,x ,@xs))
+  ;; => (add 10 1 2 3)
+  #+end_src
+- Use backquote templates for macros and building code/data structures.
+
+*** Symbols and lists
+- A symbol is a name: =foo=. It can have a value (variable), a function definition, and properties.
+- Lists are linked structures: =(a . (b . (c . nil)))= printed as =(a b c)=.
+- =nil= is both “false” and the empty list.
+
+*** Equality choices
+- Use =eq= for comparing symbols (e.g. keyword tags).
+- Use =equal= for strings, lists, vectors, and “general” comparison.
+- Use == for numeric comparisons: =(= 1.0 1)= ⇒ =t=.
+
+---
+
+* Variables & Scope
+Emacs Lisp historically used dynamic scope; modern code prefers lexical binding.
+
+** Quick Reference
+- Define globals:
+  #+begin_src elisp
+  (defvar my-var 42 "Docstring.")
+  (defconst my-const 3.14 "Pi-ish.")
+  #+end_src
+- User option:
+  #+begin_src elisp
+  (defcustom my-option t
+    "User setting."
+    :type 'boolean
+    :group 'my-group)
+  #+end_src
+- Assignment:
+  #+begin_src elisp
+  (setq my-var 10)
+  (setf my-var 20)
+  #+end_src
+- Local bindings:
+  #+begin_src elisp
+  (let ((x 1)
+        (y (+ 1 2)))
+    ...)
+  #+end_src
+- Enable lexical binding at top of file:
+  #+begin_example
+  ;; -*- lexical-binding: t -*-
+  #+end_example
+
+** Explanation
+*** defvar vs defconst vs defcustom (preferred choices)
+- =defvar=:
+  - Declares a global dynamic variable.
+  - Only sets the value if it’s currently unbound.
+  - Use for internal globals, implementation details.
+- =defconst=:
+  - Like =defvar= but marks it as constant (not enforced, but documented).
+  - Use for symbolic constants (magic numbers, keywords).
+- =defcustom=:
+  - Declares a user option visible via =M-x customize=.
+  - Should have =:type= and =:group=.
+  - Use whenever you expect users to tweak the value.
+
+*** setq vs setf
+- =setq=:
+  - Special form for simple variable assignment.
+  - Fast and idiomatic for locals/globals.
+- =setf=:
+  - Generic setter for “places” (e.g. =(setf (car x) 10)=).
+  - Preferred when modifying data structures via accessors.
+- Rule of thumb: use =setq= for variables, =setf= for “places” (like fields).
+
+*** Dynamic vs lexical binding (and why lexical is preferred)
+- Dynamic binding: function bodies can “see” variables bound by callers; this can be convenient but surprising.
+- Lexical binding: typical of modern languages; closures capture their surrounding environment safely.
+- When you enable lexical binding for a file:
+  - Local variables behave like in Python/Rust.
+  - You can create reliable closures and higher-order functions.
+- New code should almost always use lexical binding; dynamic binding is still useful for configuration (see later).
+
+---
+
+* Functions
+Functions are first-class values and can be created, passed around, and stored.
+
+** Quick Reference
+- Define a function:
+  #+begin_src elisp
+  (defun add (a b)
+    "Return A + B."
+    (+ a b))
+  #+end_src
+- Lambda:
+  #+begin_src elisp
+  (lambda (x) (* x x))
+  #+end_src
+- Optional and rest args:
+  #+begin_src elisp
+  (defun example (a &optional b &rest rest)
+    (list a b rest))
+  #+end_src
+- Calling:
+  #+begin_src elisp
+  (add 1 2)
+  (funcall #'add 1 2)
+  (apply #'add '(1 2))
+  #+end_src
+
+** Explanation
+*** Functions as first-class values
+- =#'foo= is a “function object” for =foo=; use this when passing functions around.
+- Lambdas are anonymous functions, e.g. =(mapcar (lambda (x) (* x x)) xs)=.
+
+*** Optional and rest arguments
+- =&optional= introduces arguments that may be omitted:
+  #+begin_src elisp
+  (defun log-message (msg &optional level)
+    (message "[%s] %s" (or level "info") msg))
+  #+end_src
+- =&rest= collects remaining arguments into a list:
+  #+begin_src elisp
+  (defun sum (&rest nums)
+    (apply #'+ nums))
+  #+end_src
+
+*** Closures with lexical binding
+- With lexical binding on, you can capture local variables:
+  #+begin_src elisp
+  ;; -*- lexical-binding: t -*-
+  (defun make-adder (n)
+    (lambda (x) (+ x n)))
+
+  (setq add10 (make-adder 10))
+  (funcall add10 5) ;; => 15
+  #+end_src
+- This is essential for writing nice, composable abstractions.
+
+---
+
+* Control Flow
+The usual toolkit: conditionals and looping constructs.
+
+** Quick Reference
+- Conditionals:
+  #+begin_src elisp
+  (if cond then else)
+  (when cond body...)
+  (unless cond body...)
+  (cond
+    ((test1) expr1)
+    ((test2) expr2)
+    (t default))
+  #+end_src
+- Multiple expressions:
+  #+begin_src elisp
+  (progn expr1 expr2 expr3)
+  #+end_src
+- Boolean operators:
+  #+begin_src elisp
+  (and cond1 cond2 ...)
+  (or cond1 cond2 ...)
+  #+end_src
+- Loops:
+  #+begin_src elisp
+  (while test body...)
+  (dotimes (i n) body...)
+  (dolist (x xs) body...)
+  #+end_src
+
+** Explanation
+*** if / when / unless / cond
+- =if= is expression-based: it returns the last value of the branch.
+- =when= and =unless= are convenient multi-body forms:
+  #+begin_src elisp
+  (when (> x 10)
+    (message "Big")
+    (do-something))
+  #+end_src
+- =cond= is Emacs Lisp’s equivalent of “patterned” multi-branch:
+  #+begin_src elisp
+  (cond
+    ((null x) 'empty)
+    ((numberp x) 'number)
+    (t 'other))
+  #+end_src
+
+*** Loops vs mapping (preferred patterns)
+- =while= is the low-level primitive; use for complex or atypical loops.
+- =dotimes= and =dolist= cover most simple loops.
+- Prefer =mapcar= or =seq-map= where it makes the intent clearer:
+  #+begin_src elisp
+  (mapcar #'1+ '(1 2 3)) ;; preferred over manual increment loop when simple
+  #+end_src
+
+---
+
+* Lists & Sequences
+Lists are the bread and butter of Lisp; vectors and strings are also sequences.
+
+** Quick Reference
+- Creation:
+  #+begin_src elisp
+  (list 1 2 3)        ;; => (1 2 3)
+  (cons 1 '(2 3))     ;; => (1 2 3)
+  '(1 2 3)            ;; quoted literal
+  #+end_src
+- Access:
+  #+begin_src elisp
+  (car '(1 2 3))      ;; 1
+  (cdr '(1 2 3))      ;; (2 3)
+  (nth 1 '(a b c))    ;; b
+  #+end_src
+- Stack-like operations:
+  #+begin_src elisp
+  (push x my-list)    ;; modifies my-list
+  (pop my-list)       ;; returns first element, updates my-list
+  #+end_src
+- Sequence operations (seq library):
+  #+begin_src elisp
+  (seq-map #'1+ seq)
+  (seq-filter #'numberp seq)
+  (seq-reduce #'+ seq 0)
+  #+end_src
+
+** Explanation
+*** Lists as linked structures
+- Conceptually ='(a b c)= is =(a . (b . (c . nil)))=.
+- Operations like =car= and =cdr= are constant-time on the head.
+
+*** Mutability and sharing
+- Lists are mutable; operations like =setcar= and =setcdr= modify them.
+- Be careful: two variables may share the same tail; mutating one can affect the other.
+
+*** Vectors and strings as sequences
+- Vectors: =[1 2 3]= fast random access:
+  #+begin_src elisp
+  (aref [1 2 3] 1)  ;; => 2
+  (aset vec 0 10)
+  #+end_src
+- Strings also support =aref=:
+  #+begin_src elisp
+  (aref "abc" 1)   ;; => ?b
+  #+end_src
+- =seq-* functions= work across lists, vectors, and strings where it makes sense.
+
+---
+
+* Hash Tables
+For efficient key–value lookups.
+
+** Quick Reference
+- Create:
+  #+begin_src elisp
+  (setq table (make-hash-table :test 'equal))
+  #+end_src
+- Use:
+  #+begin_src elisp
+  (puthash "key" 123 table)
+  (gethash "key" table)        ;; => 123
+  (remhash "key" table)
+  (maphash (lambda (k v) (message "%S => %S" k v)) table)
+  #+end_src
+
+** Explanation
+*** Choosing a :test
+- =:test 'eq= : fast, for symbols/identities.
+- =:test 'eql= : numbers and symbols.
+- =:test 'equal= : general-purpose; compares strings and structured data.
+- Default is often ='eql=; for string keys, prefer =equal=.
+
+*** When to prefer hash tables over alists
+- For small configuration-like mappings, alists (= '((key . value) ...)=) are fine.
+- For large or frequently accessed mappings, hash tables are faster and clearer.
+
+---
+
+* Strings, Formatting & Messaging
+You’ll use =message= a lot, both for UX and debugging.
+
+** Quick Reference
+- Concatenation and substrings:
+  #+begin_src elisp
+  (concat "Hello " "world")
+  (substring "abcdef" 1 4) ;; "bcd"
+  #+end_src
+- Formatting:
+  #+begin_src elisp
+  (format "x = %d, y = %S" 10 '(1 2))
+  #+end_src
+- Printing to minibuffer:
+  #+begin_src elisp
+  (message "Value is %S" value)
+  #+end_src
+
+** Explanation
+*** format and message (preferred style)
+- Prefer =(message "Value is %S" x)= over nested =format=:
+  - Clearer and slightly more efficient.
+- =%S= prints Lisp-readable representation, good for debugging.
+- =*Messages*= buffer keeps a log; inspect it when debugging.
+
+*** Useful string utilities
+- =replace-regexp-in-string= for regex-based replacements.
+- =split-string= to turn a string into a list of substrings.
+
+---
+
+* Buffers, Text, Point & Regions
+Core to Emacs: most functions operate in the “current buffer”.
+
+** Quick Reference
+- Current buffer text:
+  #+begin_src elisp
+  (buffer-string)
+  #+end_src
+- Insert and delete:
+  #+begin_src elisp
+  (insert "hello")
+  (delete-region beg end)
+  #+end_src
+- Moving around:
+  #+begin_src elisp
+  (point)
+  (goto-char 1)
+  #+end_src
+- Work in another buffer:
+  #+begin_src elisp
+  (with-current-buffer "other-buffer"
+    (insert "Hi"))
+  #+end_src
+- Preserve point and mark:
+  #+begin_src elisp
+  (save-excursion
+    (goto-char (point-max))
+    (insert "End"))
+  #+end_src
+
+** Explanation
+*** Point, region and buffer-local operations
+- The “point” is the cursor position; functions like =forward-word= move it.
+- The “region” is the active selection, defined by mark and point.
+- Many primitives operate implicitly on the current buffer; use =with-current-buffer= to be explicit in multi-buffer code.
+
+*** save-excursion, save-restriction (preferred patterns)
+- =save-excursion= restores point and current buffer after executing a body.
+- =save-restriction= restores narrowing.
+- Standard pattern when editing buffer programmatically:
+  #+begin_src elisp
+  (save-excursion
+    (save-restriction
+      (widen)
+      ;; do edits safely here
+      ))
+  #+end_src
+
+---
+
+* Files & I/O
+Reading and writing files from Lisp.
+
+** Quick Reference
+- Visit file in a buffer:
+  #+begin_src elisp
+  (find-file "path/to/file")
+  #+end_src
+- Insert file contents:
+  #+begin_src elisp
+  (insert-file-contents "input.txt")
+  #+end_src
+- Write region to file:
+  #+begin_src elisp
+  (write-region (point-min) (point-max) "output.txt")
+  #+end_src
+- Use a temp buffer:
+  #+begin_src elisp
+  (with-temp-buffer
+    (insert-file-contents "input.txt")
+    (buffer-string))
+  #+end_src
+
+** Explanation
+*** with-temp-buffer (preferred for non-interactive processing)
+- Works like a sandbox buffer:
+  - No UI side-effects.
+  - Easy to discard once done.
+- Use when writing tools that process files without showing them to the user.
+
+---
+
+* Interactive Commands & Keybindings
+Interactive commands are functions callable via =M-x= and key bindings.
+
+** Quick Reference
+- Define an interactive command:
+  #+begin_src elisp
+  (defun hello (name)
+    "Say hello to NAME."
+    (interactive "sName: ")
+    (message "Hello, %s" name))
+  #+end_src
+- Simple interactive specs:
+  - ="s" Name: string from minibuffer=
+  - ="n" Number: numeric input=
+  - ="b" Buffer name=
+  - ="f" File name=
+  - ="r" Region (start and end)=
+- Keybindings:
+  #+begin_src elisp
+  (keymap-set global-map "C-c h" #'hello)
+  #+end_src
+
+** Explanation
+*** interactive forms
+- =(interactive "sPrompt: ")= reads a string into the first argument.
+- More complex interactive forms can be Lisp expressions; see =C-h f interactive= for the full spec.
+- A function without =interactive= can be called from Lisp, but not =M-x=.
+
+*** Preferred way to set keybindings
+- =keymap-set= is the modern API:
+  #+begin_src elisp
+  (keymap-set global-map "C-c x" #'my-command)
+  #+end_src
+- For modes, define a keymap and set bindings in it rather than abusing =global-map=.
+
+---
+
+* Customisation & Hooks
+Emacs is driven by user options and hooks.
+
+** Quick Reference
+- Define a customisation group and option:
+  #+begin_src elisp
+  (defgroup my-package nil
+    "My package."
+    :group 'convenience)
+
+  (defcustom my-package-enabled t
+    "Whether my package is enabled."
+    :type 'boolean
+    :group 'my-package)
+  #+end_src
+- Hooks:
+  #+begin_src elisp
+  (add-hook 'text-mode-hook #'my-text-setup)
+  (remove-hook 'text-mode-hook #'my-text-setup)
+  #+end_src
+
+** Explanation
+*** defgroup / defcustom (preferred way to expose settings)
+- Always create a =defgroup= so users can discover settings in =M-x customize-group=.
+- For each user-tweakable value, use =defcustom=:
+  - Provide a =:type= for UI (boolean, integer, string, choice, etc.).
+  - Provide a good docstring.
+
+*** Hooks as extension points
+- Hooks are lists of functions Emacs runs at well-defined points, e.g. =text-mode-hook=.
+- Adding your setup function to a hook is often better than advising or redefining core functions.
+
+---
+
+* Packages, Loading & Features
+Organising code into reusable modules.
+
+** Quick Reference
+- At the end of your file:
+  #+begin_src elisp
+  (provide 'my-package)
+  #+end_src
+- In a consumer file:
+  #+begin_src elisp
+  (require 'my-package)
+  #+end_src
+- Autoload:
+  #+begin_src elisp
+  ;;;###autoload
+  (defun my-command ()
+    "An autoloaded command."
+    (interactive)
+    ...)
+  #+end_src
+
+** Explanation
+*** Features and provide/require
+- A feature is just a symbol naming a collection of definitions.
+- =provide= announces “this library supplies feature X”.
+- =require= loads the file once if needed and ensures the feature is available.
+
+*** Autoloads (preferred performance pattern)
+- Autoloads let Emacs know a function exists without loading the whole file.
+- Typically generated automatically by package tools; you mark functions with =;;;###autoload=.
+
+---
+
+* Errors, Conditions & Exceptions
+Throwing and catching errors.
+
+** Quick Reference
+- Signal an error:
+  #+begin_src elisp
+  (error "Something went wrong: %S" data)
+  (user-error "User-facing message")
+  #+end_src
+- Handle errors:
+  #+begin_src elisp
+  (condition-case err
+      (dangerous-operation)
+    (error
+     (message "Caught error: %S" err)))
+  #+end_src
+
+** Explanation
+*** error vs user-error
+- =error= is for programmer or unexpected errors, often dropping into the debugger if enabled.
+- =user-error= is for polite, user-facing messages (doesn’t open the debugger by default).
+
+*** condition-case
+- =condition-case= catches signalled errors and lets you handle them:
+  #+begin_src elisp
+  (condition-case err
+      (progn
+        (do-stuff)
+        (do-more))
+    (file-missing
+     (message "Missing file: %S" err))
+    (error
+     (message "Other error: %S" err)))
+  #+end_src
+
+---
+
+* Debugging (Very Important)
+This is where you get real work done when things break.
+
+** Quick Reference
+- Print-style debugging:
+  #+begin_src elisp
+  (message "DEBUG: x=%S y=%S" x y)
+  #+end_src
+- Enable debug on errors:
+  #+begin_src elisp
+  (setq debug-on-error t)
+  #+end_src
+- Instrument function for Edebug:
+  - Place point inside =defun=, run =C-u C-M-x= (=edebug-defun=).
+- Trace a function:
+  #+begin_src elisp
+  (trace-function 'my-fn)
+  (untrace-function 'my-fn)
+  #+end_src
+
+** Explanation
+*** A. Print-style debugging (quickest)
+- Use =message= calls at key points:
+  #+begin_src elisp
+  (defun my-fn (x)
+    (message "my-fn: x=%S" x)
+    (let ((y (compute x)))
+      (message "my-fn: y=%S" y)
+      y))
+  #+end_src
+- Check =*Messages*= to see history.
+- Prefer =%S= in format strings so values are readable Lisp forms.
+
+*** B. The Lisp debugger (debug-on-error)
+- Turn on:
+  #+begin_src elisp
+  (setq debug-on-error t)
+  #+end_src
+- When an error occurs, Emacs shows a backtrace buffer:
+  - Use =n= / =p= to move between frames.
+  - Press =e= to evaluate an expression in the context of a frame.
+  - Press =v= to inspect a variable at point.
+- This is similar to a stack trace debugger in other languages.
+
+*** C. Edebug: stepping through code (preferred for understanding flow)
+- Instrument a function:
+  - Place point inside the =defun= and run =C-u C-M-x= (or =M-x edebug-defun= with prefix arg).
+- When the function runs:
+  - Use space or =n= to step.
+  - Use =c= to continue until the next breakpoint.
+  - Use =h= for “here” breakpoints.
+- Edebug highlights the expression about to be evaluated and shows variable bindings, making it excellent for complex logic.
+
+*** D. Tracing calls (trace-function)
+- Use tracing when you want to see a call log without single-stepping:
+  #+begin_src elisp
+  (trace-function 'my-fn)
+  (my-fn 10)
+  (untrace-function 'my-fn)
+  #+end_src
+- The trace output goes to a *trace-buffer* listing arguments and return values.
+
+*** E. ielm, eval-expression and scratch buffer
+- =M-x ielm= starts an interactive Lisp REPL inside Emacs.
+- =M-:= (=eval-expression=) evaluates a one-off expression, showing the result in the minibuffer.
+- The =*scratch*= buffer is a convenient place to write temporary forms and evaluate them with =C-j= or =C-x C-e=:
+  - =C-x C-e= (=eval-last-sexp=) evaluates the expression before point.
+
+*** F. Preferred debugging workflow
+- Start with =message= for simple issues.
+- Turn on =debug-on-error= for unexplained crashes.
+- Use Edebug for complicated functions or when control flow is unclear.
+- Use tracing to follow high-volume or recursive calls.
+
+---
+
+* Macros & Code-as-Data
+Macros let you invent new language constructs.
+
+** Quick Reference
+- Define a macro:
+  #+begin_src elisp
+  (defmacro my-unless (cond &rest body)
+    `(if (not ,cond)
+         (progn ,@body)))
+  #+end_src
+- Inspect macro expansion:
+  #+begin_src elisp
+  (macroexpand-1 '(my-unless t (message "Hi")))
+  #+end_src
+
+** Explanation
+*** Macros vs functions
+- Functions receive already-evaluated arguments.
+- Macros receive the raw code (unevaluated) and must return new code to run.
+- Use macros when you need to:
+  - Control evaluation (e.g. new control structures).
+  - Bind or introduce new syntax (e.g. =with-temp-buffer= style).
+
+*** Backquote templates in macros
+- Backquote with commas makes macro writing pleasant:
+  #+begin_src elisp
+  (defmacro with-logging (msg &rest body)
+    `(progn
+       (message "Start: %s" ,msg)
+       (prog1
+           (progn ,@body)
+         (message "End: %s" ,msg))))
+  #+end_src
+
+---
+
+* Emacs-Specific Lisp Superpowers
+Things that are hard or awkward in typical “sequential” languages.
+
+** Quick Reference
+- Advise functions:
+  #+begin_src elisp
+  (defun my-save-logger (&rest _args)
+    (message "Saving buffer %S" (buffer-name)))
+
+  (advice-add 'save-buffer :before #'my-save-logger)
+  #+end_src
+- Dynamic binding for temporary configuration:
+  #+begin_src elisp
+  (let ((fill-column 40))
+    (fill-paragraph))
+  #+end_src
+
+** Explanation
+*** Advising functions
+- Use =advice-add= to attach behaviour before/after/around existing functions:
+  #+begin_src elisp
+  (advice-add 'find-file :after
+              (lambda (&rest _)
+                (message "Opened %S" (buffer-name))))
+  #+end_src
+- This lets you customise Emacs behaviour without modifying its source.
+
+*** Dynamic binding as configuration
+- Temporary override of global variables:
+  #+begin_src elisp
+  (let ((inhibit-message t))
+    (save-buffer))
+  #+end_src
+- Dynamic binding lets called functions see these temporary values — extremely convenient for per-call configuration.
+
+*** Live redefinition and hot patching
+- Re-evaluate a =defun= in a buffer; Emacs immediately uses the new definition.
+- Great for exploratory programming and incremental development.
+
+*** DSLs and editor-specific abstractions
+- Build domain-specific mini languages (like =use-package=) with macros.
+- Compose configuration into readable forms that are still just Lisp.
+
+---
+
+* Documentation (Docstrings, Commentary, Headers)
+Documenting your code properly makes it discoverable via =C-h f= and =C-h v=.
+
+** Quick Reference
+- Function docstring:
+  #+begin_src elisp
+  (defun my-fn (x)
+    "Return X doubled.
+This function is visible via `C-h f`."
+    (*x))
+  #+end_src
+- Variable docstring:
+  #+begin_src elisp
+  (defvar my-var 10
+    "An example variable.")
+  #+end_src
+- File header structure:
+  #+begin_example
+  ;;; my-package.el --- Short summary -*- lexical-binding: t; -*-
+
+  ;;; Commentary:
+
+  ;; Longer description, usage notes.
+
+  ;;; Code:
+
+  ...your code...
+
+  (provide 'my-package)
+
+  ;;; my-package.el ends here
+  #+end_example
+
+** Explanation
+*** Writing good docstrings (preferred style)
+- First line: one sentence summary, imperative or descriptive.
+- Then a blank line, followed by detailed explanation if needed.
+- Mention key arguments and behaviour in user-facing terms, not internal implementation details.
+- Accessible via:
+  - =C-h f my-fn=
+  - =C-h v my-var=
+
+*** Commentary section
+- =;;; Commentary:= is the place for:
+  - High-level overview of the library.
+  - Usage examples.
+  - Important design notes.
+- This appears in package browsers and helps users understand what the library is for.
+
+*** File headers
+- The first line should include the file name and a short summary; often also =lexical-binding= cookie.
+- The =;;; Code:= line marks where code starts; everything before is meta/documentation.
+
+---
+
+* Idioms & Preferred Patterns
+A grab-bag of “Emacs-y” ways of doing things.
+
+** Quick Reference
+- Use lexical binding in new files.
+- Prefer =when= / =unless= to single-branch =if=.
+- Use =save-excursion= and =save-restriction= when editing buffers.
+- Use =defcustom= for user-tweakable settings.
+- Use =mapcar= / =seq-map= over manual loops when obvious.
+
+** Explanation
+*** Control-flow and mapping idioms
+- =when= and =unless= are clearer for single-branch conditions.
+- =cond= is nicer for multi-branch logic than nested =if= or =if-else= ladders.
+- Sequence operations like =mapcar= express intent better than manual index loops.
+
+*** Naming conventions
+- Predicates: end with =-p= (e.g. =foo-p=).
+- Hooks: end with =-hook=.
+- Modes: end with =-mode=.
+- Minor modes typically have a variable (mode flag) and an interactive command of the same name.
+
+*** Side-effect hygiene
+- Explicitly isolate side effects in buffer-manipulating code using =save-excursion=, =with-current-buffer=, etc.
+- Avoid “mysterious” global state; prefer locals and lexical closures.
+
+---
+
+* Common Gotchas
+Things that often trip people up coming from other languages.
+
+** Quick Reference
+- =nil= is both “false” and the empty list.
+- =t= is the canonical “true”.
+- =eq= vs =equal=: use =eq= for symbols, =equal= for structures/strings.
+- Dynamic scope can leak values in surprising ways if lexical binding is off.
+
+** Explanation
+*** nil, t, and truthiness
+- Only =nil= counts as false; everything else, including 0, empty string, empty vector, counts as true.
+- =t= is the conventional true value, but any non-nil value is effectively true.
+
+*** eq vs equal vs =
+- =eq= checks identity (same object) — use for symbols and some interned values.
+- =equal= compares structures recursively; use for strings, lists, vectors.
+- == compares numbers; =equal= also works for numbers but = is idiomatic.
+
+*** Dynamic binding surprises
+- Without lexical binding, a =let= over a variable name can affect functions called from inside it in surprising ways.
+- To avoid spooky action at a distance, always set =lexical-binding= in new libraries and use dynamic binding only deliberately.
+
+---
+
+* End
+This cheat sheet is meant as a practical, collapse-friendly reference.  
+Use TAB on headings to hide explanations when you just want the quick forms.

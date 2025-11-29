@@ -10,10 +10,14 @@ fi
 cd "$(dirname "$0")"/..
 
 DOC_ROOT="public"
+PORT="${PORT:-3000}"  # you can override with: PORT=4000 ./scripts/dev.sh
 
 browser-sync start \
   --server "$DOC_ROOT" \
   --files "$DOC_ROOT/**/*" \
   --no-open \
   --reload-delay 200 \
-  --reload-debounce 400
+  --reload-debounce 400 \
+  --host 0.0.0.0 \
+  --no-ghost-mode \
+  --port "$PORT"

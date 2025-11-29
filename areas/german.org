@@ -1,0 +1,102 @@
+#+title: German Word building
+
+
+* German Word-Building Cheat Sheet
+A practical guide to recognising stems, guessing meanings, and absorbing grammar while reading.
+
+** 1. Prefixes That Change Meaning
+*** a) Negating / Reversing
+- *un-* → **negates adjectives**
+  - glücklich → **unglücklich**
+  - klar → **unklar**
+
+- *miss-* → **wrongly / badly**
+  - verstehen → **missverstehen**
+
+*** b) Spatial / Directional Prefixes
+- *auf-*, *ab-*, *ein-*, *aus-*, *über-*, *unter-*, *vor-*, *nach-*  
+  - aufmachen (open)  
+  - abnehmen (take off / lose weight)  
+  - einsteigen (get in)
+
+*** c) Separability Tip
+- *Stressed prefix* → **separable** (auf\|stehen)  
+- *Unstressed prefix* → **inseparable** (verstehen)
+
+** 2. Suffixes That Form Adjectives (Often from Nouns)
+*** a) Origin / Belonging
+- *-isch* → “**-ish / relating to**”
+  - Kind → **kindisch**
+  - Deutschland → **deutsch**
+
+*** b) Possession / Quality
+- *-ig* → “**-y / having**”
+  - Salz → **salzig**
+  - Mut → **mutig**
+
+- *-lich* → “**-ly / characteristic of**”
+  - Freude → **freudig**
+
+- *-reich* → “**rich in**”
+  - Nahrung → **nahrreich**
+
+*** c) Resulting From / Tending Toward
+- *-bar* → “**-able**”
+  - essen → **essbar**
+
+** 3. Suffixes That Form Nouns
+*** a) Abstract Nouns
+- *-heit / -keit* → “**-ness / -ity**”
+  - sicher → **Sicherheit**
+  - möglich → **Möglichkeit**
+  - freundlich → **Freundlichkeit**
+
+*** b) Turning Verbs into Nouns
+- *-ung* → “**-ing / result of**”
+  - bewegen → **Bewegung**
+  - lernen → (Lernung — rare, but pattern matters)
+
+*** c) People Who Do Things
+- *-er / -erin*
+  - arbeiten → **Arbeiter / Arbeiterin**
+  - lernen → **Lerner / Lernerin**
+
+** 4. Verb-Building Patterns
+*** a) Verb + Prefix = New Meaning
+- gehen:
+  - **ausgehen** (go out)
+  - **eingehen** (enter; shrink)
+  - **vergehen** (pass, as in time)
+
+*** b) Verbs From Adjectives
+- *-en* ending  
+  - sauber → **säubern** (to clean)
+
+*** c) Verbs From Nouns
+- Common prefixes: *be-*, *ver-*, *ent-*
+  - **befreunden** (to befriend)
+  - **entdecken** (discover; “uncover”)
+  - **vergiften** (to poison)
+
+** 5. Compound Words (Very Common in German)
+*** a) Noun + Noun
+- Hand + Schuh → **Handschuh** (glove)
+- Wasser + Flasche → **Wasserflasche** (water bottle)
+
+*** b) Adjective + Noun
+- Hoch + Schule → **Hochschule** (university)
+
+*** c) Verb Stem + Noun
+- Lauf + Bahn → **Laufbahn** (career)
+
+*** d) Rule of Compounds
+- The **rightmost word** is the *main* meaning.
+
+** 6. Recognition Patterns (Useful While Reading)
+*** a) Gender Cues
+- Usually **feminine**: *-ung*, *-heit*, *-keit*, *-schaft*  
+- Always **neuter**: *-chen*, *-lein*
+
+*** b) Reading Tip
+- Strip off prefixes to find the **root**.
+- Look at the **suffix** to guess meaning and gender.

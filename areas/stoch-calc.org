@@ -1,5 +1,6 @@
 #+title: Stochastic Calculus
 #+SLUG: stocalc
+#+INCLUDE: "_macros.org"
 
 
 * Stochastic Differential Equation
@@ -27,11 +28,8 @@ A generator of a stochastic process is defined
 (\mathcal{L}f)(x) = \lim_{t \to 0} \frac{1}{t} \lc  \mathbb{E}_{x}{\ls f(X_t )\rs} - f(x) \rc,
 \end{equation}
 it describes the infinitesimal evolution of expectations of observables. Suppose one starts with a smooth test function $f(x)$, the generator describes how this function is deformed by the stochastic process in an infinitesial time.
-It compares the smooth evolution you would expect from the function $f$ to the instantaneous changes induced by the underlying stochastic dynamics. The evolution of the expectation of an observable is them
-
-
+It compares the smooth evolution you would expect from the function $f$ to the instantaneous changes induced by the underlying stochastic dynamics. Letting $u(x, t) = \mathbb{E}[f(x_t)]$ denote the expectation of the observable, its evolution satisfies
 #+name:eq-func-evolve
 \begin{equation}
-\diffl{\mathbb{E}[f(X_t)]} = \mathbb{E}[(\mathcal{L}f)(x)]
-\label{eq-func-evolve}
+\mpdiff{u(x, t)}{t} = (\mathcal{L}u)(x, t).
 \end{equation}

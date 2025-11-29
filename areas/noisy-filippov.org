@@ -20,6 +20,7 @@
 
 #+PROPERTY: header-args :eval no
 
+
 * Introduction
 Consider the the autonomous general piecewise stochastic differential equation
 #+name: eq-general-psde
@@ -37,7 +38,7 @@ Let the discontinuity $\sigma: \mathbb{R}^d \mapsto \mathbb{R}$ be a scalar func
 \end{equation}
 notice that $\lambda_{t} = \mathrm{sign}(\sigma(x_{t}))$ is now stochastic. The dynamics of $x_t$ together with $\lambda_t$ is a stochastic slow-fast system. Recall that
 for deterministic system, the fast dynamics of the switching variable is given via $\dot{\lambda} = \epsilon^{-1}\nabla \sigma \cdot \dot{x}^{{\scriptsize\mathsf{T}}}$, this comes from regularising the sign function into something of the form
-#+name: eq-lambda-reg
+#+name: eq-lam-reg
 \begin{equation}
 \lambda^{(\epsilon^{\beta})}(x) = 
 \left\{
@@ -51,7 +52,7 @@ for deterministic system, the fast dynamics of the switching variable is given v
 and then taking the derivative with respect to time. Note that this regularisation is obviously not unique, any choose of $\beta > 0$, would work as we are interested in only the singular limit as it pertains to resolving the sliding mode.
 
 For stochastic system one must employ Ito's lemma which yeilds
-#+name: eq-lambda-slow-ito
+#+name: eq-lam-slow-ito
 \begin{equation}
 \mathrm{d}\lambda_t = \frac{1}{\epsilon} \left[
 \nabla \sigma \cdot
@@ -63,7 +64,7 @@ For stochastic system one must employ Ito's lemma which yeilds
 \mathrm{d}x_t^{\scriptsize{\mathsf{T}}} \right],
 \end{equation}
 clearly for non planar discontinuity surfaces the additional Ito correction will yeild additional drift terms, while for planar discontinuity surfaces we obtain a simple projection onto the normal. For this introduction let us assume we have a planar discontinuity surface with $\sigma(x) = n \cdot x$ where $n \in \mathbb{R}^{d}$ is a constant vector, which gives us 
-#+name: eq-lambda-slow
+#+name: eq-lam-slow
 \begin{equation}
 \mathrm{d}\lambda_t = 
 \frac{1}{\epsilon}
@@ -73,8 +74,8 @@ a(x_t, \lambda_t) \mathrm{d}t +
 n\cdot b(x_t, \lambda_t) 
 \mathrm{d}W_t,
 \end{equation}
-Suppose we wish to analyse the fast subsystem, let us consider the rescaling time with $t = \epsilon^{\alpha} \tau$, where $\epsilon, \alpha > 0$. Rescaling [[eq-lambda-slow]] we obtain 
-#+name: eq-lambda-fast
+Suppose we wish to analyse the fast subsystem, let us consider the rescaling time with $t = \epsilon^{\alpha} \tau$, where $\epsilon, \alpha > 0$. Rescaling [[eq-lam-slow]] we obtain 
+#+name: eq-lam-fast
 \begin{equation}
 \mathrm{d}\lambda_{\tau} = 
 \epsilon^{\alpha - 1}
@@ -101,14 +102,258 @@ $$
 $$
 While analysing the fast subsystem and the multiple timescales problem is in itself an interesting endeavour, our goal is only to analyse the fast dynamics only as far as it pertains to resolving the slow dynamics at the discontinuity sets.
 
+* Outline
+Let $x_t$  be a stochastic process in $\mathbb{R}^d$, and governed by the SDE
+#+name: eq-sde-al
+\begin{equation}
+\mathrm{d} x_t = \hat{a}(t, x_t, \lambda_t) \mathrm{d} t + \sqrt{\epsilon} \hat{b}(t, x_t, \lambda_t) \mathrm{d} W_t^\alpha, \quad \alpha \in [0, 1]
+\end{equation}
+where 
+#+name: eq-ahat-def
+\begin{equation}
+\hat{a}(t, x_t, \lambda_t) =
+\frac{1}{2}{\left(1 + \lambda_t \right)} a^{+}(t, x_t)
++ \frac{1}{2}{\left(1 - \lambda_t \right)} a^{-}(t, x_t)
+\end{equation}
+is a convex combination of the vector fields on either side of the discontinuity surface, similarly
+#+name: eq-bhat-def
+\begin{equation}
+\hat{b}(t, x_t, \lambda_t) =
+\frac{1}{2}{\left(1 + \lambda_t \right)} b^{+}(t, x_t)
++ \frac{1}{2}{\left(1 - \lambda_t \right)} b^{-}(t, x_t)
+\end{equation}
+is a convex combination of the noise amplitude on either side of the
+discontinuity surface, $\rmd W_t$ is a Weiner increment, and $\alpha$ denotes the
+point at which we evaluate the noise-amplitude in the stochastic integral, with
+$\alpha = 0$ corresponding to the start point evaluation, i.e. Ito while $\alpha
+= 1$ would correspond to the anti-Ito convention. Regardless of the choice of
+$\alpha$ we can have an Ito representation of the process via
+#+name: eq-sde-al-to-ito
+\begin{equation}
+    \mathrm{d} x_t = [\hat{a}(t, x_t, \lambda_t) + \alpha \epsilon \hat{b}(t, x_t, \lambda_t) \partial_x \hat{b}(t, x_t, \lambda_t)] \mathrm{d} t + \sqrt{\epsilon} \hat{b}(t, x_t, \lambda_t) \mathrm{d} W_t,
+\end{equation}
+whhch we will rewrite as
+#+name: eq-gen-weak-noise-nssde
+\begin{equation}
+\mathrm{d}x_t = a(t, x_t, \lambda_t) \mathrm{d}t + \sqrt{\epsilon} b(t, x_t, \lambda_t) \mathrm{d}W_t,
+\end{equation}
+where
+#+name: eq-a-def
+\begin{equation}
+a(t, x_t, \lambda_t) = 
+\hat{a}(t, x_t, \lambda_t) + \alpha \epsilon \hat{b}(t, x_t, \lambda_t) \partial_x \hat{b}(t, x_t, \lambda_t),
+\end{equation}
+and
+#+name: eq-b-def
+\begin{equation}
+b(t, x_t, \lambda_t) = \hat{b}(t, x_t \lambda_t).
+\end{equation}
+We will proceed with Ito calculus on [[eq-sde-al-to-ito]] and later affix the choice
+of $\alpha$ for the original problem. 
+
+Recall that away from the discontinuity surface, $\lambda_t \in \{1, -1\}$, and sort
+
+Our goal is to close the SDE given in
+[[eq-sde-al-to-ito]] (and in turn [[eq-sde-al]]) in   
+
+
+In the deterministic scenario, one simply 
+
+To study the dynamics of $\lambda_t$ we first introduce the regularised 
+#+name: eq-lam-reg
+\begin{equation}
+\Lambda_{\epsilon}(u) \idef
+\left\{
+\begin{matrix}
+u / \epsilon & |u| < \epsilon, \\
+\mathrm{sign}(u) & |u| \geq \epsilon,
+\end{matrix}
+\right.
+\end{equation}
+The function $\Lambda_{\epsilon}(u)$ can be written as
+#+name: eq-lam-reg-conv-diff
+\begin{equation}
+\Lambda_{\epsilon}(u) = \psi^{+}_{\epsilon}(u) - \psi^{+}_{\epsilon}(u),
+\end{equation}
+where
+#+name: eq-conv-psi12
+\begin{equation}
+\psi^{+}_{\epsilon}(u) \idef
+\left\{
+\begin{matrix}
+-1 & u \leq -\epsilon \\
+u / \epsilon &  u > -\epsilon
+\end{matrix}
+\right.
+\qquad
+\psi^{-}_{\epsilon}(u) \idef
+\left\{
+\begin{matrix}
+0 & u \leq \epsilon \\
+u / \epsilon -1 &  u > \epsilon
+\end{matrix}
+\right. ,
+\end{equation}
+are convex functions. We now want to consider the the dynamics of $\lambda_t = \Lambda_{\epsilon}(x_t)$, but obviously since $\Lambda_{\epsilon}(u)$ only has a second derivative in the distributional sense one cannot simply employ Ito's lemma and instead we must use Melyer-Ito. We define the random variable $z_t = \sigma(x_t)$ where $\sigma \in C^2(\mathbb{R}^d)$. Then by Ito's lemma we have
+#+name: eq-z-sde
+\begin{equation}
+\rmd z_t = \ls \mpdiff{\sigma}{x}^{\trans} a + \frac{\epsilon}{2}\mathrm{Tr}(b^{\trans} \mpdiff{\sigma}{2} b) \rs\rmd t
++ \sqrt{\epsilon} \mpdiff{\sigma}{x}^{\trans}  c \rmd W_t.
+\end{equation}
+For the function $\Lambda_{\epsilon}$ that can be written as the difference of two convex functions, Ito-meyer states that
+#+name: eq-lam-sde-meyer-ito
+\begin{equation}
+\Lambda_{\epsilon}(z_t) =  
+\Lambda_{\epsilon}(z_0) + 
+\int_{0}^{t}
+\Lambda^{'-}_{\epsilon}(z_s) \rmd z_s 
++
+\int_{0}^{t} L_t(z) \rmd \mu_{\Lambda^{''}_{\epsilon}}(z)
+\end{equation}
+where $\Lambda^{'-}_{\epsilon}(z_s)$ is the left derivative, $\mu_{\Lambda^{''}_{\epsilon}}(z)$ is the measure of the second derivative and 
+#+name: eq-local-time-def
+\begin{equation}
+L_t(z) \idef \lim_{\delta \to 0}\frac{1}{4\delta} \mu{\lb |z_s - z| < \delta \giv  s \in [0, t] \rb}
+\end{equation}
+is the so-called local time of $z_t$ at the point $z$. For our case the left derivative of $\Lambda_{\epsilon}(u)$ given by
+#+name: eq-lam-reg-left-deriv
+\begin{equation}
+\Lambda^{'-}_{\epsilon}(u) =
+\left\{
+\begin{matrix}
+0 & u \leq -\epsilon \\
+1 / \epsilon & \epsilon < u \leq \epsilon \\
+0  & u >  \epsilon
+\end{matrix}
+\right.
+\end{equation}
+and the second derivative as a signed measure is  
+#+name: eq-lam-reg-scnd-deriv
+\begin{equation}
+\mu_{\Lambda^{''}_{\epsilon}}(u) = \frac{1}{\epsilon}\delta_{-\epsilon} - \frac{1}{\epsilon}\delta_{\epsilon}
+\end{equation}
+where $\delta_{a} = \delta(x - z)$ is the Dirac-delta distribution. Substituting [[eq-z-sde]], [[eq-lam-reg-left-deriv]], and [[eq-lam-reg-scnd-deriv]] in to [[eq-lam-sde-meyer-ito]] we obtain
+#+name: eq-lam-sde-meyer-ito-full
+\begin{equation}
+\begin{aligned}
+\Lambda_{\epsilon}(z_t) =  
+\Lambda_{\epsilon}(z_0) &+ 
+\frac{1}{\epsilon}
+\int_{0}^{t} \ls \mpdiff{\sigma}{x}^{\trans} a + \frac{\epsilon}{2}\mathrm{Tr}(b^{\trans} \mpdiff{\sigma}{2} b) \rs \rmd s + \frac{1}{\sqrt{\epsilon}}
+\int_{0}^{t} \mpdiff{\sigma}{x}^{\trans}  c \rmd W_s \\
+&+ \frac{1}{\epsilon}L_t^{-\epsilon} - \frac{1}{\epsilon}L_t^{\epsilon}.
+\end{aligned}
+\end{equation}
+Letting $\lambda_t = \Lambda_{\epsilon}(z_t)$ we write  
+#+name: eq-lam-sd
+\begin{equation}
+\begin{aligned}
+\rmd \lambda_t &=
+\frac{1}{\epsilon}
+\mathbb{1}_{(-1, 1)}(\lambda_t)
+\lc \frac{1}{\epsilon} \ls \mpdiff{\sigma}{x}^{\trans} a + \frac{\epsilon}{2}\mathrm{Tr}(b^{\trans} \mpdiff{\sigma}{2} b) \rs \rmd t
+ + \frac{1}{\sqrt{\epsilon}} \mpdiff{\sigma}{x}^{\trans}  c \rmd W_t \rc \\
+&+\frac{1}{\epsilon}
+\mathbb{1}_{\{-1\}}(\lambda_t) \rmd L_{t}^{-\epsilon} - \mathbb{1}_{\{1\}}(\lambda_t) \rmd L_{t}^{\epsilon} 
+\end{aligned}
+\end{equation}
+which describes the stochastic evolution of the switching variable.  Let us now consider a smooth function $f \in C^2$, and consider
+#+name: eq-mean-f
+\begin{align}
+&\mathbb{E}[f(\lambda_t) - f(\lambda_0)] =
+\mathbb{E}{\ls \int_0^t f'(\lambda_s) \rmd \lambda_s \rs}
++ \mathbb{E}{\ls \int_0^t f'(\lambda_s) \rmd (\lambda, \lambda)_s \rs} \\
+ &= \lc \int^{t}_{0}\mathbb{1}_{(-1, 1)}(\lambda_t) \frac{1}{\epsilon}\ls \mpdiff{\sigma}{x}^{\trans} a + \frac{\epsilon}{2}\mathrm{Tr}(b^{\trans} \mpdiff{\sigma}{2} b) 
+ + \frac{1}{2}\mpdiff{\sigma}{x}^{\trans}  cc^{\trans} \mpdiff{\sigma}{x} \rs \rmd t \rc +
+\mathbb{E}{\ls \int_0^t f'(\lambda_s) \rmd \lambda_s \rs} \\
+&+ \frac{1}{\epsilon}\mathbb{E}{\ls \int_0^t f^{\prime \prime}(\lambda_s) 
+\mpdiff{\sigma}{x}^{\trans}  c c^{\trans} \mpdiff{\sigma}{x}
+\rmd s \rs}
+\end{align}
+
+Thus we the generator of $\lambda_t$  
+#+name: eq-bws-lam-gen
+\begin{equation}
+(Af)(\lambda) = \frac{1}{\epsilon}
+\ls \mpdiff{\sigma}{x}^{\trans} a + \frac{\epsilon}{2}\mathrm{Tr}(b^{\trans} \mpdiff{\sigma}{2} b) \rs
+\mpdiff{f}{\lambda}(\lambda) + \frac{1}{\epsilon} 
+\ls \mpdiff{\sigma}{x}^{\trans}
+c c^{\trans} \mpdiff{\sigma}{x} \rs \mpdiff[2]{f}{\lambda}(\lambda)
+\end{equation}
+where
+#+name: eq-back-gen-domain
+\begin{equation}
+\mathcal{D}(A) = {\lc f \in C^2 \giv \mpdiff{f}{\lambda}(-1)  = \mpdiff{f}{\lambda}(1)  = 0 \rc}.
+\end{equation}
+From which we can obtain the forward generator
+#+name: eq-fwd-lam-gen
+\begin{equation}
+\begin{aligned}
+(A^{\dagger}P)(\lambda, t \giv x_t) &=
+-\frac{1}{\epsilon}
+\mpdiff{\lc P(\lambda, t, \giv x_t)\ls \mpdiff{\sigma}{x}^{\trans} a(x_t, \lambda ) + \frac{\epsilon}{2} \mathrm{Tr}{\lb b^{\trans} \mpdiff[2]{\sigma}{x}b\rb} \rs  \rc}{\lambda} \\
+&+\frac{1}{2\epsilon} \mpdiff[2]{[P(\lambda, t, \giv x_t) \mpdiff{\sigma}{x}^{\trans} b b^{\trans}\mpdiff{\sigma}{x} ]}{\lambda}
+\end{aligned}
+\end{equation}
+.... multiplicative noise is (atm) interpreted using the Ito convention ....
+
+We have then the Fokker-Planck equation for $\lambda$ conditioned on the state $x_t = x$
+#+name: eq-lam-fokker-plank-slow-t
+\begin{equation}
+\begin{aligned}
+\mpdiff{P(\lambda, t | x)}{t} = 
+-\frac{1}{\epsilon}
+\mpdiff{\lc P(\lambda, t \giv x)\ls \mpdiff{\sigma}{x}^{\trans} a(x, \lambda ) + \frac{\epsilon}{2} \mathrm{Tr}{\lb b^{\trans} \mpdiff[2]{\sigma}{x}b\rb} \rs  \rc}{\lambda} \\
++\frac{1}{2\epsilon} \mpdiff[2]{\lc P(\lambda, t \giv x) \mpdiff{\sigma}{x}^{\trans} b b^{\trans}\mpdiff{\sigma}{x} \big. \rc}{\lambda},
+\end{aligned}
+\end{equation}
+with the boundary condition
+#+name: eq-lam-fokker-plank-bc
+\begin{equation}
+ \frac{1}{\epsilon} {
+\mpdiff{\lc P(\lambda, t \giv x)\ls \mpdiff{\sigma}{x}^{\trans} a(x, \lambda ) + \frac{\epsilon}{2} \mathrm{Tr}{\lb b^{\trans} \mpdiff[2]{\sigma}{x}b\rb} \rs  
++\frac{1}{2} \mpdiff{\lc P(\lambda, t \giv x) \mpdiff{\sigma}{x}^{\trans} b b^{\trans}\mpdiff{\sigma}{x} \big. \rc}{\lambda} \rc}{\lambda}\bigg{|}_{\lambda \pm 1}  = 0
+}.
+\end{equation}
+Switching to fast time $t = \epsilon \tau$ before taking the limit we obtain  
+#+name: eq-lam-fokker-plank-fast-t
+\begin{equation}
+\begin{aligned}
+\mpdiff{P(\lambda, \tau | x)}{\tau} = 
+- \mpdiff{\lc  P(\lambda, \tau \giv x) \Bigg. \ls \mpdiff{\sigma}{x}^{\trans} a(x, \lambda )  \rs  \rc}{\lambda} 
++\frac{1}{2} \mpdiff[2]{\lc P(\lambda, \tau \giv x) \mpdiff{\sigma}{x}^{\trans} b b^{\trans}\mpdiff{\sigma}{x} \big. \rc}{\lambda},
+\end{aligned}
+\end{equation}
+with the boundary condition
+#+name: eq-lam-fokker-plank-bc-fst
+\begin{equation}
+{
+\mpdiff{\lc P(\lambda, \tau \giv x)\ls \mpdiff{\sigma}{x}^{\trans} a(x, \lambda ) \rs  
++\frac{1}{2} \mpdiff{\lc P(\lambda, \tau \giv x) \mpdiff{\sigma}{x}^{\trans} b b^{\trans}\mpdiff{\sigma}{x} \big. \rc}{\lambda} \rc}{\lambda}\bigg{|}_{\lambda \pm 1}  = 0
+}.
+\end{equation}
+Notice that the curvature of the discontinuity surface does not appear in [[eq-lam-fokker-plank-fast-t]]. 
+
 
 * Stochastic Sliding Dynamics
-Let us define $\nu_t = \sigma(x_t)$, clearly following the same reasoning as above we have
+:PROPERTIES:
+:ID:       ED3929D6-87FB-4B0D-8152-3A340435777F
+:END:
+Let us consider only planar switching surfaces and define $\nu_t = \sigma(x_t)$, clearly following the same reasoning as above we have in fast time  
 #+name: eq-nu
 \begin{equation}
-\rmd \nu_t = 
-\mpdiff{\sigma}{x} \cdot \rmd x_t + \frac{1}{2} \rmd x_t\mpdiff[2]{\sigma}{x} \rmd x^{\trans}_t
+\begin{aligned}
+\rmd \nu_{\tau} &= \mpdiff{\sigma}{x} \cdot \rmd x_{\tau} + \frac{1}{2} \rmd x_{\tau}\mpdiff[2]{\sigma}{x} \rmd x^{\trans}_{\tau} \\
+&= a^{(n)}(x_{\tau}, \nu_{\tau})\rmd t + b^{(n)}(x_{\tau}, \nu_{\tau}) \rmd W_{\tau}
+\end{aligned}
 \end{equation}
+where
+$$
+a^{(n)}(x_{\tau}, \nu_{\tau}) = a^{(n)}(x_{\tau}, \lambda^{\epsilon}(\nu_{\tau})), \quad
+b^{(n)}(x_{\tau}, \nu_{\tau}) = b^{(n)}(x_{\tau}, \lambda^{\epsilon}(\nu_{\tau}))
+$$
+with $\lambda^{\epsilon}$ defined in [[eq-lam-reg]] with $\beta = 1$. 
+
 
 
 1. Solve for the steady state densite $P(\nu \giv x )$ 
@@ -161,7 +406,7 @@ is the convex combination of of the noise amplitude, and as usual $\lambda \in [
 #+caption: Scematic of toy PSDE.
 [[../assets/img/psde_toy_grow.svg]]
 The discontinuity surface is defined via the zero set of $\sigma(x, y) = 1 - x - y$, that is $\mathcal{D} = {\left\{(x, y) \in \mathbb{R}^2 \,|\, \sigma(x,y) = 0 \right\}}$, it caps the growth. This corresponds with exactly the no-interaction limit of the single filament microtubule. We also have the SDE
-#+name: eq-lambda-sde-linear-slow
+#+name: eq-lam-sde-linear-slow
 \begin{equation}
 \mathrm{d}\lambda_t = \frac{1}{\epsilon}\left[\lambda_t (v^- -  v^+) - v^+ - v^- \right]\mathrm{d}t
 + \frac{1}{\sqrt{\epsilon}}B^{(n)}(\lambda_t) \mathrm{d}W_t
@@ -170,7 +415,7 @@ where $B^{(n)}(\lambda_t)$ is the noise amplitude projected onto $n = \nabla \si
 $$
 \lambda^{*} = \frac{v^+ + v^-}{v^- - v^+} \in (-1, 1),\quad \text{with}\quad v^- < 0 < v^+.
 $$
-unsuprisingly this is exactly equivalent to obtaining the evolution of ${\mathbb{E}[ \lambda_{t} ]}$ using  [[eq-lambda-sde-linear-slow]] and then taking steady state value. Substituting $\lambda^{*}$ into [[eq-sde-linear]] we obtain the dynamics near the discontinuity surface. Suppose now we consider the dynamics near the steady state $(1/2, 1/2)$, let $r_t = n \cdot (x_t - 1/2, y_t -1/2) / ||n||$ and $s_t = m \cdot (x_t - 1/2, y_t - 1/2) / ||m||$ where $m = (-1, 1)$ and is tangent to $\mathcal{D}$. Using Ito's lemma we obtain 
+unsuprisingly this is exactly equivalent to obtaining the evolution of ${\mathbb{E}[ \lambda_{t} ]}$ using  [[eq-lam-sde-linear-slow]] and then taking steady state value. Substituting $\lambda^{*}$ into [[eq-sde-linear]] we obtain the dynamics near the discontinuity surface. Suppose now we consider the dynamics near the steady state $(1/2, 1/2)$, let $r_t = n \cdot (x_t - 1/2, y_t -1/2) / ||n||$ and $s_t = m \cdot (x_t - 1/2, y_t - 1/2) / ||m||$ where $m = (-1, 1)$ and is tangent to $\mathcal{D}$. Using Ito's lemma we obtain 
 #+name: eq-norm-sde-slow
 \begin{equation}
 \mathrm{d}r_t =  \sqrt{\frac{\epsilon}{2}} B^{(n)}(\lambda^{*}) \mathrm{d}W_{t}
@@ -188,7 +433,6 @@ The latter is clearly an Ornstein-Uhlenbeck process with the stationary density
 \begin{equation}
 P(s) = 
 \end{equation}
-
 
 
 #+begin_src jupyter-python :session sde :exports none :eval yes :results drawer file :file stoch-traj :cache nil
@@ -244,12 +488,11 @@ fig.tight_layout()
 
 
 
-
-
 #+RESULTS:
 [[file:./.ob-jupyter/a3663d97b1387268b6dbd49f983d00f27fe8ee94.png]]
 
-#+begin_src jupyter-python :session sde :exports none :eval yes :results drawer file :cache nil
+
+#+begin_src jupyter-python :session sde  :eval yes
 n_vec = np.array([-1, -1])
 atpp = 0.5 *np.dot(n_vec, app)
 atmm = 0.5 *np.dot(n_vec, amm)
@@ -328,8 +571,6 @@ fig.tight_layout()
 #+end_src
 
 #+RESULTS[1027ea2a06dd05d94b2b29721938a3bc41f2b581]:
-
-
 
 
 

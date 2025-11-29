@@ -1,0 +1,279 @@
+#+title: Stochastic Filippov Systems, DC Regularisation, Meyer–Itô Formula, and Boundary Local Time
+#+author: 
+#+date: 
+#+include: "_macros.org"
+
+* Introduction
+
+This document presents a coherent mathematical derivation of the fast–slow
+structure arising in *stochastic Filippov systems* with a regularised switching
+multiplier. A key technical tool is the *Meyer–Itô formula*, which extends the
+classical Itô formula to functions whose derivatives have *bounded variation*.
+Such functions, known as *difference-of-convex* (DC) functions, include the
+regularised sign function used to model Filippov sliding.
+
+We give:
+
+1. A rigorous definition of *bounded variation* and DC functions.
+2. The Meyer–Itô formula following *Protter* and *Meyer*.
+3. The construction of the regularised switching multiplier
+   \( \lambda = \Phi_\varepsilon(\sigma(x)) \).
+4. The appearance of *local time* at the regularisation boundaries.
+5. How local time produces *reflected/Neumann* boundary conditions for the
+   generator and hence the Fokker–Planck (forward Kolmogorov) equation.
+
+Primary references:
+
+- *P.A. Meyer*, “A decomposition of Itô’s formula,”  
+  *Séminaire de Probabilités I*, Lecture Notes in Mathematics *39*, Springer (1967).
+- *P. Protter*, *Stochastic Integration and Differential Equations*, 2nd ed.,
+  Springer, 2005. Especially Chapter II, Theorem 70 and surrounding material.
+- *D. Revuz & M. Yor*, *Continuous Martingales and Brownian Motion*, 3rd ed.,
+  Springer, 1999. Chapter VI, §1 (“generalised Itô formula”).
+
+* Functions of Bounded Variation and DC Functions
+
+A function \(h:[a,b]\to\mathbb{R}\) is of *bounded variation* on \([a,b]\) if
+
+#+name: eq-bv-def
+\begin{equation}
+V_{[a,b]}(h)
+\idef \sup_{ x_0 < \cdots < x_n}
+\sum_{i=1}^n |h(x_i)-h(x_{i-1})| < \infty
+\end{equation}
+
+A locally absolutely continuous function \(F\) is *difference of convex* (DC) on
+compact intervals iff
+
+- \(F'(x)\) exists almost everywhere, and
+- \(F'\) is of bounded variation on compacts.
+
+This is a classical equivalence in real analysis; see e.g. Rockafellar’s *Convex
+Analysis* (Theorem 24.2).
+
+For such a function, the *distributional second derivative*
+\(F''\) exists as a finite *signed measure* on compact sets.
+
+* Signed Measures
+
+A *signed measure* \(\mu\) is a countably additive map
+\(\mu:\mathcal{B}(\mathbb{R})\to\mathbb{R}\). By the *Jordan decomposition*,
+there exist mutually singular non-negative measures \(\mu^+,\mu^-\) such that
+
+#+name: eq-jordan
+\begin{equation}
+\mu = \mu^+ - \mu^-.
+\end{equation}
+
+For a BV derivative \(F'\), the corresponding signed measure is defined by
+
+#+name: eq-dist-derivative
+\begin{equation}
+\mu_F((a,b]) = F'_-(b) - F'_-(a),
+\end{equation}
+
+exactly as in Protter (2005), Chapter II, Definition preceding Theorem 70.
+
+* Regularised Sign Function and Its Second Derivative Measure
+
+Define a regularised sign
+
+#+name: eq-phieps-def
+\begin{equation}
+\Phi_\varepsilon(u) =
+\begin{cases}
+-1, & u\le -\varepsilon,\\[4pt]
+u/\varepsilon, & |u|<\varepsilon,\\[4pt]
+1, & u\ge \varepsilon.
+\end{cases}
+\end{equation}
+
+The left derivative is
+
+#+name: eq-phieps-der
+\begin{equation}
+\Phi'_{\varepsilon,-}(u)=
+\begin{cases}
+0, & u< -\varepsilon,\\[4pt]
+1/\varepsilon, & -\varepsilon\le u < \varepsilon,\\[4pt]
+0, & u\ge \varepsilon.
+\end{cases}
+\end{equation}
+
+This is a BV step function with jumps
+
+- \(+1/\varepsilon\) at \(u=-\varepsilon\),
+- \(-1/\varepsilon\) at \(u=+\varepsilon\).
+
+Hence the signed measure is
+
+#+name: eq-mu-eps
+\begin{equation}
+\mu_{\Phi_\varepsilon}
+= \frac{1}{\varepsilon}\,\delta_{-\varepsilon}
+  - \frac{1}{\varepsilon}\,\delta_{\varepsilon}.
+\end{equation}
+
+This is precisely the generalised second derivative in the sense of Protter.
+
+* Meyer–Itô Formula for DC Functions
+
+Let \(Z_t\) be a *continuous semimartingale*. For a DC function \(F\),
+Theorem 70 of Protter (2005) states
+
+#+name: eq-meyer-ito
+\begin{equation}
+F(Z_t)-F(Z_0)
+=
+\int_0^t F'_-(Z_s)\,dZ_s
+\;+\;
+\frac12 \int_{\mathbb{R}} L_t^a(Z)\,\mu_F(da),
+\end{equation}
+
+where \(L_t^a(Z)\) is the *local time* of \(Z\) at level \(a\) (defined
+e.g.\ via the Tanaka formula or via the occupation density formula).
+
+If we set \(F=\Phi_\varepsilon\) and \(Z_t=\sigma(X_t)\), this yields the SDE
+
+#+name: eq-lambda-sde
+\begin{equation}
+d\lambda_t
+= \frac{1}{\varepsilon}\mathbf{1}_{\{|Z_t|<\varepsilon\}}\,dZ_t
+  + \frac{1}{2\varepsilon}\,dL_t^{-\varepsilon}(Z)
+  - \frac{1}{2\varepsilon}\,dL_t^{\varepsilon}(Z).
+\end{equation}
+
+Because \(\lambda_t=\Phi_\varepsilon(Z_t)\), the process always satisfies
+\(\lambda_t\in[-1,1]\).
+
+* Local Time and Its Meaning
+
+For a continuous semimartingale \(Z\), the occupation density formula states
+
+#+name: eq-occupation
+\begin{equation}
+\int_0^t g(Z_s)\,d\langle Z\rangle_s
+=
+\int_{\mathbb{R}} g(a)\,L_t^a(Z)\,da,
+\end{equation}
+
+for any bounded Borel \(g\). The local time \(L_t^a(Z)\) measures the
+“density of time spent” at level \(a\).
+
+For the regularised sign, the only points where the second derivative measure
+acts are \(a=\pm\varepsilon\), hence local time contributes precisely at the
+*boundary* values \(\lambda=\pm 1\).
+
+* Generator of the Fast Process
+
+Let \(Z_t\) satisfy a fast SDE
+
+#+name: eq-z-fast
+\begin{equation}
+dZ_t = a_0\,dt + a_1\,dW_t,
+\end{equation}
+
+with \(x\) frozen. For \(|Z_t|<\varepsilon\), we have
+
+#+name: eq-lambda-interior-sde
+\begin{equation}
+d\lambda_t = \frac{a_0}{\varepsilon}\,dt + \frac{a_1}{\varepsilon}\,dW_t.
+\end{equation}
+
+Applying Itô to a test function \(\varphi\in C^2([-1,1])\) gives, in the
+interior \((-1,1)\),
+
+#+name: eq-generator-interior
+\begin{equation}
+A\varphi(\lambda)
+=
+\frac{a_0}{\varepsilon}\,\varphi'(\lambda)
++ \frac{a_1^2}{2\varepsilon^2}\,\varphi''(\lambda).
+\end{equation}
+
+The local time term contributes *boundary distributions*. For tempered generator
+behaviour, the domain must satisfy *Neumann-type conditions*
+
+#+name: eq-neumann-domain
+\begin{equation}
+\varphi'(-1)=0,\qquad \varphi'(1)=0.
+\end{equation}
+
+These domain restrictions are forced by the local-time term and encode its
+boundary effect.
+
+* Fokker–Planck Equation and Boundary Conditions
+
+The Fokker–Planck equation is the forward Kolmogorov equation associated to
+\(A^\*\), the adjoint of the generator \(A\). In the interior \((-1,1)\),
+
+#+name: eq-fp-interior
+\begin{equation}
+\partial_t p(\lambda,t)
+=
+-\,\frac{a_0}{\varepsilon}\,\partial_\lambda p
++ \frac{a_1^2}{2\varepsilon^2}\,\partial_{\lambda\lambda}p.
+\end{equation}
+
+The boundary contribution of the local-time term becomes a *zero-flux* boundary
+condition
+
+#+name: eq-fp-zero-flux
+\begin{equation}
+\left.
+\left(
+\frac{a_0}{\varepsilon}\,p(\lambda,t)
+-
+\frac{a_1^2}{2\varepsilon^2}\,\partial_\lambda p(\lambda,t)
+\right)
+\right|_{\lambda=\pm 1} = 0.
+\end{equation}
+
+These Neumann/reflection boundary conditions are exactly the probabilistic
+shadow of the local time in the original SDE.
+
+* Fast–Slow Structure and Filippov Averaging
+
+In a stochastic Filippov system, \(\sigma(x)\) encodes the distance to the
+switching manifold. The fast variable
+
+#+name: eq-lambda-def
+\begin{equation}
+\lambda_t = \Phi_\varepsilon(\sigma(x_t))
+\end{equation}
+
+mixes rapidly under noise. On the slow time scale for \(x_t\), \(\lambda_t\)
+is effectively sampled from its *invariant density* corresponding to the
+Fokker–Planck equation above.
+
+If the slow dynamics are
+
+#+name: eq-slow-x
+\begin{equation}
+dx_t = f(x_t,\lambda_t)\,dt,
+\end{equation}
+
+their averaged evolution is
+
+#+name: eq-average-slow
+\begin{equation}
+dx_t = \bar f(x_t)\,dt,\qquad
+\bar f(x) = \int_{-1}^1 f(x,\lambda)\,\rho_\infty(\lambda\mid x)\,d\lambda,
+\end{equation}
+
+where \(\rho_\infty(\lambda\mid x)\) is the stationary solution to the
+Fokker–Planck equation with zero-flux boundaries.
+
+This recovers the classical Filippov sliding dynamics in the limit
+\(\varepsilon\to 0\), with noise-induced smoothing.
+
+* References
+
+- P.A. Meyer (1967), “A decomposition of Itô’s formula,”  
+  *Séminaire de Probabilités I*, Lecture Notes in Mathematics 39, Springer.
+- P. Protter (2005), *Stochastic Integration and Differential Equations*, 2nd ed.,
+  Springer.
+- D. Revuz and M. Yor (1999), *Continuous Martingales and Brownian Motion*, 3rd ed.,
+  Springer.
+- R.T. Rockafellar (1970), *Convex Analysis*, Princeton University Press.
+
