@@ -1,4 +1,4 @@
-#+title: Stochastic Filippov Systems, DC Regularisation, Meyer–Itô Formula, and Boundary Local Time
+#+title: Meyer-Ito
 #+author: 
 #+date: 
 #+include: "_macros.org"

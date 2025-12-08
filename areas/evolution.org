@@ -18,6 +18,7 @@
 #+LATEX_HEADER: \newcommand{\cunt}{\mathbb{R}}
 #+INCLUDE: "_macros.org"
 
+
 * Overview
 A long-term research programme to build a rigorous mathematical theory of evolution
 as a stochastic process on an infinite-dimensional state space, coupling:
@@ -36,9 +37,6 @@ Core objectives:
 - Describe convergent evolution as measure concentration on robust attractors.
 - Develop a large deviation theory for macro-evolutionary transitions.
 - Identify universality classes of evolutionary dynamics.
-
-
-
 
 
 * Conceptual framework

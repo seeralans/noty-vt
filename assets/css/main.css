@@ -16,7 +16,8 @@ body {
   padding: 0;
   background: var(--bg);
   color: var(--fg);
-  font-family: "Computer Modern Sans","CMU Sans Serif",sans-serif;
+  /* font-family: "Computer Modern Serif","CMU Serif", serif; */
+  font-family: "Computer Modern Sans","CMU Serif", serif;
   line-height: 1.35;
 }
 

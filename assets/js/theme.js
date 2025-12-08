@@ -4,8 +4,8 @@ const NOTY_THEME_CONFIG = {
   darkPureTheme: "modus-vivendi",
 
   // Optional variants for later use
-  lightTheme: "modus-operandi-tinted",
-  darkTheme: "modus-vivendi-tinted",
+  lightTheme: "gruvbox-light",
+  darkTheme: "gruvbox-dark",
 
   // Raw “paper ink” theme (LaTeX black-on-white style)
   paperTheme: "paper-ink",
@@ -19,7 +19,6 @@ const NOTY_THEME_CONFIG = {
     theme: "noty-theme",       // stores actual CSS name for backwards compat
   },
 };
-
 
 
 /* ============================

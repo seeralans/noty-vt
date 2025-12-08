@@ -162,6 +162,7 @@ $$
 \renewcommand{\sech}{\ensuremath{\mathrm{sech}}}%
 %
 \renewcommand{\idef}{\ensuremath{\overset{\,\mathrm{def}\,}{=}}}%
+\renewcommand{\idef}{\ensuremath{\equiv}}%
 \renewcommand{\prob}{\ensuremath{\mathbb{P}}}%
 %
 %

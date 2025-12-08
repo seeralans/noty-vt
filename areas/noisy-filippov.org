@@ -20,7 +20,6 @@
 
 #+PROPERTY: header-args :eval no
 
-
 * Introduction
 Consider the the autonomous general piecewise stochastic differential equation
 #+name: eq-general-psde
@@ -102,7 +101,7 @@ $$
 $$
 While analysing the fast subsystem and the multiple timescales problem is in itself an interesting endeavour, our goal is only to analyse the fast dynamics only as far as it pertains to resolving the slow dynamics at the discontinuity sets.
 
-* Outline
+** Derivation of Fokker-Planck for the fast switching variable
 Let $x_t$  be a stochastic process in $\mathbb{R}^d$, and governed by the SDE
 #+name: eq-sde-al
 \begin{equation}
@@ -132,7 +131,7 @@ $\alpha$ we can have an Ito representation of the process via
 \begin{equation}
     \mathrm{d} x_t = [\hat{a}(t, x_t, \lambda_t) + \alpha \epsilon \hat{b}(t, x_t, \lambda_t) \partial_x \hat{b}(t, x_t, \lambda_t)] \mathrm{d} t + \sqrt{\epsilon} \hat{b}(t, x_t, \lambda_t) \mathrm{d} W_t,
 \end{equation}
-whhch we will rewrite as
+which we will rewrite as
 #+name: eq-gen-weak-noise-nssde
 \begin{equation}
 \mathrm{d}x_t = a(t, x_t, \lambda_t) \mathrm{d}t + \sqrt{\epsilon} b(t, x_t, \lambda_t) \mathrm{d}W_t,
@@ -148,16 +147,18 @@ and
 \begin{equation}
 b(t, x_t, \lambda_t) = \hat{b}(t, x_t \lambda_t).
 \end{equation}
-We will proceed with Ito calculus on [[eq-sde-al-to-ito]] and later affix the choice
-of $\alpha$ for the original problem. 
+Obviously in our calculations we will employ Ito calculus on [[eq-sde-al-to-ito]]
+and later affix the choice of $\alpha$ for the original problem.
 
-Recall that away from the discontinuity surface, $\lambda_t \in \{1, -1\}$, and sort
-
-Our goal is to close the SDE given in
-[[eq-sde-al-to-ito]] (and in turn [[eq-sde-al]]) in   
-
-
-In the deterministic scenario, one simply 
+Our goal is to close the SDE given in [[eq-sde-al-to-ito]] (and in turn [[eq-sde-al]])
+using a quasi-stationary closure for the switching variable $\lambda_t$. That is
+we seek the conditional probability density $P(\lambda \giv t, x_t)$, the
+validity of the such a closure will become apparent later. Recall that away from
+the discontinuity surface, $\lambda_t \in \{1, -1\}$, while near the it we have
+$\lambda_t \in (-1, 1)$. In the former we have trivially $$P(\lambda | t, x_t
+\in \mathcal{R}^{\pm}) = \delta(x \mp 1)$$ where $\delta(x)$ is the Dirac delta
+distribution, on the other hand one expects a non-trivial probability density
+with support on $\lambda \in (-1, 1)$.
 
 To study the dynamics of $\lambda_t$ we first introduce the regularised 
 #+name: eq-lam-reg
@@ -194,13 +195,7 @@ u / \epsilon -1 &  u > \epsilon
 \end{matrix}
 \right. ,
 \end{equation}
-are convex functions. We now want to consider the the dynamics of $\lambda_t = \Lambda_{\epsilon}(x_t)$, but obviously since $\Lambda_{\epsilon}(u)$ only has a second derivative in the distributional sense one cannot simply employ Ito's lemma and instead we must use Melyer-Ito. We define the random variable $z_t = \sigma(x_t)$ where $\sigma \in C^2(\mathbb{R}^d)$. Then by Ito's lemma we have
-#+name: eq-z-sde
-\begin{equation}
-\rmd z_t = \ls \mpdiff{\sigma}{x}^{\trans} a + \frac{\epsilon}{2}\mathrm{Tr}(b^{\trans} \mpdiff{\sigma}{2} b) \rs\rmd t
-+ \sqrt{\epsilon} \mpdiff{\sigma}{x}^{\trans}  c \rmd W_t.
-\end{equation}
-For the function $\Lambda_{\epsilon}$ that can be written as the difference of two convex functions, Ito-meyer states that
+are convex functions. We now want to consider the the dynamics of $\lambda_t = \Lambda_{\epsilon}(x_t)$, but obviously since $\Lambda_{\epsilon}(u)$ only has a second derivative in the distributional sense one cannot simply employ Ito's lemma and instead we must use Melyer-Ito. For the function $\Lambda_{\epsilon}$ that can be written as the difference of two convex functions, Ito-meyer states that
 #+name: eq-lam-sde-meyer-ito
 \begin{equation}
 \Lambda_{\epsilon}(z_t) =  
@@ -210,12 +205,20 @@ For the function $\Lambda_{\epsilon}$ that can be written as the difference of t
 +
 \int_{0}^{t} L_t(z) \rmd \mu_{\Lambda^{''}_{\epsilon}}(z)
 \end{equation}
-where $\Lambda^{'-}_{\epsilon}(z_s)$ is the left derivative, $\mu_{\Lambda^{''}_{\epsilon}}(z)$ is the measure of the second derivative and 
+where each of the terms are as follows. We that $\Lambda^{'-}_{\epsilon}(z_s)$ is the left derivative,
+#+name: eq-z-sde
+\begin{equation}
+\begin{aligned}
+\rmd z_t &= \ls (\mpdiff{\sigma}{x})^{\trans} a(t, x_t, \lambda_t) + \frac{\epsilon}{2}\mathrm{Tr}(b(t, x_t,    \lambda_t)^{\trans} (\mpdiff[2]{\sigma}{xx}) b(t, x_t, \lambda_t)) \rs \rmd t \\
+&+ \sqrt{\epsilon} (\mpdiff{\sigma}{x})^{\trans}  c(t, x_t, \lambda_t) \rmd W_t.
+\end{aligned}
+\end{equation}
+which is obtained by defining the andom variable $z_t \idef \sigma(x_t)$ where $\sigma \in C^2(\mathbb{R}^d)$ and  employing Ito's lemma. We also have 
 #+name: eq-local-time-def
 \begin{equation}
-L_t(z) \idef \lim_{\delta \to 0}\frac{1}{4\delta} \mu{\lb |z_s - z| < \delta \giv  s \in [0, t] \rb}
+{\color{red} WRONG: } L_t(z) \idef \lim_{\delta \to 0}\frac{1}{4\delta} \mu{\lb |z_s - z| < \delta \giv  s \in [0, t] \rb}
 \end{equation}
-is the so-called local time of $z_t$ at the point $z$. For our case the left derivative of $\Lambda_{\epsilon}(u)$ given by
+which is the so-called local time of $z_t$ at the point $z$, and lastly we denote the signed measure of the second derivative of $\Lambda_{\epsilon}$ with $\mu_{\Lambda^{''}_{\epsilon}}(z)$. For our case the left derivative of $\Lambda_{\epsilon}(u)$ given by
 #+name: eq-lam-reg-left-deriv
 \begin{equation}
 \Lambda^{'-}_{\epsilon}(u) =
@@ -232,107 +235,270 @@ and the second derivative as a signed measure is
 \begin{equation}
 \mu_{\Lambda^{''}_{\epsilon}}(u) = \frac{1}{\epsilon}\delta_{-\epsilon} - \frac{1}{\epsilon}\delta_{\epsilon}
 \end{equation}
-where $\delta_{a} = \delta(x - z)$ is the Dirac-delta distribution. Substituting [[eq-z-sde]], [[eq-lam-reg-left-deriv]], and [[eq-lam-reg-scnd-deriv]] in to [[eq-lam-sde-meyer-ito]] we obtain
+where $\delta_{a} = \delta(x - z)$ is the Dirac-delta distribution.  Substituting [[eq-z-sde]], [[eq-lam-reg-left-deriv]], and [[eq-lam-reg-scnd-deriv]] in to [[eq-lam-sde-meyer-ito]] we obtain
 #+name: eq-lam-sde-meyer-ito-full
 \begin{equation}
 \begin{aligned}
 \Lambda_{\epsilon}(z_t) =  
 \Lambda_{\epsilon}(z_0) &+ 
-\frac{1}{\epsilon}
-\int_{0}^{t} \ls \mpdiff{\sigma}{x}^{\trans} a + \frac{\epsilon}{2}\mathrm{Tr}(b^{\trans} \mpdiff{\sigma}{2} b) \rs \rmd s + \frac{1}{\sqrt{\epsilon}}
-\int_{0}^{t} \mpdiff{\sigma}{x}^{\trans}  c \rmd W_s \\
-&+ \frac{1}{\epsilon}L_t^{-\epsilon} - \frac{1}{\epsilon}L_t^{\epsilon}.
+\frac{\mathbb{1}_{(-\epsilon, \epsilon]}(z_t)}{\epsilon}
+\int_{0}^{t} \ls (\mpdiff{\sigma}{x})^{\trans} a(t, x_t, \lambda_t) + \frac{\epsilon}{2}\mathrm{Tr}(b(t, x_t, \lambda_t)^{\trans} (\mpdiff[2]{\sigma}{x}) b(t, x_t, \lambda_t)) \rs \rmd s \\
+&+
+\frac{\mathbb{1}_{(-\epsilon, \epsilon]}(z_t)}{\sqrt{\epsilon}}
+\int_{0}^{t} (\mpdiff{\sigma}{x})^{\trans}  b(t, x_t, \lambda_t) \rmd W_s 
++ \frac{1}{\epsilon}L_t^{-\epsilon} - \frac{1}{\epsilon}L_t^{\epsilon}.
 \end{aligned}
 \end{equation}
 Letting $\lambda_t = \Lambda_{\epsilon}(z_t)$ we write  
-#+name: eq-lam-sd
+#+name: eq-lam-sde
 \begin{equation}
 \begin{aligned}
 \rmd \lambda_t &=
-\frac{1}{\epsilon}
-\mathbb{1}_{(-1, 1)}(\lambda_t)
-\lc \frac{1}{\epsilon} \ls \mpdiff{\sigma}{x}^{\trans} a + \frac{\epsilon}{2}\mathrm{Tr}(b^{\trans} \mpdiff{\sigma}{2} b) \rs \rmd t
- + \frac{1}{\sqrt{\epsilon}} \mpdiff{\sigma}{x}^{\trans}  c \rmd W_t \rc \\
-&+\frac{1}{\epsilon}
-\mathbb{1}_{\{-1\}}(\lambda_t) \rmd L_{t}^{-\epsilon} - \mathbb{1}_{\{1\}}(\lambda_t) \rmd L_{t}^{\epsilon} 
+\frac{\mathbb{1}_{(-\epsilon, \epsilon]}(z_t)}{\epsilon}
+ \ls \mpdiff{\sigma}{x}^{\trans} a(t, x_t, \lambda_t) + \frac{\epsilon}{2}\mathrm{Tr}(b(t, x_t, \lambda_t)^{\trans} (\mpdiff[2]{\sigma}{xx}) b(t, x_t, \lambda_t)) \rs \rmd t \\
+ &+ \frac{\mathbb{1}_{(-\epsilon, \epsilon]}(z_t)}{\sqrt{\epsilon}}
+  \mpdiff{\sigma}{x}^{\trans}  b(t, x_t, \lambda_t) \rmd W_t
++\frac{1}{\epsilon}
+ \rmd L_{t}^{-\epsilon} - \frac{1}{\epsilon}\rmd L_{t}^{\epsilon} 
 \end{aligned}
 \end{equation}
-which describes the stochastic evolution of the switching variable.  Let us now consider a smooth function $f \in C^2$, and consider
+which describes the stochastic evolution of the switching variable.
+
+#+begin_question
+Not sure if the fact that we impose a noise interpretation on $x_t$ is enough for leaving [[eq-lam-sde]] as Ito or whether we have the freedom to intepret the noise on $\lambda_t$ different from $x_t$
+#+end_question
+
+
+We can obtain the generator ..
+
+Let us now consider a smooth function $f \in C^2([-1, 1])$ and with the intiial condition  $\lambda_0 = \lambda$ $and consider
 #+name: eq-mean-f
 \begin{align}
-&\mathbb{E}[f(\lambda_t) - f(\lambda_0)] =
-\mathbb{E}{\ls \int_0^t f'(\lambda_s) \rmd \lambda_s \rs}
-+ \mathbb{E}{\ls \int_0^t f'(\lambda_s) \rmd (\lambda, \lambda)_s \rs} \\
- &= \lc \int^{t}_{0}\mathbb{1}_{(-1, 1)}(\lambda_t) \frac{1}{\epsilon}\ls \mpdiff{\sigma}{x}^{\trans} a + \frac{\epsilon}{2}\mathrm{Tr}(b^{\trans} \mpdiff{\sigma}{2} b) 
- + \frac{1}{2}\mpdiff{\sigma}{x}^{\trans}  cc^{\trans} \mpdiff{\sigma}{x} \rs \rmd t \rc +
-\mathbb{E}{\ls \int_0^t f'(\lambda_s) \rmd \lambda_s \rs} \\
-&+ \frac{1}{\epsilon}\mathbb{E}{\ls \int_0^t f^{\prime \prime}(\lambda_s) 
-\mpdiff{\sigma}{x}^{\trans}  c c^{\trans} \mpdiff{\sigma}{x}
-\rmd s \rs}
+&\mathbb{E}[f(\lambda_t) - f(\lambda)] =
+\mathbb{E}{\ls \int_0^t \mpdiff{f(\lambda_s)}{\lambda} \rmd \lambda_s \rs}
++ \frac{1}{2}\mathbb{E}{\ls \int_0^t \mpdiff[2]{f(\lambda_s)}{\lambda \lambda} \rmd (\lambda, \lambda)_s \rs} 
+\end{align}
+which follows directly from Ito's lemma. The first term on the right hand side of [[eq-mean-f]] is easy to evaluate and gives
+#+name: eq-mean-f-t1
+\begin{align}
+\mathbb{E}{\ls \int_0^t \mpdiff{f(\lambda_s)}{\lambda} \rmd \lambda_s \rs} &= 
+\frac{1}{\epsilon} \mathbb{E}{\lc
+\int_0^t
+\mpdiff{f(\lambda_s)}{\lambda} \ls \mpdiff{\sigma}{x}^{\trans} a(s, x_s, \lambda_s)
++ \frac{\epsilon}{2}\mathrm{Tr}[b(s, x_s, \lambda_s)^{\trans} (\mpdiff[2]{\sigma}{xx}) b(s, x_s, \lambda_t)]  \rs \rmd s \rc} \\
+ &+ \frac{1}{\epsilon}\mathbb{E}\ls \mpdiff{f(\lambda_t)}{\lambda} (L^{-\epsilon}_t - L^{\epsilon}_t ) \rs.
 \end{align}
 
-Thus we the generator of $\lambda_t$  
+#+begin_todo
+Explain why we have that the local time terms do not contribute to the quadratic integral
+#+end_todo
+For the second term, the local-time and drift terms do not contribute to the integral resulting in   
+#+name: eq-mean-f-t2
+\begin{align}
+\mathbb{E}{\ls \int_0^t
+\mpdiff[2]{f(\lambda_s)}{\lambda \lambda} \rmd (\lambda, \lambda)_s \rs} = 
+  \frac{1}{2 \epsilon} \mathbb{E} 
+\lc \int^{t}_{0}\mpdiff[2]{f(\lambda_s)}{\lambda\lambda}\ls (\mpdiff{\sigma}{x})^{\trans}
+b(t, x_s, \lambda_s)
+b(t, x_s, \lambda_s)^{\trans}
+(\mpdiff{\sigma}{x}) \rs \rmd s \rc.
+\end{align}
+The generator of the process $A$, applied to a smooth function is then obtained by evaluating
+#+name: eq-lam-gen-def
+\begin{equation}
+(\mathcal{A}f)(\lambda) = \lim_{t \to 0} \frac{1}{t} {\lc \mathbb{E}[f(\lambda_t)] - f(\lambda) \rc}.
+\end{equation}
+However, we since we have $L^{\pm \epsilon }_t = O(\sqrt{t})$, and since the choice of $f$ is arbitrary we must ensure that $\mpdiff{f}{\lambda} = 0$ to ensure that 
+#+name: eq-lim-local-time-term
+\begin{equation}
+\lim_{t \to 0} \frac{1}{t}
+\mathbb{E}{\ls \mpdiff{f(\lambda_t)}{\lambda} (L^{-\epsilon}_t - L^{\epsilon}_t ) \rs}  = 0.
+\end{equation}
+Putting it all together we obtain generator of $\lambda_t$,
 #+name: eq-bws-lam-gen
 \begin{equation}
-(Af)(\lambda) = \frac{1}{\epsilon}
-\ls \mpdiff{\sigma}{x}^{\trans} a + \frac{\epsilon}{2}\mathrm{Tr}(b^{\trans} \mpdiff{\sigma}{2} b) \rs
-\mpdiff{f}{\lambda}(\lambda) + \frac{1}{\epsilon} 
-\ls \mpdiff{\sigma}{x}^{\trans}
-c c^{\trans} \mpdiff{\sigma}{x} \rs \mpdiff[2]{f}{\lambda}(\lambda)
+\begin{aligned}
+(\mathcal{A}f)(\lambda) = \frac{1}{\epsilon}
+\mpdiff{f(\lambda)}{\lambda} \ls \mpdiff{\sigma}{x}^{\trans} a(t, x_t, \lambda)
++ \frac{\epsilon}{2}\mathrm{Tr}[b(t, x_t, \lambda)^{\trans} (\mpdiff[2]{\sigma}{xx}) b(t, x_t, \lambda)]  \rs \\   + \frac{1}{2 \epsilon} 
+\mpdiff[2]{f(\lambda)}{\lambda\lambda} (\mpdiff{\sigma}{x})^{\trans}
+b(t, x_t, \lambda)
+b(t, x_t, \lambda)^{\trans}
+(\mpdiff{\sigma}{x})  ,
+\end{aligned}
 \end{equation}
-where
+whose domain is 
 #+name: eq-back-gen-domain
 \begin{equation}
-\mathcal{D}(A) = {\lc f \in C^2 \giv \mpdiff{f}{\lambda}(-1)  = \mpdiff{f}{\lambda}(1)  = 0 \rc}.
+\mathcal{D}(\mathcal{A}) = {\lc f \in C^2 \giv \mpdiff{f}{\lambda}(-1)  = \mpdiff{f}{\lambda}(1)  = 0 \rc}.
 \end{equation}
-From which we can obtain the forward generator
+#+begin_todo
+fix the definition of generator for explicit time dependence
+#+name: eq-propdef
+\begin{equation}
+\lim_{\delta \to 0} \frac{1}{\delta} {\lc \mathbb{E}[f(x_{t + \delta}) - f(x_t)] \rc}
+\end{equation}
+#+end_todo
+
+To obtain the forward generator we employ the defintion 
+#+name: eq-bwd-fwd-gen-equiv
+\begin{equation}
+\int_{-1}^{1}P(\lambda, t)(\mathcal{A}f)(\lambda) \rmd \lambda 
+=
+\int_{-1}^{1}f(\lambda)(\mathcal{A}^{*}P)(\lambda, t) \rmd \lambda 
+\end{equation}
+where $P(\lambda, t)$ is the occupation probability density of $\lambda$, i.e. $\int_{A}P(\lambda, t)\rmd \lambda = \mathbb{P}[\lambda_t \in A]$, also note that this is conditioned on some fixed $x_t$. Inserting the generator ino [[eq-bwd-fwd-gen-equiv]] we obtain for the drift term
+#+name: eq-fwd-gen-deriv-drif
+\begin{equation}
+\begin{aligned}
+&\frac{1}{\epsilon} \int^{1}_{-1}
+\mpdiff{f(\lambda)}{\lambda}
+P(\lambda, t) \ls \mpdiff{\sigma}{x}^{\trans} a(t, x_t, \lambda)
++ \frac{\epsilon}{2}\mathrm{Tr}[b(t, x_t, \lambda)^{\trans} (\mpdiff[2]{\sigma}{xx}) b(t, x_t, \lambda)]  \rs \rmd \lambda  \\
+&=\frac{1}{\epsilon}
+\lc f(\lambda) P(\lambda, t)
+\ls \mpdiff{\sigma}{x}^{\trans} a(t, x_t, \lambda)
++ \frac{\epsilon}{2}\mathrm{Tr}[b(t, x_t, \lambda)^{\trans} (\mpdiff[2]{\sigma}{xx}) b(t, x_t, \lambda)]  \rs \rc \bigg{|}_{-1}^{-1} \\
+&- \frac{1}{\epsilon}\int^{1}_{-1}
+f(\lambda)
+\mpdiff{\lc P(\lambda, t) \ls \mpdiff{\sigma}{x}^{\trans} a(t, x_t, \lambda)
++ \frac{\epsilon}{2}\mathrm{Tr}[b(t, x_t, \lambda)^{\trans} (\mpdiff[2]{\sigma}{xx}) b(t, x_t, \lambda)]  \rs \rc}{\lambda} \rmd \lambda,
+\end{aligned}
+\end{equation}
+and likewise for the diffusive term,
+#+name: eq-fwd-gen-deriv-diff
+\begin{equation}
+\begin{aligned}
+&\frac{1}{2\epsilon} \int^{1}_{-1}
+\mpdiff[2]{f(\lambda)}{\lambda\lambda}P(\lambda,  t) (\mpdiff{\sigma}{x})^{\trans}
+b(t, x_t, \lambda)
+b(t, x_t, \lambda)^{\trans}
+(\mpdiff{\sigma}{x})  \rmd \lambda
+ \\
+&=\frac{1}{2\epsilon}
+\mpdiff{f(\lambda)}{\lambda}{\ls P(\lambda,  t) (\mpdiff{\sigma}{x})^{\trans}
+b(t, x_t, \lambda)
+b(t, x_t, \lambda)^{\trans}
+(\mpdiff{\sigma}{x})  \rs} \bigg{|}_{-1}^{1}  \\
+&-\frac{1}{2\epsilon}\int_{-1}^{1}
+\mpdiff{f(\lambda)}{\lambda}\mpdiff{\ls P(\lambda,  t) (\mpdiff{\sigma}{x})^{\trans}
+b(t, x_t, \lambda)
+b(t, x_t, \lambda)^{\trans}
+(\mpdiff{\sigma}{x})  \rs}{\lambda} \rmd \lambda, \\
+&=\frac{1}{2\epsilon}
+\mpdiff{f(\lambda)}{\lambda}{\ls P(\lambda,  t) (\mpdiff{\sigma}{x})^{\trans}
+b(t, x_t, \lambda)
+b(t, x_t, \lambda)^{\trans}
+(\mpdiff{\sigma}{x})  \rs} \bigg{|}_{-1}^{1} \\
+&- \frac{1}{2\epsilon}f(\lambda)\mpdiff{\ls P(\lambda,  t) (\mpdiff{\sigma}{x})^{\trans}
+b(t, x_t, \lambda)
+b(t, x_t, \lambda)^{\trans}
+(\mpdiff{\sigma}{x})  \rs}{\lambda} \bigg{|}_{-1}^{1} \\
+&+\frac{1}{2\epsilon}\int_{-1}^{1}
+f(\lambda)\mpdiff[2]{\ls P(\lambda,  t) (\mpdiff{\sigma}{x})^{\trans}
+b(t, x_t, \lambda)
+b(t, x_t, \lambda)^{\trans}
+(\mpdiff{\sigma}{x})  \rs}{\lambda\lambda} \rmd \lambda. \\
+\end{aligned}
+\end{equation}
+Since we have $\mpdiff{f(-1)}{\lambda} = \mpdiff{f(1)}{\lambda} = 0$, arbitrary $f \in \mathcal{D}(\mathcal{A})$, the boundary terms must satisfy
+#+name: eq-boundary-terms
+\begin{equation}
+\begin{aligned}
+ & \bigg{\{} P(\lambda, t)
+\ls \mpdiff{\sigma}{x}^{\trans} a(t, x_t, \lambda)
++ \frac{\epsilon}{2}\mathrm{Tr}[b(t, x_t, \lambda)^{\trans} (\mpdiff[2]{\sigma}{xx}) b(t, x_t, \lambda)]  \rs  \\
+& -
+\mpdiff{\ls P(\lambda,  t) (\mpdiff{\sigma}{x})^{\trans}
+b(t, x_t, \lambda)
+b(t, x_t, \lambda)^{\trans}
+(\mpdiff{\sigma}{x})  \rs}{\lambda}\bigg{\}}  \bigg{|}_{-1}^{1}  = 0.
+\end{aligned}
+\end{equation}
+Using [[eq-fwd-gen-deriv-drif]], [[eq-fwd-gen-deriv-diff]] and [[eq-boundary-terms]], we
+obtain the forward generator
 #+name: eq-fwd-lam-gen
 \begin{equation}
 \begin{aligned}
-(A^{\dagger}P)(\lambda, t \giv x_t) &=
--\frac{1}{\epsilon}
-\mpdiff{\lc P(\lambda, t, \giv x_t)\ls \mpdiff{\sigma}{x}^{\trans} a(x_t, \lambda ) + \frac{\epsilon}{2} \mathrm{Tr}{\lb b^{\trans} \mpdiff[2]{\sigma}{x}b\rb} \rs  \rc}{\lambda} \\
-&+\frac{1}{2\epsilon} \mpdiff[2]{[P(\lambda, t, \giv x_t) \mpdiff{\sigma}{x}^{\trans} b b^{\trans}\mpdiff{\sigma}{x} ]}{\lambda}
+(\mathcal{A}^{*}P)(\lambda, t \giv x_t) &= - \frac{1}{\epsilon}
+\mpdiff{\lc P(\lambda, t) \ls \mpdiff{\sigma}{x}^{\trans} a(t, x_t, \lambda)
++ \frac{\epsilon}{2}\mathrm{Tr}[b(t, x_t, \lambda)^{\trans} (\mpdiff[2]{\sigma}{xx}) b(t, x_t, \lambda)]  \rs \rc}{\lambda} \\
+&+\frac{1}{2\epsilon}\mpdiff[2]{\ls P(\lambda,  t)
+(\mpdiff{\sigma}{x})^{\trans}
+b(t, x_t, \lambda)
+b(t, x_t, \lambda)^{\trans}
+(\mpdiff{\sigma}{x})  \rs}{\lambda\lambda}.
 \end{aligned}
 \end{equation}
-.... multiplicative noise is (atm) interpreted using the Ito convention ....
-
-We have then the Fokker-Planck equation for $\lambda$ conditioned on the state $x_t = x$
+One can then using the generator obtain the Fokker-Planck equation for $\lambda$ conditioned on the state $x_t = x$ via
 #+name: eq-lam-fokker-plank-slow-t
 \begin{equation}
 \begin{aligned}
-\mpdiff{P(\lambda, t | x)}{t} = 
--\frac{1}{\epsilon}
-\mpdiff{\lc P(\lambda, t \giv x)\ls \mpdiff{\sigma}{x}^{\trans} a(x, \lambda ) + \frac{\epsilon}{2} \mathrm{Tr}{\lb b^{\trans} \mpdiff[2]{\sigma}{x}b\rb} \rs  \rc}{\lambda} \\
-+\frac{1}{2\epsilon} \mpdiff[2]{\lc P(\lambda, t \giv x) \mpdiff{\sigma}{x}^{\trans} b b^{\trans}\mpdiff{\sigma}{x} \big. \rc}{\lambda},
+\mpdiff{P(\lambda, t \giv x)}{t} &= (\mathcal{A}^*P)(\lambda, t \giv x) \\
+ &= 
+-\frac{1}{\epsilon}\mpdiff{\lc P(\lambda, t \giv x) \ls \mpdiff{\sigma}{x}^{\trans} a(t, x, \lambda)
++ \frac{\epsilon}{2}\mathrm{Tr}[b(t, x, \lambda)^{\trans} (\mpdiff[2]{\sigma}{xx}) b(t, x, \lambda)]  \rs \rc}{\lambda} \\
+&+\frac{1}{2\epsilon}\mpdiff[2]{\ls P(\lambda,  t \giv x)
+(\mpdiff{\sigma}{x})^{\trans}
+b(t, x_t, \lambda)
+b(t, x_t, \lambda)^{\trans}
+(\mpdiff{\sigma}{x})  \rs}{\lambda\lambda},
 \end{aligned}
 \end{equation}
-with the boundary condition
-#+name: eq-lam-fokker-plank-bc
-\begin{equation}
- \frac{1}{\epsilon} {
-\mpdiff{\lc P(\lambda, t \giv x)\ls \mpdiff{\sigma}{x}^{\trans} a(x, \lambda ) + \frac{\epsilon}{2} \mathrm{Tr}{\lb b^{\trans} \mpdiff[2]{\sigma}{x}b\rb} \rs  
-+\frac{1}{2} \mpdiff{\lc P(\lambda, t \giv x) \mpdiff{\sigma}{x}^{\trans} b b^{\trans}\mpdiff{\sigma}{x} \big. \rc}{\lambda} \rc}{\lambda}\bigg{|}_{\lambda \pm 1}  = 0
-}.
-\end{equation}
-Switching to fast time $t = \epsilon \tau$ before taking the limit we obtain  
+supplemented with the boundary condition given in [[eq-boundary-terms]]. Switching to fast time $t = \epsilon \tau$ before taking the limit we obtain  
 #+name: eq-lam-fokker-plank-fast-t
 \begin{equation}
 \begin{aligned}
-\mpdiff{P(\lambda, \tau | x)}{\tau} = 
-- \mpdiff{\lc  P(\lambda, \tau \giv x) \Bigg. \ls \mpdiff{\sigma}{x}^{\trans} a(x, \lambda )  \rs  \rc}{\lambda} 
-+\frac{1}{2} \mpdiff[2]{\lc P(\lambda, \tau \giv x) \mpdiff{\sigma}{x}^{\trans} b b^{\trans}\mpdiff{\sigma}{x} \big. \rc}{\lambda},
+\mpdiff{P(\lambda, \tau | x)}{\tau} &= 
+- \mpdiff{\ls  \bigg.  P(\lambda, \tau \giv x) \Bigg. (\mpdiff{\sigma}{x}^{\trans}) a(\tau, x, \lambda )   \rs}{\lambda}  \\
+&+\frac{1}{2} \mpdiff[2]{\lc P(\lambda, \tau \giv x)
+(\mpdiff{\sigma}{x})^{\trans}
+b(\tau, x, \lambda)
+b(\tau, x, \lambda)^{\trans}
+(\mpdiff{\sigma}{x})
+\big. \rc}{\lambda},
 \end{aligned}
 \end{equation}
 with the boundary condition
 #+name: eq-lam-fokker-plank-bc-fst
 \begin{equation}
-{
-\mpdiff{\lc P(\lambda, \tau \giv x)\ls \mpdiff{\sigma}{x}^{\trans} a(x, \lambda ) \rs  
-+\frac{1}{2} \mpdiff{\lc P(\lambda, \tau \giv x) \mpdiff{\sigma}{x}^{\trans} b b^{\trans}\mpdiff{\sigma}{x} \big. \rc}{\lambda} \rc}{\lambda}\bigg{|}_{\lambda \pm 1}  = 0
-}.
+P(\lambda, \tau \giv x) (\mpdiff{\sigma}{x})^{\trans} a(\tau, \lambda \giv x) 
++\frac{1}{2} \mpdiff{\lc P(\lambda, \tau \giv x)
+(\mpdiff{\sigma}{x})^{\trans}
+b(\tau, x, \lambda)
+b(\tau, x, \lambda)^{\trans}
+(\mpdiff{\sigma}{x})\rc}{\lambda}\bigg{|}_{\lambda \pm 1}  = 0
+.
 \end{equation}
 Notice that the curvature of the discontinuity surface does not appear in [[eq-lam-fokker-plank-fast-t]]. 
+$$
+\renewcommand{asum}[1]{\ensuremath{\stackrel{+}{\overline{a}}(#1)}}
+\renewcommand{adif}[1]{\ensuremath{\stackrel{-}{\overline{a}}(#1)}}
+\renewcommand{bsum}[1]{\ensuremath{\stackrel{+}{\overline{b}}(#1)}}
+\renewcommand{bdif}[1]{\ensuremath{\stackrel{-}{\overline{b}}(#1)}}
+$$
+#+name: eq-a-sum-dif-def
+\begin{equation}
+\asum{t, x_t} \idef \frac{1}{2}{\ls a^+(t, x_t) + a^-(t, x_t) \rs}, \quad
+\adif{t, x_t} \idef \frac{1}{2}{\ls a^+(t, x_t) - a^-(t, x_t) \rs}, 
+\end{equation}
+Similarly we have
+#+name: eq-b-sum-dif-def
+\begin{equation}
+\bsum{t, x_t} \idef \frac{1}{2}{\ls b^+(t, x_t) + b^-(t, x_t) \rs}, \quad
+\bdif{t, x_t} \idef \frac{1}{2}{\ls b^+(t, x_t) - b^-(t, x_t) \rs}, 
+\end{equation}
+
+The fokker planck
+#+name: eq-fpp
+\begin{equation}
+\begin{aligned}
+-n^{\trans} a \mpdiff{P}{\lambda} - P n^{\trans}\lc \adif{\tau, x}  + \alpha \epsilon \sum_{j} \lc
+J{[\bdif{\tau, x}_j]}[\bsum{\tau, x}_j + \lambda \bdif{\tau, x}]_j  \rd \rd \\
+\ld \ld + J{[\bsum{\tau, x}_j + \lambda \bdif{\tau, x}]_j}[\bdif{\tau, x}_j]
+ \rc \rc
+\end{aligned}
+\end{equation}
 
 
 * Stochastic Sliding Dynamics

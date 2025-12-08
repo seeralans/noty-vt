@@ -1,0 +1,21 @@
+#+title: Week 2025-W48
+#+slug: 2025-W48
+#+layout: notes
+
+* Summary
+
+* Study overview
+#+BEGIN: noty-week :week "2025-W48" :tags ("study")
+Week 2025-W48 (2025-11-24 – 2025-11-30)
+
+
+#+END:
+
+* Open tasks
+#+BEGIN: noty-week-todos :week "2025-W48"
+Open tasks for week 2025-W48 (2025-11-24 – 2025-11-30)
+
+- 2025-11-30
+  - TODO something
+
+#+END:

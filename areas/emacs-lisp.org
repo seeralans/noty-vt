@@ -170,7 +170,7 @@ Functions are first-class values and can be created, passed around, and stored.
   (funcall #'add 1 2)
   (apply #'add '(1 2))
   #+end_src
-
+  
 ** Explanation
 *** Functions as first-class values
 - =#'foo= is a “function object” for =foo=; use this when passing functions around.

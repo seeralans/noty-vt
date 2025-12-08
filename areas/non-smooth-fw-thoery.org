@@ -1,0 +1,1175 @@
+#+TITLE: Non-smooth-notes
+#+OPTIONS: num:t
+#+SLUG: pwsde
+#+INCLUDE: "_macros.org"
+#+bibliography: ../bib/references.bib
+#+cite_export: csl ../csl/chicago-author-date.csl
+#+LATEX_HEADER: \usepackage{amsmath,amsthm,amssymb}
+#+LATEX_HEADER: \usepackage[nameinlink,noabbrev]{cleveref}
+#+LATEX_HEADER: \newtheorem{theorem}{Theorem}[section]
+#+LATEX_HEADER: \newtheorem{lemma}[theorem]{Lemma}
+#+LATEX_HEADER: \newtheorem{proposition}[theorem]{Proposition}
+#+LATEX_HEADER: \newtheorem{corollary}[theorem]{Corollary}
+#+LATEX_HEADER: \theoremstyle{definition}\newtheorem{definition}[theorem]{Definition}
+#+LATEX_HEADER: \theoremstyle{remark}\newtheorem*{remark}{Remark}
+#+LATEX_HEADER: \crefname{lemma}{lemma}{lemmas}
+#+LATEX_HEADER: \Crefname{lemma}{Lemma}{Lemmas}
+#+LATEX_HEADER: \input{customcommands.tex}
+#+LATEX_HEADER: \newcommand{\cunt}{\mathbb{R}}
+
+* Introduction and Main Results
+** Physical Motivation
+
+We consider stochastic differential equations arising from the large-$N$ limit of
+chemical master equations, which themselves emerge from coarse-graining of Potts
+models. The resulting SDEs have two key features:
+
+1. *Piecewise-smooth drift*: The deterministic dynamics has a discontinuity across
+   a codimension-one switching manifold $\Sigma$
+2. *Multiplicative noise*: The noise amplitude depends on the state, as required
+   by the fluctuation-dissipation relation inherited from the underlying CME
+
+Our goal is to compute the Gaussian envelope of fluctuations around deterministic
+orbits, particularly near and on the discontinuity surface.
+
+** Literature and Gap
+
+The Freidlin-Wentzell theory of large deviations cite:freidlin2012random provides
+the foundational framework for weak-noise asymptotics of SDEs with smooth
+coefficients. Extensions to piecewise-smooth systems include:
+
+- *Chiang-Sheu* cite:chiang2000large,chiang2002small: Large deviations for
+  discontinuous drift with additive noise, using occupation times and local times
+- *Hill-Zanetell-Gemmer* cite:hill2021most: Most probable paths via
+  $\Gamma$-convergence with mollification, additive noise only
+- *Leobacher-Szölgyenyi* cite:leobacher2017strong: Numerical methods for
+  discontinuous drift via transformation
+
+The gap: No existing work treats *multiplicative noise* with *discontinuous
+diffusion coefficient* and derives the *Gaussian fluctuation structure* near the
+switching manifold.
+
+** Main Contributions
+
+1. Derivation of the switching variable dynamics via Meyer-Itô calculus
+2. Analysis of the fast Fokker-Planck equation with reflecting boundaries
+3. Averaging principle for the slow dynamics
+4. Explicit formula for the Gaussian envelope including contributions from
+   switching variable fluctuations
+
+* Setup and Regularisation
+** The Piecewise-Smooth SDE
+
+Let $x_t \in \mathbb{R}^d$ satisfy the SDE
+#+name: eq-original-sde
+\begin{equation}
+\mathrm{d} x_t = a(t, x_t) \mathrm{d} t + \sqrt{\varepsilon} \, b(t, x_t) \mathrm{d} W_t
+\end{equation}
+where the drift $a$ and diffusion $b$ are piecewise-smooth:
+#+name: eq-piecewise-coefficients
+\begin{equation}
+a(t, x) = \begin{cases} a^+(t, x) & \sigma(x) > 0 \\ a^-(t, x) & \sigma(x) < 0 \end{cases}, \quad
+b(t, x) = \begin{cases} b^+(t, x) & \sigma(x) > 0 \\ b^-(t, x) & \sigma(x) < 0 \end{cases}
+\end{equation}
+Here $\sigma: \mathbb{R}^d \to \mathbb{R}$ is a smooth function with $\nabla \sigma \neq 0$ on the
+switching manifold $\Sigma = \{x : \sigma(x) = 0\}$.
+
+** Standing Assumptions
+
+#+name: assumptions
+We impose the following conditions throughout:
+
+**(A1)** /Smoothness away from $\Sigma$/:  $a^{\pm}, b^{\pm} \in C^2(\mathbb{R} \times \mathbb{R}^d)$
+with bounded derivatives up to second order.
+
+**(A2)** /Non-degeneracy/: There exists $\delta > 0$ such that
+$\xi^T b^{\pm}(t,x) b^{\pm}(t,x)^T \xi \geq \delta |\xi|^2$ for all $\xi \in \mathbb{R}^d$.
+
+**(A3)** /Transversality/: The switching surface is smooth with
+$|\nabla \sigma(x)| \geq c > 0$ in a neighbourhood of $\Sigma$.
+
+**(A4)** /Linear growth/: $|a^{\pm}(t,x)| + |b^{\pm}(t,x)| \leq C(1 + |x|)$.
+
+** Regularisation via Convex Interpolation
+
+We regularise the discontinuity by introducing a switching variable
+$\lambda_t \in [-1, 1]$ that smoothly interpolates between the two regimes. Define
+#+name: eq-lambda-regularisation
+\begin{equation}
+\Lambda_{\varepsilon}(u) = \begin{cases}
+-1 & u \leq -\varepsilon \\
+u/\varepsilon & |u| < \varepsilon \\
+1 & u \geq \varepsilon
+\end{cases}
+\end{equation}
+and set $\lambda_t = \Lambda_{\varepsilon}(\sigma(x_t))$.
+
+The regularised coefficients are convex combinations:
+#+name: eq-regularised-drift
+\begin{equation}
+\hat{a}(t, x, \lambda) = \frac{1 + \lambda}{2} a^+(t, x) + \frac{1 - \lambda}{2} a^-(t, x)
+\end{equation}
+#+name: eq-regularised-diffusion
+\begin{equation}
+\hat{b}(t, x, \lambda) = \frac{1 + \lambda}{2} b^+(t, x) + \frac{1 - \lambda}{2} b^-(t, x)
+\end{equation}
+
+It is convenient to decompose these as:
+#+name: eq-coefficient-decomposition
+\begin{equation}
+\hat{a}(t, x, \lambda) = \bar{a}(t, x) + \lambda \, \Delta a(t, x), \quad
+\hat{b}(t, x, \lambda) = \bar{b}(t, x) + \lambda \, \Delta b(t, x)
+\end{equation}
+where
+#+name: eq-mean-and-jump
+\begin{equation}
+\bar{a} = \frac{a^+ + a^-}{2}, \quad \Delta a = \frac{a^+ - a^-}{2}
+\end{equation}
+and similarly for $b$.
+
+** Noise Interpretation Convention
+
+The general $\alpha$-interpreted SDE
+#+name: eq-alpha-sde
+\begin{equation}
+\mathrm{d} x_t = \hat{a}(t, x_t, \lambda_t) \mathrm{d} t + \sqrt{\varepsilon} \, \hat{b}(t, x_t, \lambda_t) \mathrm{d} W_t^{\alpha}
+\end{equation}
+can be written in Itô form as
+#+name: eq-ito-representation
+\begin{equation}
+\mathrm{d} x_t = \left[ \hat{a}(t, x_t, \lambda_t) + \alpha \varepsilon \, \hat{b}(t, x_t, \lambda_t) \partial_x \hat{b}(t, x_t, \lambda_t) \right] \mathrm{d} t + \sqrt{\varepsilon} \, \hat{b}(t, x_t, \lambda_t) \mathrm{d} W_t
+\end{equation}
+
+We define effective Itô coefficients:
+#+name: eq-effective-ito-drift
+\begin{equation}
+a(t, x, \lambda) = \hat{a}(t, x, \lambda) + \alpha \varepsilon \, \hat{b}(t, x, \lambda) \partial_x \hat{b}(t, x, \lambda)
+\end{equation}
+#+name: eq-effective-ito-diffusion
+\begin{equation}
+b(t, x, \lambda) = \hat{b}(t, x, \lambda)
+\end{equation}
+
+For *thermodynamic consistency*, the choice $\alpha = 1/2$ (Stratonovich) is
+natural when the noise originates from thermal fluctuations. For *CME-derived
+systems*, the Itô convention $\alpha = 0$ is typically correct.
+
+* Dynamics of the Switching Variable
+** Meyer-Itô Formula
+
+Since $\Lambda_{\varepsilon}$ is not $C^2$, we cannot directly apply Itô's lemma to
+$\lambda_t = \Lambda_{\varepsilon}(\sigma(x_t))$. Instead, we use the Meyer-Itô formula
+cite:revuz2013continuous,protter2005stochastic.
+
+#+begin_theorem
+*Meyer-Itô Formula.* Let $f = g - h$ where $g, h$ are convex. Let $X_t$ be a
+continuous semimartingale. Then
+#+name: eq-meyer-ito-general
+\begin{equation}
+f(X_t) = f(X_0) + \int_0^t f'_-(X_s) \mathrm{d} X_s + \int_{\mathbb{R}} L_t^z \, \mu_{f''}(\mathrm{d} z)
+\end{equation}
+where $f'_-$ is the left derivative, $L_t^z$ is the local time of $X$ at $z$, and
+$\mu_{f''}$ is the signed measure associated with $f''$ in the distributional sense.
+#+end_theorem
+
+** Convex Decomposition
+
+The regularised sign function admits the decomposition
+$\Lambda_{\varepsilon} = \psi^+ - \psi^-$ where
+#+name: eq-convex-decomposition
+\begin{equation}
+\psi^+(u) = \begin{cases}
+-1 & u \leq -\varepsilon \\
+u/\varepsilon & u > -\varepsilon
+\end{cases}, \quad
+\psi^-(u) = \begin{cases}
+0 & u \leq \varepsilon \\
+u/\varepsilon - 1 & u > \varepsilon
+\end{cases}
+\end{equation}
+are both convex functions.
+
+The left derivative is:
+#+name: eq-left-derivative
+\begin{equation}
+\Lambda'_{-, \varepsilon}(u) = \begin{cases}
+0 & u \leq -\varepsilon \\
+1/\varepsilon & -\varepsilon < u \leq \varepsilon \\
+0 & u > \varepsilon
+\end{cases}
+= \frac{1}{\varepsilon} \mathbf{1}_{(-\varepsilon, \varepsilon]}(u)
+\end{equation}
+
+The second derivative as a signed measure is:
+#+name: eq-second-derivative-measure
+\begin{equation}
+\mu_{\Lambda''_{\varepsilon}}(\mathrm{d} u) = \frac{1}{\varepsilon} \delta_{-\varepsilon}(\mathrm{d} u) - \frac{1}{\varepsilon} \delta_{\varepsilon}(\mathrm{d} u)
+\end{equation}
+
+** Local Time Definition
+
+#+begin_definition
+*Local Time.* For a continuous semimartingale $Z_t$, the local time at level $z$
+is defined by the occupation time formula cite:revuz2013continuous:
+#+name: eq-local-time-definition
+\begin{equation}
+L_t^z(Z) = \lim_{\delta \to 0} \frac{1}{2\delta} \int_0^t \mathbf{1}_{|Z_s - z| < \delta} \, \mathrm{d} \langle Z \rangle_s
+\end{equation}
+where $\langle Z \rangle_t$ is the quadratic variation of $Z$.
+#+end_definition
+
+Equivalently, via the Tanaka formula:
+#+name: eq-tanaka
+\begin{equation}
+|Z_t - z| = |Z_0 - z| + \int_0^t \mathrm{sign}(Z_s - z) \mathrm{d} Z_s + L_t^z(Z)
+\end{equation}
+
+** Derivation of $\lambda$-Dynamics
+
+Define $z_t = \sigma(x_t)$. By Itô's lemma (which applies since $\sigma$ is smooth):
+#+name: eq-z-dynamics
+\begin{equation}
+\mathrm{d} z_t = \left[ (\nabla \sigma)^T a + \frac{\varepsilon}{2} \mathrm{Tr}\left( b^T (\nabla^2 \sigma) b \right) \right] \mathrm{d} t + \sqrt{\varepsilon} \, (\nabla \sigma)^T b \, \mathrm{d} W_t
+\end{equation}
+where all coefficients are evaluated at $(t, x_t, \lambda_t)$.
+
+Applying Meyer-Itô to $\lambda_t = \Lambda_{\varepsilon}(z_t)$:
+#+name: eq-lambda-meyer-ito
+\begin{equation}
+\begin{aligned}
+\lambda_t &= \lambda_0 + \int_0^t \Lambda'_{-,\varepsilon}(z_s) \mathrm{d} z_s + \frac{1}{\varepsilon} L_t^{-\varepsilon}(z) - \frac{1}{\varepsilon} L_t^{\varepsilon}(z) \\
+&= \lambda_0 + \frac{1}{\varepsilon} \int_0^t \mathbf{1}_{|z_s| < \varepsilon} \mathrm{d} z_s + \frac{1}{\varepsilon} \left( L_t^{-\varepsilon} - L_t^{\varepsilon} \right)
+\end{aligned}
+\end{equation}
+
+Substituting the dynamics of $z_t$:
+#+name: eq-lambda-full-dynamics
+\begin{equation}
+\begin{aligned}
+\mathrm{d} \lambda_t &= \frac{1}{\varepsilon} \mathbf{1}_{|\lambda_t| < 1} \left[ (\nabla \sigma)^T a + \frac{\varepsilon}{2} \mathrm{Tr}\left( b^T (\nabla^2 \sigma) b \right) \right] \mathrm{d} t \\
+&\quad + \frac{1}{\sqrt{\varepsilon}} \mathbf{1}_{|\lambda_t| < 1} (\nabla \sigma)^T b \, \mathrm{d} W_t + \frac{1}{\varepsilon} \left( \mathrm{d} L_t^{-\varepsilon} - \mathrm{d} L_t^{\varepsilon} \right)
+\end{aligned}
+\end{equation}
+
+** Interpretation of Local Time Terms
+
+The local time terms $\mathrm{d} L_t^{\pm\varepsilon}$ act as *reflecting boundary terms* that
+prevent $\lambda_t$ from exiting the interval $[-1, 1]$. Specifically:
+
+- $\mathrm{d} L_t^{-\varepsilon}$ activates when $z_t$ hits $-\varepsilon$ (i.e., $\lambda_t$ hits $-1$)
+  and pushes $\lambda_t$ upward
+- $\mathrm{d} L_t^{\varepsilon}$ activates when $z_t$ hits $\varepsilon$ (i.e., $\lambda_t$ hits $+1$) and
+  pushes $\lambda_t$ downward
+
+This is the Skorokhod reflection problem cite:lions1984stochastic.
+
+* Mesoscopic Time Window and Quasi–Steady State Reduction
+To justify the quasi–steady state approximation for fixed but small $\varepsilon$
+(rather than only in the formal limit $\varepsilon \to 0$), we introduce a
+\emph{mesoscopic} time window $h(\varepsilon)$ satisfying
+\begin{equation}
+\varepsilon \ll h(\varepsilon) \ll 1.
+\end{equation}
+A convenient and standard choice, compatible with exponential mixing of the fast
+dynamics, is
+\begin{equation}
+h(\varepsilon) = \varepsilon |\log \varepsilon|.
+\end{equation}
+
+On each such window $[t,\, t+h(\varepsilon)]$, the slow variable $x$ varies only
+by an amount of order $h(\varepsilon)$, while the fast variable $\lambda$ evolves
+for a long interval in the fast time $\tau = t/\varepsilon$:
+\begin{equation}
+\Delta \tau = \frac{h(\varepsilon)}{\varepsilon} = |\log \varepsilon| \to \infty.
+\end{equation}
+Thus the fast process has time to relax to its stationary distribution, while
+the slow variable remains almost frozen.
+
+#+begin_lemma
+*Quasi–steady state on a mesoscopic window.*  
+Assume the fast generator $\mathcal{A}$ of the $\lambda$–process has a spectral
+gap $\gamma_{1}(x) \ge \gamma_{*}>0$ uniformly for $x$ in a neighbourhood of the
+switching surface $\Sigma$.  
+Let $h(\varepsilon)$ be chosen as above. Then for all
+$t \in [\,h(\varepsilon),\,T\,]$,
+#+name: eq-lemq
+\begin{equation}
+\bigl\| \mathcal{L}(\lambda_t^{\varepsilon} \mid x_t^{\varepsilon})
+       - P^{\mathrm{st}}(\cdot \mid x_t^{\varepsilon}) \bigr\|_{\mathrm{TV}}
+   \le C \varepsilon^{\gamma_{*}},
+
+\end{equation}
+i.e.\ the fast variable is within $O(\varepsilon^{\gamma_{*}})$ of its stationary
+distribution conditional on $x_t^{\varepsilon}$, uniformly on compact time
+intervals.
+#+end_lemma
+
+*Outline of the proof.*
+
+1. *Slow variation of the $x$–dynamics.*  
+   Over a mesoscopic window $[t, t+h(\varepsilon)]$,
+   \begin{equation}
+   |x_{t+s}^{\varepsilon} - x_t^{\varepsilon}|
+      \le C h(\varepsilon) + C\sqrt{\varepsilon h(\varepsilon)}
+      = o(1) ,
+   \qquad 0 \le s \le h(\varepsilon),
+   \end{equation}
+   using the linear–growth bounds on $a$ and $b$.  
+   Hence $x$ may be treated as frozen to leading order on each window.
+
+2. *Exponential mixing of the frozen fast process.*  
+   For frozen $x$, the fast variable $\lambda_{\tau}$ satisfies
+   \begin{equation}
+   \bigl\| \mathcal{L}(\lambda_{\tau} \mid x)
+          - P^{\mathrm{st}}(\cdot \mid x) \bigr\|_{\mathrm{TV}}
+      \le C e^{-\gamma_{*}\tau},
+   \end{equation}
+   by the spectral gap of $\mathcal{A}$.  
+   This holds for all $\tau \ge 0$.
+
+3. *Conversion of the mesoscopic window to fast time.*  
+   The window length in fast time is
+   \begin{equation}
+   \Delta \tau = \frac{h(\varepsilon)}{\varepsilon}
+               = |\log \varepsilon|,
+   \end{equation}
+   which diverges as $\varepsilon \to 0$.  
+   Thus, on each window, the frozen fast process nearly equilibrates.
+
+4. *Transfer back to the original time scale.*  
+   Combining Steps 1–3,
+   \begin{equation}
+   \bigl\| \mathcal{L}(\lambda_{t+h(\varepsilon)}^{\varepsilon} \mid x_t^{\varepsilon})
+          - P^{\mathrm{st}}(\cdot \mid x_t^{\varepsilon}) \bigr\|_{\mathrm{TV}}
+      \le C \exp\!\Bigl(-\gamma_{*} \tfrac{h(\varepsilon)}{\varepsilon}\Bigr)
+      = C \varepsilon^{\gamma_{*}}.
+   \end{equation}
+   The freezing of $x$ introduces only an $o(1)$ error.
+
+5. *Iteration over the interval $[h(\varepsilon), T]$.*  
+   Cover the interval by $O(1/h(\varepsilon))$ overlapping windows.  
+   On each window, the fast process re-equilibrates, so the total variation
+   error does not accumulate.  
+   The uniform estimate $O(\varepsilon^{\gamma_{*}})$ follows.
+
+The lemma provides the key ingredient for the averaging principle:  
+*on $\mathcal{O}(1)$ time scales and for every fixed small $\varepsilon$, the law
+of $\lambda_t^{\varepsilon}$ is well-approximated by its stationary distribution
+conditional on the slow variable $x_t^{\varepsilon}$.*
+
+** Poincaré inequality and spectral gap of the fast generator
+
+#+begin_definition
+A probability density $P^{\mathrm{st}}(\lambda\mid x)$ on $[-1,1]$ satisfies a
+Poincaré inequality with constant $1/\gamma_1(x)$ if for all smooth $f$,
+\begin{equation}
+\mathrm{Var}_{P^{\mathrm{st}}}(f)
+\;\le\;
+\frac{1}{\gamma_1(x)}
+\int_{-1}^1 D(\lambda,x) |f'(\lambda)|^2
+\, P^{\mathrm{st}}(\lambda\mid x)\, d\lambda.
+\end{equation}
+#+end_definition
+
+
+* Generator and Fokker-Planck Equation
+** Fast Timescale
+
+Inside the boundary layer $\{|\sigma(x)| < \varepsilon\}$, we introduce the fast time
+$\tau = t/\varepsilon$. On this timescale, $x$ is approximately frozen and $\lambda$
+equilibrates rapidly.
+
+Rescaling [[eq-lambda-full-dynamics]]:
+#+name: eq-lambda-fast-time
+\begin{equation}
+\mathrm{d} \lambda_{\tau} = \mu(\lambda, x) \mathrm{d}\tau + \sqrt{D(\lambda, x)} \, \mathrm{d} \tilde{W}_{\tau} + \text{(reflection)}
+\end{equation}
+where
+#+name: eq-fast-drift-diffusion
+\begin{equation}
+\mu(\lambda, x) = (\nabla \sigma)^T a(t, x, \lambda), \quad D(\lambda, x) = \left| (\nabla \sigma)^T b(t, x, \lambda) \right|^2
+\end{equation}
+
+Note: The $O(\varepsilon)$ curvature term $\mathrm{Tr}(b^T (\nabla^2 \sigma) b)$ drops out in the
+fast-time limit.
+
+** Backward Generator
+
+For a smooth test function $f \in C^2([-1, 1])$, we compute the generator of the
+$\lambda$-process with $x$ frozen:
+#+name: eq-generator-computation
+\begin{equation}
+\begin{aligned}
+(\mathcal{A} f)(\lambda) &= \lim_{\delta \to 0} \frac{1}{\delta} \left( \mathbb{E}[f(\lambda_{\delta}) | \lambda_0 = \lambda] - f(\lambda) \right) \\
+&= \mu(\lambda, x) \frac{\partial f}{\partial \lambda} + \frac{1}{2} D(\lambda, x) \frac{\partial^2 f}{\partial \lambda^2}
+\end{aligned}
+\end{equation}
+
+The domain must incorporate the reflecting boundary conditions. A function $f$ is
+in the domain $\mathcal{D}(\mathcal{A})$ if:
+#+name: eq-generator-domain
+\begin{equation}
+\mathcal{D}(\mathcal{A}) = \left\{ f \in C^2([-1,1]) : \frac{\partial f}{\partial \lambda}(-1) = \frac{\partial f}{\partial \lambda}(1) = 0 \right\}
+\end{equation}
+
+This Neumann condition ensures no probability flux through the boundaries.
+
+** Forward Generator and Fokker-Planck
+
+The forward generator $\mathcal{A}^*$ acts on probability densities. Using
+integration by parts in the duality relation
+#+name: eq-duality
+\begin{equation}
+\int_{-1}^{1} P(\lambda) (\mathcal{A} f)(\lambda) \mathrm{d}\lambda = \int_{-1}^{1} f(\lambda) (\mathcal{A}^* P)(\lambda) \mathrm{d}\lambda
+\end{equation}
+we obtain:
+#+name: eq-forward-generator
+\begin{equation}
+(\mathcal{A}^* P)(\lambda) = -\frac{\partial}{\partial \lambda} \left[ \mu(\lambda, x) P(\lambda) \right] + \frac{1}{2} \frac{\partial^2}{\partial \lambda^2} \left[ D(\lambda, x) P(\lambda) \right]
+\end{equation}
+
+The Fokker-Planck equation in fast time is:
+#+name: eq-fokker-planck-fast
+\begin{equation}
+\frac{\partial P}{\partial \tau} = -\frac{\partial}{\partial \lambda} \left[ \mu(\lambda, x) P \right] + \frac{1}{2} \frac{\partial^2}{\partial \lambda^2} \left[ D(\lambda, x) P \right]
+\end{equation}
+
+** Boundary Conditions
+
+The reflecting boundaries impose zero flux at $\lambda = \pm 1$:
+#+name: eq-flux-bc
+\begin{equation}
+J(\lambda, \tau) \Big|_{\lambda = \pm 1} = 0
+\end{equation}
+where the probability flux is:
+#+name: eq-probability-flux
+\begin{equation}
+J(\lambda, \tau) = \mu(\lambda, x) P(\lambda, \tau) - \frac{1}{2} \frac{\partial}{\partial \lambda} \left[ D(\lambda, x) P(\lambda, \tau) \right]
+\end{equation}
+
+Explicitly:
+#+name: eq-reflecting-bc
+\begin{equation}
+\mu(\pm 1, x) P(\pm 1, \tau) - \frac{1}{2} \frac{\partial}{\partial \lambda} \left[ D(\lambda, x) P(\lambda, \tau) \right]_{\lambda = \pm 1} = 0
+\end{equation}
+
+* Stationary Distribution
+** Existence and Uniqueness
+
+#+begin_theorem
+Under assumptions (A1)-(A3), for each fixed $x$ in a neighbourhood of $\Sigma$, the
+Fokker-Planck equation [[eq-fokker-planck-fast]] with boundary conditions
+[[eq-reflecting-bc]] has a unique stationary distribution $P^{\mathrm{st}}(\lambda | x)$.
+#+end_theorem
+
+*Proof strategy*: This follows from standard theory for one-dimensional diffusions
+on bounded intervals with reflecting boundaries cite:gardiner2009stochastic,
+pavliotis2014stochastic. Key steps:
+
+1. The operator $\mathcal{A}^*$ with reflecting BCs is the generator of a Feller
+   semigroup on $C([-1,1])$
+2. Non-degeneracy (A2) ensures $D(\lambda, x) > 0$, so the diffusion is elliptic
+3. Compactness of $[-1,1]$ plus ellipticity gives existence
+4. Irreducibility (can reach any point from any other) gives uniqueness
+
+** Explicit Solution: Linear Case
+
+When $\mu$ and $D$ are linear in $\lambda$ (which holds for our regularisation), we
+can solve explicitly. Write:
+#+name: eq-linear-coefficients
+\begin{equation}
+\mu(\lambda, x) = \mu_0(x) + \lambda \mu_1(x), \quad D(\lambda, x) = D_0(x) + \lambda D_1(x)
+\end{equation}
+where
+#+name: eq-mu-D-explicit
+\begin{equation}
+\begin{aligned}
+\mu_0 &= (\nabla\sigma)^T \bar{a}, \quad &\mu_1 &= (\nabla\sigma)^T \Delta a \\
+D_0 &= |(\nabla\sigma)^T \bar{b}|^2, \quad &D_1 &= 2 (\nabla\sigma)^T \bar{b} \cdot (\nabla\sigma)^T \Delta b
+\end{aligned}
+\end{equation}
+
+The stationary Fokker-Planck $\mathcal{A}^* P^{\mathrm{st}} = 0$ with zero flux BC becomes:
+#+name: eq-zero-flux
+\begin{equation}
+\mu(\lambda) P^{\mathrm{st}}(\lambda) = \frac{1}{2} \frac{\mathrm{d}}{\mathrm{d}\lambda} \left[ D(\lambda) P^{\mathrm{st}}(\lambda) \right]
+\end{equation}
+
+This is a first-order ODE. Integrating:
+#+name: eq-stationary-ode
+\begin{equation}
+\frac{\mathrm{d}}{\mathrm{d}\lambda} \log \left[ D(\lambda) P^{\mathrm{st}}(\lambda) \right] = \frac{2\mu(\lambda)}{D(\lambda)}
+\end{equation}
+
+** General Solution
+
+#+name: eq-stationary-general
+\begin{equation}
+P^{\mathrm{st}}(\lambda | x) = \frac{1}{Z(x) D(\lambda, x)} \exp\left( \int_{-1}^{\lambda} \frac{2\mu(\lambda', x)}{D(\lambda', x)} \mathrm{d}\lambda' \right)
+\end{equation}
+where the normalisation is:
+#+name: eq-normalisation
+\begin{equation}
+Z(x) = \int_{-1}^{1} \frac{1}{D(\lambda, x)} \exp\left( \int_{-1}^{\lambda} \frac{2\mu(\lambda', x)}{D(\lambda', x)} \mathrm{d}\lambda' \right) \mathrm{d}\lambda
+\end{equation}
+
+** Special Case: Constant Diffusion
+
+When $D_1 = 0$ (i.e., $|(\nabla\sigma)^T b^+| = |(\nabla\sigma)^T b^-|$), we have
+$D(\lambda) = D_0$ constant, and:
+#+name: eq-stationary-constant-D
+\begin{equation}
+P^{\mathrm{st}}(\lambda | x) = \frac{1}{Z} \exp\left( \frac{2}{D_0} \int_{-1}^{\lambda} \mu(\lambda') \mathrm{d}\lambda' \right) = \frac{1}{Z} \exp\left( \frac{2\mu_0 \lambda + \mu_1 \lambda^2}{D_0} \right)
+\end{equation}
+
+This is a *truncated Gaussian* (if $\mu_1 < 0$) or *truncated exponential* (if
+$\mu_1 = 0$) on $[-1, 1]$.
+
+** Moments of Stationary Distribution
+
+The key quantities for averaging are:
+#+name: eq-stationary-moments
+\begin{equation}
+\langle \lambda \rangle_x = \int_{-1}^{1} \lambda \, P^{\mathrm{st}}(\lambda | x) \mathrm{d}\lambda, \quad
+\langle \lambda^2 \rangle_x = \int_{-1}^{1} \lambda^2 \, P^{\mathrm{st}}(\lambda | x) \mathrm{d}\lambda
+\end{equation}
+
+The variance is:
+#+name: eq-lambda-variance
+\begin{equation}
+\mathrm{Var}_x(\lambda) = \langle \lambda^2 \rangle_x - \langle \lambda \rangle_x^2
+\end{equation}
+
+** Limiting Behaviour
+
+As $x$ moves away from $\Sigma$:
+
+*Case $\sigma(x) > \varepsilon$*: The system is firmly in the $+$ region, so
+$\lambda_t \equiv 1$ and $P^{\mathrm{st}}(\lambda|x) = \delta(\lambda - 1)$.
+
+*Case $\sigma(x) < -\varepsilon$*: Similarly, $P^{\mathrm{st}}(\lambda|x) = \delta(\lambda + 1)$.
+
+*On $\Sigma$ ($\sigma(x) = 0$)*: The distribution $P^{\mathrm{st}}(\lambda|x)$ is generically
+non-trivial with support on all of $[-1, 1]$.
+
+* Averaging Principle
+** Timescale Separation
+
+The system has two timescales:
+- *Fast*: $\lambda$ equilibrates on time $O(\varepsilon)$
+- *Slow*: $x$ evolves on time $O(1)$
+
+When $\varepsilon \ll 1$, we expect the slow dynamics to see only the *averaged* effect
+of the fast variable.
+
+** Averaged Coefficients
+
+Define the averaged drift and diffusion:
+#+name: eq-averaged-drift
+\begin{equation}
+\bar{a}_{\mathrm{eff}}(t, x) = \int_{-1}^{1} a(t, x, \lambda) P^{\mathrm{st}}(\lambda | x) \mathrm{d}\lambda = \bar{a}(t,x) + \langle \lambda \rangle_x \Delta a(t,x)
+\end{equation}
+#+name: eq-averaged-diffusion
+\begin{equation}
+\bar{D}_{\mathrm{eff}}(t, x) = \int_{-1}^{1} b(t, x, \lambda) b(t, x, \lambda)^T P^{\mathrm{st}}(\lambda | x) \mathrm{d}\lambda
+\end{equation}
+
+Expanding [[eq-averaged-diffusion]]:
+#+name: eq-averaged-diffusion-expanded
+\begin{equation}
+\bar{D}_{\mathrm{eff}} = \bar{b}\bar{b}^T + 2\langle\lambda\rangle_x \bar{b} \Delta b^T + \langle\lambda^2\rangle_x \Delta b \Delta b^T
+\end{equation}
+
+** Main Averaging Theorem
+
+#+begin_theorem
+*Averaging Principle.* Let $x_t^{\varepsilon}$ solve the regularised SDE [[eq-ito-representation]]
+with $\lambda_t = \Lambda_{\varepsilon}(\sigma(x_t^{\varepsilon}))$. Let $\bar{x}_t$ solve the averaged SDE:
+#+name: eq-averaged-sde
+\begin{equation}
+\mathrm{d} \bar{x}_t = \bar{a}_{\mathrm{eff}}(t, \bar{x}_t) \mathrm{d} t + \sqrt{\varepsilon} \, \bar{b}_{\mathrm{eff}}(t, \bar{x}_t) \mathrm{d} W_t
+\end{equation}
+where $\bar{b}_{\mathrm{eff}} \bar{b}_{\mathrm{eff}}^T = \bar{D}_{\mathrm{eff}}$.
+
+Then for any $T > 0$ and $\delta > 0$:
+#+name: eq-averaging-convergence
+\begin{equation}
+\lim_{\varepsilon \to 0} \mathbb{P}\left( \sup_{0 \leq t \leq T} |x_t^{\varepsilon} - \bar{x}_t| > \delta \right) = 0
+\end{equation}
+#+end_theorem
+
+** Proof Strategy: Three Approaches
+
+*** Approach 1: Relaxed Controls and Young Measures
+
+This approach, developed in cite:artstein1995tracking,artstein2000invariant,
+cite:wechselberger2020geometric, represents the fast variable by its *occupation
+measure* rather than its trajectory.
+
+*Key idea*: View $\lambda_t$ as a control and replace pointwise values with the
+Young measure $\nu_t(\mathrm{d}\lambda) = P^{\mathrm{st}}(\lambda | x_t) \mathrm{d}\lambda$ in the limit.
+
+*Steps*:
+1. Define the *relaxed system*: replace $a(x, \lambda)$ with
+   $\int a(x, \lambda) \nu(\mathrm{d}\lambda)$ for probability measures $\nu$
+2. Show tightness of $(x_t^{\varepsilon}, \nu_t^{\varepsilon})$ in appropriate topology
+3. Characterise limit points via martingale problem
+4. Show any limit $\nu_t$ must equal $P^{\mathrm{st}}(\cdot | x_t)$
+
+*Advantage*: Conceptually clean, connects to control theory
+
+*Disadvantage*: Requires careful functional analysis setup
+
+*Key reference*: Artstein cite:artstein1995tracking shows that relaxed controls
+are the natural limiting objects for singularly perturbed systems.
+
+*** Approach 2: Martingale Problem and Tightness
+
+This is the classical probabilistic approach cite:ethier2009markov,
+stroock1997multidimensional.
+
+*Steps*:
+
+1. *Tightness*: Show $\{x_t^{\varepsilon}\}_{\varepsilon > 0}$ is tight in $C([0,T]; \mathbb{R}^d)$
+   - Use moment bounds from (A4)
+   - Aldous criterion for tightness
+
+2. *Characterise limits*: Any limit point $\bar{x}_t$ solves the martingale
+   problem for $\bar{\mathcal{L}}$:
+   #+name: eq-averaged-generator
+   \begin{equation}
+   \bar{\mathcal{L}} f(x) = \bar{a}_{\mathrm{eff}}(x) \cdot \nabla f + \frac{\varepsilon}{2} \mathrm{Tr}\left( \bar{D}_{\mathrm{eff}}(x) \nabla^2 f \right)
+   \end{equation}
+
+3. *Uniqueness*: The martingale problem for $\bar{\mathcal{L}}$ has unique solution
+
+*Key lemma* (Averaging): For test functions $f$:
+#+name: eq-averaging-lemma
+\begin{equation}
+\lim_{\varepsilon \to 0} \mathbb{E}\left[ \int_0^T \left| a(x_t^{\varepsilon}, \lambda_t^{\varepsilon}) - \bar{a}_{\mathrm{eff}}(x_t^{\varepsilon}) \right| \mathrm{d} t \right] = 0
+\end{equation}
+
+*Proof sketch of lemma*: Decompose the time integral into:
+- Time spent outside boundary layer: here $\lambda = \pm 1$ exactly
+- Time spent inside boundary layer: here $\lambda$ equilibrates on fast timescale
+
+The key estimate uses the *Poisson equation* for the cell problem:
+#+name: eq-poisson-cell
+\begin{equation}
+\mathcal{A} \chi(\lambda) = a(x, \lambda) - \bar{a}_{\mathrm{eff}}(x)
+\end{equation}
+which has a solution $\chi$ since the RHS has zero mean w.r.t. $P^{\mathrm{st}}$.
+
+*** Approach 3: $\Gamma$-Convergence (Connection to Hill et al.)
+
+For large deviations, one shows $\Gamma$-convergence of rate functionals
+cite:dal2012introduction,braides2002gamma.
+
+Define the rate functional for the regularised system:
+#+name: eq-rate-functional-eps
+\begin{equation}
+I_{\varepsilon}(\phi) = \frac{1}{2} \int_0^T \left| \dot{\phi}(t) - a(t, \phi(t), \Lambda_{\varepsilon}(\sigma(\phi(t)))) \right|^2_{D^{-1}(\phi(t), \lambda(t))} \mathrm{d} t
+\end{equation}
+
+#+begin_theorem
+*$\Gamma$-convergence.* As $\varepsilon \to 0$:
+#+name: eq-gamma-convergence
+\begin{equation}
+I_{\varepsilon} \xrightarrow{\Gamma} I_0
+\end{equation}
+where the limiting functional is:
+#+name: eq-rate-functional-limit
+\begin{equation}
+I_0(\phi) = I_{\mathrm{FW}}(\phi) + I_{\mathrm{slide}}(\phi)
+\end{equation}
+Here $I_{\mathrm{FW}}$ is the standard Freidlin-Wentzell functional for the averaged
+system, and $I_{\mathrm{slide}}$ is an additional contribution from time spent on $\Sigma$.
+#+end_theorem
+
+This connects to cite:hill2021most but extends to multiplicative noise.
+
+** Which Approach to Use?
+
+For a *2-month timeline*:
+
+| Approach | Rigour | Effort | Recommendation |
+|----------|--------|--------|----------------|
+| Relaxed controls | High | 4-6 weeks | If supervisor expert in this |
+| Martingale problem | High | 4-6 weeks | Standard, many references |
+| $\Gamma$-convergence | High | 6-8 weeks | Only if LDP is main focus |
+| Formal (multiscale) | Medium | 2 weeks | *Recommended for first paper* |
+
+*Recommended approach*: State the theorem precisely, give a formal multiscale
+expansion proof, and note that rigorous justification follows standard techniques
+(cite appropriate references). This is acceptable for physics-oriented journals.
+
+* Gaussian Fluctuations
+** Linearisation Around Averaged Dynamics
+
+Let $\bar{x}(t)$ be a deterministic trajectory of the averaged system (i.e., the
+$\varepsilon \to 0$ limit). Define the fluctuation process:
+#+name: eq-fluctuation-def
+\begin{equation}
+\eta_t^{\varepsilon} = \frac{x_t^{\varepsilon} - \bar{x}(t)}{\sqrt{\varepsilon}}
+\end{equation}
+
+** Central Limit Theorem
+
+#+begin_theorem
+*CLT for Fluctuations.* Under assumptions (A1)-(A4), as $\varepsilon \to 0$:
+#+name: eq-clt-convergence
+\begin{equation}
+\eta_t^{\varepsilon} \xrightarrow{d} \eta_t
+\end{equation}
+where $\eta_t$ is a Gaussian process satisfying:
+#+name: eq-fluctuation-sde
+\begin{equation}
+\mathrm{d}\eta_t = A(t) \eta_t \mathrm{d} t + \bar{b}_{\mathrm{eff}}(t, \bar{x}(t)) \mathrm{d} W_t + \mathrm{d} M_t^{\lambda}
+\end{equation}
+where $A(t) = \nabla_x \bar{a}_{\mathrm{eff}}|_{\bar{x}(t)}$ is the Jacobian, and $M_t^{\lambda}$
+is a correction from $\lambda$-fluctuations.
+#+end_theorem
+
+** The $\lambda$-Fluctuation Correction
+
+The term $M_t^{\lambda}$ arises because fluctuations in $\lambda$ around its mean
+$\langle\lambda\rangle_x$ induce additional fluctuations in $x$. 
+
+To leading order:
+#+name: eq-lambda-correction
+\begin{equation}
+\mathrm{d} M_t^{\lambda} = \Delta a(\bar{x}(t)) \cdot (\lambda_t - \langle\lambda\rangle_{\bar{x}(t)}) \frac{\mathrm{d} t}{\sqrt{\varepsilon}} + \text{(martingale)}
+\end{equation}
+
+In the $\varepsilon \to 0$ limit, this contributes to the effective diffusion via a
+*homogenisation correction*.
+
+** Derivation via Poisson Equation
+
+The correction arises from the solution $\chi(\lambda, x)$ of the cell problem [[eq-poisson-cell]].
+Applying Itô's formula to $\chi(\lambda_t, x_t)$ and using the fast equilibration of $\lambda$:
+#+name: eq-homogenisation-correction
+\begin{equation}
+\Sigma_{\lambda}(x) = 2 \int_{-1}^{1} \chi(\lambda, x) \otimes (a(x,\lambda) - \bar{a}_{\mathrm{eff}}(x)) P^{\mathrm{st}}(\lambda|x) \mathrm{d}\lambda
+\end{equation}
+
+For the linear case, $\chi$ can be computed explicitly.
+
+** Effective Covariance
+
+The covariance $\Sigma(t) = \mathbb{E}[\eta_t \eta_t^T]$ satisfies the Lyapunov equation:
+#+name: eq-lyapunov
+\begin{equation}
+\frac{\mathrm{d}\Sigma}{\mathrm{d} t} = A(t) \Sigma + \Sigma A(t)^T + \bar{D}_{\mathrm{eff}}(t, \bar{x}(t)) + \Sigma_{\lambda}(t)
+\end{equation}
+
+The correction $\Sigma_{\lambda}(t)$ from $\lambda$-fluctuations is:
+#+name: eq-sigma-lambda-correction
+\begin{equation}
+\Sigma_{\lambda}(t) = \mathrm{Var}_{\bar{x}(t)}(\lambda) \cdot \Delta a \Delta a^T \cdot \tau_{\mathrm{corr}}(t)
+\end{equation}
+where $\tau_{\mathrm{corr}}$ is the correlation time of $\lambda$-fluctuations.
+
+** Explicit Formula for $\Sigma_{\lambda}$
+
+The correlation time is determined by the spectral gap of the fast generator:
+#+name: eq-correlation-time
+\begin{equation}
+\tau_{\mathrm{corr}}(x) = \int_0^{\infty} \frac{\mathrm{Cov}(\lambda_0, \lambda_{\tau})}{\mathrm{Var}(\lambda)} \mathrm{d}\tau = \frac{1}{\gamma_1(x)}
+\end{equation}
+where $\gamma_1(x) > 0$ is the smallest nonzero eigenvalue of $-\mathcal{A}^*$
+with reflecting BCs.
+
+For the linear case, this can be computed explicitly or bounded.
+
+** Complete Gaussian Envelope
+
+The Gaussian envelope around $\bar{x}(t)$ at time $t$ is:
+#+name: eq-gaussian-envelope
+\begin{equation}
+P(x, t) \approx \frac{1}{(2\pi\varepsilon)^{d/2} |\Sigma(t)|^{1/2}} \exp\left( -\frac{1}{2\varepsilon} (x - \bar{x}(t))^T \Sigma(t)^{-1} (x - \bar{x}(t)) \right)
+\end{equation}
+
+* Spectral Gap and Relaxation Time
+** Spectral Theory of the Fast Generator
+
+The fast generator $\mathcal{A}$ on $L^2([-1,1], P^{\mathrm{st}})$ is self-adjoint and has
+discrete spectrum:
+#+name: eq-spectrum
+\begin{equation}
+0 = \gamma_0 < \gamma_1 \leq \gamma_2 \leq \cdots
+\end{equation}
+
+The eigenvalue $\gamma_0 = 0$ corresponds to the stationary distribution. The
+*spectral gap* $\gamma_1$ controls the relaxation rate.
+
+** Relaxation vs Averaging Timescales
+
+For the averaging principle to hold, we need:
+#+name: eq-timescale-separation
+\begin{equation}
+\tau_{\mathrm{relax}} = \frac{1}{\gamma_1} \ll \tau_{\mathrm{slow}} = O(1)
+\end{equation}
+
+Since the fast dynamics runs on timescale $O(\varepsilon)$, the effective relaxation
+time in slow units is $\varepsilon/\gamma_1$. The averaging principle requires this to
+vanish as $\varepsilon \to 0$, which is automatic if $\gamma_1$ is bounded below.
+
+** Spectral Gap Bounds
+
+For the linear case with constant $D$:
+#+name: eq-spectral-gap-bound
+\begin{equation}
+\gamma_1 \geq \frac{\pi^2 D_0}{8}
+\end{equation}
+This follows from a Poincaré inequality on $[-1,1]$ with Neumann BCs.
+
+More refined bounds using Bakry-Émery cite:bakry2014analysis:
+#+name: eq-bakry-emery
+\begin{equation}
+\gamma_1 \geq \kappa
+\end{equation}
+where $\kappa$ is the lower bound on the "curvature" $\Gamma_2(f,f)/\Gamma(f,f)$
+of the diffusion.
+
+** Connection to Correlation Time
+
+The autocorrelation of $\lambda$ under the stationary dynamics decays as:
+#+name: eq-autocorrelation
+\begin{equation}
+\mathbb{E}^{\mathrm{st}}[\lambda_0 \lambda_{\tau}] - \langle\lambda\rangle^2 \sim e^{-\gamma_1 \tau}
+\end{equation}
+
+Thus the correlation time appearing in [[eq-correlation-time]] is:
+#+name: eq-correlation-time-explicit
+\begin{equation}
+\tau_{\mathrm{corr}} = \frac{1}{\gamma_1} = \int_0^{\infty} \frac{\mathbb{E}^{\mathrm{st}}[\lambda_0 \lambda_{\tau}] - \langle\lambda\rangle^2}{\mathrm{Var}(\lambda)} \mathrm{d}\tau
+\end{equation}
+
+* Proof Details for Linear Case
+** Setup
+
+Assume:
+- $d = 1$ (one-dimensional slow variable)
+- Linear $\lambda$-dependence in coefficients
+- $\sigma(x) = x$ (switching at $x = 0$)
+
+Then the regularised SDE is:
+#+name: eq-1d-regularised
+\begin{equation}
+\mathrm{d} x_t = \left( \bar{a} + \Lambda_{\varepsilon}(x_t) \Delta a \right) \mathrm{d} t + \sqrt{\varepsilon} \left( \bar{b} + \Lambda_{\varepsilon}(x_t) \Delta b \right) \mathrm{d} W_t
+\end{equation}
+
+** Fast Fokker-Planck
+
+With $\lambda = x/\varepsilon$ for $|x| < \varepsilon$, the fast Fokker-Planck becomes:
+#+name: eq-1d-fp
+\begin{equation}
+\frac{\partial P}{\partial\tau} = -\frac{\partial}{\partial\lambda}\left[ (\mu_0 + \mu_1 \lambda) P \right] + \frac{1}{2} \frac{\partial^2}{\partial\lambda^2}\left[ (D_0 + D_1 \lambda) P \right]
+\end{equation}
+where
+#+name: eq-1d-coefficients
+\begin{equation}
+\mu_0 = \bar{a}, \quad \mu_1 = \Delta a, \quad D_0 = \bar{b}^2, \quad D_1 = 2\bar{b}\Delta b
+\end{equation}
+
+** Stationary Solution
+
+Setting the flux to zero:
+#+name: eq-1d-stationary
+\begin{equation}
+P^{\mathrm{st}}(\lambda) = \frac{C}{D_0 + D_1 \lambda} \exp\left( \int_{-1}^{\lambda} \frac{2(\mu_0 + \mu_1 \lambda')}{D_0 + D_1 \lambda'} \mathrm{d}\lambda' \right)
+\end{equation}
+
+*Case $D_1 = 0$* (constant diffusion):
+#+name: eq-1d-stationary-const-D
+\begin{equation}
+P^{\mathrm{st}}(\lambda) = \frac{1}{Z} \exp\left( \frac{2\mu_0 \lambda + \mu_1 \lambda^2}{D_0} \right)
+\end{equation}
+
+*Case $D_1 \neq 0$*: The integral gives logarithms and the solution involves
+power laws in $(D_0 + D_1 \lambda)$.
+
+** Moments Calculation
+
+For the constant-$D$ case, define $\alpha = 2\mu_0/D_0$ and $\beta = \mu_1/D_0$.
+Then:
+#+name: eq-1d-moments-formula
+\begin{equation}
+\langle \lambda^n \rangle = \frac{\int_{-1}^{1} \lambda^n e^{\alpha\lambda + \beta\lambda^2} \mathrm{d}\lambda}{\int_{-1}^{1} e^{\alpha\lambda + \beta\lambda^2} \mathrm{d}\lambda}
+\end{equation}
+
+These can be expressed in terms of error functions when $\beta < 0$ (the generic
+stable case).
+
+** Averaged Dynamics
+
+The averaged SDE is:
+#+name: eq-1d-averaged
+\begin{equation}
+\mathrm{d}\bar{x}_t = \left( \bar{a} + \langle\lambda\rangle_{\bar{x}} \Delta a \right) \mathrm{d} t + \sqrt{\varepsilon} \sqrt{D_0 + 2\langle\lambda\rangle_{\bar{x}} \bar{b}\Delta b + \langle\lambda^2\rangle_{\bar{x}} (\Delta b)^2} \, \mathrm{d} W_t
+\end{equation}
+
+** Matching to Outer Regions
+
+For $|x| > \varepsilon$ (outside the boundary layer):
+- $x > \varepsilon$: $\lambda = 1$, so $\mathrm{d} x = a^+ \mathrm{d} t + \sqrt{\varepsilon} b^+ \mathrm{d} W$
+- $x < -\varepsilon$: $\lambda = -1$, so $\mathrm{d} x = a^- \mathrm{d} t + \sqrt{\varepsilon} b^- \mathrm{d} W$
+
+The averaged dynamics [[eq-1d-averaged]] smoothly interpolates between these limits
+as $\langle\lambda\rangle_x \to \pm 1$ when $x \to \pm\varepsilon$.
+
+* Explicit Calculations for 1D Case
+** Stationary Distribution with $D_1 = 0$
+
+When $D_1 = 0$, the stationary distribution is:
+#+name: eq-pst-explicit
+\begin{equation}
+P^{\mathrm{st}}(\lambda) = \frac{1}{Z} \exp\left( \frac{2\mu_0}{D_0} \lambda + \frac{\mu_1}{D_0} \lambda^2 \right)
+\end{equation}
+
+Define $\alpha = 2\mu_0/D_0$ and $\beta = \mu_1/D_0$. The normalisation is:
+#+name: eq-Z-explicit
+\begin{equation}
+Z = \int_{-1}^{1} e^{\alpha \lambda + \beta \lambda^2} \mathrm{d}\lambda
+\end{equation}
+
+** Case $\beta < 0$ (Stable)
+
+Complete the square: $\alpha\lambda + \beta\lambda^2 = \beta(\lambda + \alpha/2\beta)^2 - \alpha^2/4\beta$.
+
+Define $m = -\alpha/2\beta$ and $s^2 = -1/2\beta > 0$. Then:
+#+name: eq-gaussian-form
+\begin{equation}
+P^{\mathrm{st}}(\lambda) = \frac{1}{Z'} \exp\left( -\frac{(\lambda - m)^2}{2s^2} \right)
+\end{equation}
+This is a Gaussian with mean $m$ and variance $s^2$, truncated to $[-1,1]$.
+
+The moments are:
+#+name: eq-moments-gaussian
+\begin{equation}
+\begin{aligned}
+\langle\lambda\rangle &= m + s^2 \frac{\phi((1-m)/s) - \phi((-1-m)/s)}{\Phi((1-m)/s) - \Phi((-1-m)/s)} \\
+\langle\lambda^2\rangle &= s^2 + \langle\lambda\rangle^2 - s^2 \langle\lambda\rangle \frac{\phi((1-m)/s) - \phi((-1-m)/s)}{\Phi((1-m)/s) - \Phi((-1-m)/s)}
+\end{aligned}
+\end{equation}
+where $\phi$ and $\Phi$ are the standard normal PDF and CDF.
+
+** Case $\beta = 0$ (Linear drift)
+
+The stationary distribution is:
+#+name: eq-exponential-form
+\begin{equation}
+P^{\mathrm{st}}(\lambda) = \frac{\alpha}{e^{\alpha} - e^{-\alpha}} e^{\alpha\lambda} = \frac{\alpha}{2\sinh(\alpha)} e^{\alpha\lambda}
+\end{equation}
+
+The moments are:
+#+name: eq-moments-exponential
+\begin{equation}
+\langle\lambda\rangle = \coth(\alpha) - \frac{1}{\alpha}, \quad
+\langle\lambda^2\rangle = 1 - \frac{2}{\alpha}\coth(\alpha) + \frac{2}{\alpha^2}
+\end{equation}
+
+** Limiting Cases
+
+*Strong bias* ($|\alpha| \to \infty$):
+#+name: eq-strong-bias
+\begin{equation}
+\langle\lambda\rangle \to \mathrm{sign}(\alpha), \quad \mathrm{Var}(\lambda) \to 0
+\end{equation}
+The distribution concentrates at $\lambda = \pm 1$.
+
+*Weak bias* ($\alpha \to 0$):
+#+name: eq-weak-bias
+\begin{equation}
+\langle\lambda\rangle \to 0, \quad \langle\lambda^2\rangle \to \frac{1}{3}
+\end{equation}
+The distribution approaches uniform on $[-1,1]$.
+
+* Numerical Validation
+** Algorithm
+
+1. *Direct simulation*: Solve the regularised SDE [[eq-1d-regularised]] via
+   Euler-Maruyama with small timestep $\delta t \ll \varepsilon$
+
+2. *Averaged simulation*: Solve [[eq-1d-averaged]] with the precomputed functions
+   $\langle\lambda\rangle_x$, $\langle\lambda^2\rangle_x$
+
+3. *Gaussian envelope*: Solve Lyapunov equation [[eq-lyapunov]] along the
+   deterministic orbit
+
+** Implementation Notes
+
+For the Euler-Maruyama scheme on the regularised system:
+#+name: eq-euler-maruyama
+\begin{equation}
+x_{n+1} = x_n + a(x_n, \Lambda_{\varepsilon}(x_n)) \delta t + \sqrt{\varepsilon \delta t} \, b(x_n, \Lambda_{\varepsilon}(x_n)) \, \xi_n
+\end{equation}
+where $\xi_n \sim \mathcal{N}(0,1)$ are i.i.d.
+
+*Timestep requirement*: To resolve the fast dynamics within the boundary layer,
+take $\delta t \ll \varepsilon^2$. This can be expensive; adaptive stepping near
+$|x| < \varepsilon$ is recommended.
+
+** Metrics
+
+- Compare sample mean trajectories
+- Compare sample covariances to $\varepsilon \cdot \Sigma(t)$
+- Check convergence as $\varepsilon \to 0$
+
+* Discussion
+** Relation to Existing Work
+
+| Work | Noise | Drift | Method | Our extension |
+|------|-------|-------|--------|---------------|
+| Chiang-Sheu | Add/Mult | Discont. | Occupation time | $\lambda$-averaging |
+| Hill et al. | Additive | Discont. | $\Gamma$-conv | Mult. noise |
+| Berglund-Gentz | Mult. | Smooth | Averaging | Discont. drift |
+| This work | Mult. | Discont. | $\lambda$-averaging | New |
+
+** Physical Interpretation
+
+The stationary distribution $P^{\mathrm{st}}(\lambda|x)$ describes the *effective phase
+mixture* at position $x$ near the switching surface. The moments:
+- $\langle\lambda\rangle_x$: mean phase (which region dominates)
+- $\mathrm{Var}_x(\lambda)$: phase uncertainty (fluctuations between regions)
+
+For CME-derived systems, this corresponds to fluctuations in the coarse-grained
+state between metastable configurations of the underlying Potts model.
+
+** Thermodynamic Consistency
+
+When the noise originates from thermal fluctuations at temperature $T$, the
+diffusion matrix should satisfy the fluctuation-dissipation relation:
+#+name: eq-fdr
+\begin{equation}
+D(x, \lambda) = 2 k_B T \, \Gamma(x, \lambda)
+\end{equation}
+where $\Gamma$ is the mobility tensor.
+
+For such systems, the stationary distribution [[eq-stationary-general]] is
+consistent with the Gibbs measure, and the quasi-potential equals the free energy
+difference.
+
+** Limitations
+
+1. Linear $\lambda$-dependence assumed (nonlinear case may have bifurcations)
+2. Single switching surface (multiple surfaces need extension)
+3. Formal proof (rigorous version requires more work)
+
+** Future Directions
+
+1. *Nonlinear $\lambda$*: Bifurcations in the layer system, multimodal $P^{\mathrm{st}}$
+2. *Large deviations*: Full $\Gamma$-convergence proof, quasi-potential
+3. *Thermodynamic consistency*: Entropy production, fluctuation theorems
+4. *Applications*: Potts models, genetic switches, climate tipping points
+
+* Appendix: Technical Lemmas
+** Lemma: Well-Posedness of Regularised SDE
+
+#+begin_lemma
+Under (A1)-(A4), the regularised SDE [[eq-ito-representation]] has a unique strong
+solution for any $\varepsilon > 0$.
+#+end_lemma
+
+*Proof*: The regularised coefficients are Lipschitz (since $\Lambda_{\varepsilon}$ is
+Lipschitz with constant $1/\varepsilon$) and satisfy linear growth. Standard existence
+and uniqueness applies cite:karatzas2012brownian. $\square$
+
+** Lemma: Spectral Gap for Fast Generator
+
+#+begin_lemma
+Under (A2)-(A3), the operator $-\mathcal{A}$ on $L^2([-1,1], P^{\mathrm{st}})$ has a
+spectral gap $\gamma_1 > 0$.
+#+end_lemma
+
+*Proof*: This follows from the Bakry-Émery criterion cite:bakry2014analysis or
+direct Sturm-Liouville theory for the 1D case. $\square$
+
+** Lemma: Tightness
+
+#+begin_lemma
+The family $\{x_t^{\varepsilon}\}_{\varepsilon > 0}$ is tight in $C([0,T]; \mathbb{R}^d)$.
+#+end_lemma
+
+*Proof*: Use Aldous criterion. Need to show:
+1. $\sup_{\varepsilon} \mathbb{E}[|x_t^{\varepsilon}|^2] < \infty$ (from linear growth)
+2. For stopping times $\tau_{\varepsilon} \leq T$ and $\delta > 0$:
+   $\mathbb{E}[|x_{\tau_{\varepsilon}+\delta}^{\varepsilon} - x_{\tau_{\varepsilon}}^{\varepsilon}|^2] \leq C\delta$
+
+Both follow from standard SDE estimates. $\square$
+
+** Lemma: Martingale Characterisation
+
+#+begin_lemma
+Suppose $\bar{x}_t$ is a limit point of $(x_t^{\varepsilon})$ as $\varepsilon \to 0$. Then for
+all $f \in C^2_c(\mathbb{R}^d)$:
+#+name: eq-martingale-char
+\begin{equation}
+f(\bar{x}_t) - f(\bar{x}_0) - \int_0^t \bar{\mathcal{L}} f(\bar{x}_s) \mathrm{d} s
+\end{equation}
+is a martingale, where $\bar{\mathcal{L}}$ is given by [[eq-averaged-generator]].
+#+end_lemma
+
+*Proof*: The key step is showing that the fast variable $\lambda$ averages out.
+Use the Poisson equation for the cell problem and ergodicity of the fast process.
+See cite:pavliotis2014stochastic Chapter 11. $\square$
+
+* References
+:PROPERTIES:
+:UNNUMBERED: t
+:END:
+
+** Bibliography
+
+- cite:freidlin2012random M. Freidlin and A. Wentzell, /Random Perturbations of Dynamical Systems/, 3rd ed., Springer, 2012.
+
+- cite:chiang2000large T.-S. Chiang and S.-J. Sheu, "Large deviation of diffusion processes with discontinuous drift and their occupation times," /Ann. Probab./ 28 (2000), 140-165.
+
+- cite:chiang2002small T.-S. Chiang and S.-J. Sheu, "Small perturbations of diffusions in inhomogeneous media," /Ann. Inst. H. Poincaré/ 38 (2002), 285-318.
+
+- cite:hill2021most K. Hill, J. Zanetell, and J. A. Gemmer, "Most probable transition paths in piecewise-smooth stochastic differential equations," arXiv:2112.12958, 2021.
+
+- cite:leobacher2017strong G. Leobacher and M. Szölgyenyi, "A strong order 1/2 method for multidimensional SDEs with discontinuous drift," /Ann. Appl. Probab./ 27 (2017), 2383-2418.
+
+- cite:revuz2013continuous D. Revuz and M. Yor, /Continuous Martingales and Brownian Motion/, 3rd ed., Springer, 2013.
+
+- cite:protter2005stochastic P. E. Protter, /Stochastic Integration and Differential Equations/, 2nd ed., Springer, 2005.
+
+- cite:lions1984stochastic P.-L. Lions and A.-S. Sznitman, "Stochastic differential equations with reflecting boundary conditions," /Comm. Pure Appl. Math./ 37 (1984), 511-537.
+
+- cite:gardiner2009stochastic C. W. Gardiner, /Stochastic Methods/, 4th ed., Springer, 2009.
+
+- cite:pavliotis2014stochastic G. A. Pavliotis, /Stochastic Processes and Applications/, Springer, 2014.
+
+- cite:ethier2009markov S. N. Ethier and T. G. Kurtz, /Markov Processes: Characterization and Convergence/, Wiley, 2009.
+
+- cite:stroock1997multidimensional D. W. Stroock and S. R. S. Varadhan, /Multidimensional Diffusion Processes/, Springer, 1997.
+
+- cite:artstein1995tracking Z. Artstein, "Tracking fast relaxed controls," /SIAM J. Control Optim./ 33 (1995), 1095-1118.
+
+- cite:artstein2000invariant Z. Artstein and A. Vigodner, "Invariant measures and singularly perturbed stochastic systems," /Ann. Appl. Probab./ 10 (2000), 1171-1191.
+
+- cite:wechselberger2020geometric M. Wechselberger, /Geometric Singular Perturbation Theory Beyond the Standard Form/, Springer, 2020.
+
+- cite:berglund2006noise N. Berglund and B. Gentz, /Noise-Induced Phenomena in Slow-Fast Dynamical Systems/, Springer, 2006.
+
+- cite:dal2012introduction G. Dal Maso, /An Introduction to $\Gamma$-Convergence/, Birkhäuser, 1993.
+
+- cite:braides2002gamma A. Braides, /Gamma-Convergence for Beginners/, Oxford, 2002.
+
+- cite:karatzas2012brownian I. Karatzas and S. E. Shreve, /Brownian Motion and Stochastic Calculus/, 2nd ed., Springer, 1991.
+
+- cite:bakry2014analysis D. Bakry, I. Gentil, and M. Ledoux, /Analysis and Geometry of Markov Diffusion Operators/, Springer, 2014.
+
+- cite:kurtz1992averaging T. G. Kurtz, "Averaging for martingale problems and stochastic approximation," /Applied Stochastic Analysis/, Lecture Notes in Control and Inform. Sci. 177 (1992), 186-209.
+
+- cite:papanicolaou1977asymptotic G. C. Papanicolaou, D. Stroock, and S. R. S. Varadhan, "Martingale approach to some limit theorems," /Duke Turbulence Conf./, Duke Univ. Math. Ser. III, 1977.
+
+- cite:khasminskii1966principle R. Z. Khasminskii, "On stochastic processes defined by differential equations with a small parameter," /Theory Probab. Appl./ 11 (1966), 211-228.
+
+- cite:pilipenko2014introduction A. Pilipenko, /An Introduction to Stochastic Differential Equations with Reflection/, Potsdam University Press, 2014.
+
+- cite:lejay2006skew A. Lejay, "On the constructions of the skew Brownian motion," /Probab. Surv./ 3 (2006), 413-466.
+
+- cite:simpson2012stochastically D. J. W. Simpson and R. Kuske, "Stochastically perturbed sliding motion in piecewise-smooth systems," /Discrete Contin. Dyn. Syst. B/ 18 (2013), 2597-2617.

@@ -1,0 +1,60 @@
+/* Gruvbox-inspired dark theme */
+:root {
+  /* ===== Gruvbox Core ===== */
+  --bg: #1d2021;            /* background main */
+  --fg: #ebdbb2;            /* foreground main */
+  --muted: #a89984;         /* dimmed text (normal white) */
+  --border: #928374;        /* border lines (bright black) */
+  --link: #458588;          /* normal blue link */
+  --accent: #fabd2f;        /* bright yellow accent */
+  --code-bg: #282828;       /* code block background (normal black) */
+  --inline-bg: #282828;     /* inline code background */
+
+  /* ===== Semantic block colours ===== */
+  --theorem-bg:   #282828;  /* neutral dark block (normal black) */
+  --insight-bg:   #98971a;  /* normal green for positive insight */
+  --todo-bg:      #cc241d;  /* normal red for todos/conflicts */
+  --note-bg:      #b16286;  /* normal magenta for notes */
+  --question-bg:  #d79921;  /* normal yellow for questions/warnings */
+
+  /* ===== Extra UI shades derived from theme ===== */
+  --header-bg: var(--theorem-bg);
+  --footer-bg: var(--theorem-bg);
+  --button-bg: #689d6a;     /* normal cyan */
+  --button-hover-bg: #8ec07c; /* bright cyan */
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--fg);
+}
+
+a {
+  color: var(--link);
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+pre,
+code {
+  background-color: var(--code-bg);
+}
+
+.noty-header,
+.noty-footer {
+  background-color: var(--header-bg);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.noty-nav-actions button {
+  background-color: var(--button-bg);
+  color: var(--fg);
+  border: 1px solid var(--border);
+}
+
+.noty-nav-actions button:hover {
+  background-color: var(--button-hover-bg);
+}

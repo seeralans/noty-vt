@@ -1,0 +1,10 @@
+#+title: 2025-12-02 Daily Log
+#+slug: 2025-12-02
+#+layout: notes
+
+* Study
++ notes we have to introduce an intermitant time scale on which a regularised   
+* Tasks
++ Discuss with Aljaz about issues on proving the method but this is for later,  
+* Journal
+

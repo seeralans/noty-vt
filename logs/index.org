@@ -1,0 +1,34 @@
+#+title: Logs
+#+slug: logs
+#+layout: notes
+
+* Daily
+** 2025-11-30 (Sunday)
+#+INCLUDE: "daily/2025-11-30.org" :minlevel 3
+
+#+BEGIN: noty-log-latest :kind daily
+#+END:
+
+* Weekly
+#+BEGIN: noty-log-latest :kind weekly
+#+END:
+
+* Monthly
+#+BEGIN: noty-log-latest :kind monthly
+#+END:
+
+
+
+
+
+
+
+* Daily Logs
+- [[file:daily/2025-11-30.org][Daily log files]]
+
+* Weekly Logs
+- [[file:weekly/][Weekly overviews]]
+
+* Monthly Logs
+- [[file:monthly/][Monthly overviews]]
+
