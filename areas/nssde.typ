@@ -16,7 +16,7 @@
   // customize `highlight` color
   hl: theme-color.muted.yellow,
   // is the document printable?
-  print: false,
+  print: true,
 )
 
 #show: equate.with(breakable: true, sub-numbering: false)
@@ -85,14 +85,19 @@
 #let trc = math.op("Tr")
 #let dom = math.op("Dom")
 #let pm  = math.op($plus.minus$)
-#let eqdef  = math.op($eq.delta$)
+#let eqdef  = math.op($eq.def$)
 #let ee  = math.op($upright(e)$)
 #let epsilon = math.epsilon.alt
 #let sign = math.op(text("sign"))
 #let ss   = math.op(text("oo"))
 #let ss   = math.op($oo$)
 #let inprod(f, g, mu) = {
-  [$chevron.l #f, #g chevron.r_(mu)$]
+  [$chevron.l #f | #g chevron.r_(#mu)$]
+}
+
+
+#let l2norm(f, mu, p) = {
+  [$|| #f ||^(#p)_(#mu)$]
 }
 
 
@@ -982,10 +987,12 @@ generator is sumarised in the following lemma.
 P_t (lambda) { partial_x sigma(x_t)^tns a(t, x, lambda)
     + epsilon/2 trc[b(t, x, lambda)^(tns) partial^2_(x x) sigma(x) b(t, x, lambda)] } \ 
       &- 1/(2 ) partial_(lambda)[P_t (lambda)
-      partial_x sigma(x_t)^tns  b(t, x, lambda) b(t, x, lambda)^tns partial_x sigma(x_t)].
+      partial_x sigma(x_t)^tns  b(t, x, lambda) b(t, x, lambda)^tns partial_x sigma(x_t)],
   $
 
-  Note $J_t (lambda) \/ epsilon$ is the probability current. 
+  is the scaled probability current, i.e. $J_t (lambda) \/ epsilon$ would be the
+  probability current of the process.
+
 ]
 
 #proof[
@@ -1035,8 +1042,8 @@ P_t (lambda) { partial_x sigma(x_t)^tns a(t, x, lambda)
         partial_lambda f(lambda)
         lr([
           P(lambda, t) tilde(b) tilde(b)^(tns)
-           ])|)_(-1)^1  
-      - lr(1/(2epsilon) f(lambda)
+           ])
+      - 1/(2epsilon) f(lambda)
         partial_lambda [
           P(lambda, t) tilde(b) tilde(b)^(tns)
         ] |)_(-1)^1  \
@@ -1123,7 +1130,7 @@ Before we proceed it is usefull to introduce a defnition for the $L^2$ space tha
 Since we have a probability density we will use the notation $chevron.l . , .
 chevron.r_(L^2_(P_t))$ and $||.||_(L^2_(P_t))$ where $P_t in cal(A)^*_x$.
 
-#lemma(title: [Self-adjointness of $cal(A)_x$])[
+#lemma(title: [Symmetry of $cal(A)_x$])[
 
   Let $x in cal(D)_epsilon$ be fixed, $cal(A)_x$ be the backward generator
   given in @lem-bwd-gen, and $P_(ss)(lambda | x)$ satisfy $cal(A)^*_x
@@ -1279,7 +1286,7 @@ where $kappa = (C_1 C_2) \/ 2$.
 ]
 
 
-#lemma(title: [Bounding ])[
+#lemma(title: [Bounding zero-mean observables])[
 
   Let $cal(A)_x$ be the backward generator defined in @eq-bwd-gen in
   @lem-bwd-gen, $cal(A)^*_x$ be its adjoint defined in @eq-fwd-gen, let $P_ss
@@ -1291,9 +1298,9 @@ where $kappa = (C_1 C_2) \/ 2$.
   $ we have the inequality
 
   $
-    inprod(-cal(A)_x f, f, L^(2)_(P_ss)) >= kappa/(2 epsilon) || partial_lambda f(lambda) ||^2_(L^2_(P_ss)). 
+    ||f||_(L^2_(P_ss)) <= 1/kappa inprod(-cal(A)_x f, f, L^(2)_(P_ss)) 
   $
-]
+]<lem-zero-mean-bound>
 
 #proof[
   #todo[
@@ -1309,29 +1316,108 @@ where $kappa = (C_1 C_2) \/ 2$.
 ]
 
 
+#lemma(title: [Dense sets in $L^2([-1, 1])$])[
+
+  There exists a set $G subset dom(cal(A)_x)$ that are dense in $L^2$
+  
+]<lem-dense-l2>
+
+#proof[
+  
+]
+
+#lemma(title: [zero mean observables in $L^2$])[
+
+  Let $cal(A)_x$ be the backward generator defined in @eq-bwd-gen in
+  @lem-bwd-gen, $cal(A)^*_x$ be its adjoint defined in @eq-fwd-gen, let $P_ss
+  (lambda)$ be the steady-state probability density such that $(cal(A)^*_x
+  P_ss)(lambda) =0$, then for all $g in L^2([-1, 1]; RR)$ satisfying
+
+  $
+    integral_(-1)^(1)g(lambda) P_t (lambda) dif lambda = 0 quad  forall P_t in dom(cal(A)^*_x),
+  $ we have the inequality
+
+  $
+    l2norm(g, L^2_(P_ss),2)<= 1/kappa inprod(-cal(A)_x g, g, L^(2)_(P_ss)) 
+  $
+
+]<lem-zero-mean-bound-l2>
+
+#proof[
+
+  By @lem-dense-l2, there exisits a sequence smooth function in $f_n in dom(cal(A)_x)$  such that 
+  $
+    lim_(n -> 0) ||f_n - g||  = 0,
+  $
+
+  We can approximte any $g$ in $L^2([-1, 1])$, by a sequance of smooth $f in
+  dom(cal(A)_x)$, hence we can extend the  @lem-zero-mean-bound to generic $g$ 
+
+  #todo[
+    finish proof.
+  ]
+]
+
+
 #lemma(title: [Exponential mixing of the switching variable])[
 
-  Let $x in cal(D)_epsilon$ be fixed, and let $s > 0$ then there exisits
-  $kappa(x)>0$ such that for any measurable $A subset [-1, 1]$, the probability
+  Let $x in cal(D)_epsilon$ be fixed,  $t in [0, T]$, ...
+
+  #todo[
+    add text
+  ]
+
+  then there exisits
+  $kappa>0$ such that for any measurable $A subset [-1, 1]$, the probability
   measure of $lambda_s$ satisfies
 
   $
-    lr(|| integral_A P_(t) (lambda | x) - integral_A P_(ss)(lambda |  x)dif lambda ||) <= C ee^(-kappa(x) s),
+    lr(| integral_A P_(t) (lambda | x) dif lambda - integral_A P_(ss)(lambda |  x)dif lambda |) <= C ee^(-kappa t),
   $
 
   where $P_(ss)(lambda | x)$ is the stationary probability density
   of the fast variable $lambda$ conditional on a the slow variable $x$.
-]<lem-exp-mixing>
+]<lem-exp-mixing-prob>
 
+#proof()[
 
-#proof(title: [Proof of @lem-exp-mixing])[
+  To aid in the proof we define $xi_t (lambda) eqdef P_t (lambda) - P_ss (lambda)$, and $zeta_t
+  (lambda) eqdef xi_t (lambda) \/ P_ss (lambda)$. Clearly $zeta_t (lambda)$ has 
 
-  Show that $cal(A)_x$ has a spectral gap, i.e. let $$
-  $kappa$
+  $
+    lr(|integral_A [P_t (lambda) - P (lambda)] dif lambda |)
+      &= lr(|integral_A zeta_t (lambda) P_ss (lambda) dif lambda|) \
+      &<= integral_(-1)^1 |zeta_t (lambda)| P_ss (lambda) dif lambda  \
+      &<= (integral_(-1)^1 zeta^2_t (lambda) P_ss (lambda) dif lambda )^(1/2)
+          (integral_(-1)^1  P_ss (lambda) dif lambda)^(1/2) \ 
+      &<= (integral_(-1)^1 zeta^2_t (lambda) P_ss (lambda) dif lambda )^(1/2) \
+      &= l2norm(zeta_t, L^2_(P_ss),  ,)
+  $
+  Then it only remains to bound $l2norm(zeta_t, L^2_(P_ss),  ,)$
+  $
+    dif /(dif t) l2norm(zeta_t, L^2_(P_ss), 2 ,) &= 2 integral_(-1)^1  zeta_t (lambda) partial_t zeta_t (lambda) P_ss (lambda) dif lambda, \ 
+      &= -2 inprod(-cal(A)_x zeta_t,  zeta_t, L^2_(P_ss)), \
+      &<= -2kappa l2norm(zeta_t, L^2_(P_ss),  2,), quad #text[(by @lem-zero-mean-bound-l2)].
+  $ 
+
+  Then by Gronwall's inequality, 
+
+  $
+    l2norm(zeta_t, L^2_(P_ss),  ,) <= l2norm(zeta_0, L^2_(P_ss),  ,) ee^(- kappa t),
+  $
+
+  defining $C = l2norm(zeta_0, L^2_(P_ss),  ,)$ yields the relation in the lemma.
 ]
 
-
-
+#corollary(title: [Bound on expectations])[
+  $
+    lr(|EE[f(lambda_t)] - integral^(1)_(-1) f(lambda)  P_ss (lambda) dif lambda |) 
+      &= lr(|integral_(-1)^(1) f(lambda) zeta_t (lambda) P_ss (lambda) dif lambda|) \
+      &= lr(|inprod(f,  zeta_t,L^2_(P_ss))|) \
+      &<= l2norm(f, L^2_(P_ss),  ,) l2norm(zeta_t, L^2_(P_ss),  ,) \
+      &<= 2 l2norm(f, L^2_(P_ss),  ,) ee^(-kappa t)
+  $
+]
 
 #lemma(title: [Linear growth of the interpolated drift and noise amplitude])[
 
@@ -1340,7 +1426,7 @@ where $kappa = (C_1 C_2) \/ 2$.
   $
     |a(t, x, lambda)| + |b(t, x, lambda)| <= C_t (1 - |x|)
   $
-  for some $C_t$
+  for some $C_t$ 
 ]<lem-lin-grow-conv>
 #proof[
   $
