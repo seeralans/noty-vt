@@ -16,8 +16,9 @@
   // customize `highlight` color
   hl: theme-color.muted.yellow,
   // is the document printable?
-  print: true,
+  print: false,
 )
+
 
 #show: equate.with(breakable: true, sub-numbering: false)
 #set math.equation(numbering: "(1.1)")
@@ -218,8 +219,8 @@ amplitude. The following definition formalises this setup.
 
   1. (A1 - Smoothnes)  $a^(pm): [0, T] times RR^d mapsto RR^d ,b^(pm) [0, T] times RR^d mapsto RR^(d times m) in C^2(RR times RR^d)$.
 
-  2. (A2 - Linear Growth) $|a^(pm)(t, x)| + |b^(pm)(t, x)| <= C^pm_(T)(1 +
-  |x|)$ for some $C_T>0$, where $|a^(pm)(dot, dot)|$ is the Euclidean norm and
+  2. (A2 - Linear Growth) $|a^(pm)(t, x)| + |b^(pm)(t, x)| <= C^pm (1 +
+  |x|)$ for some $C>0$, where $|a^(pm)(dot, dot)|$ is the Euclidean norm and
   $
     |b^(pm) (dot, dot)| = sqrt(sum_(i j) |b_(i j) (dot, dot)|).
   $
@@ -430,7 +431,7 @@ also need the dynamics of scalar observable $sigma(x_t)$ which we state in the f
 
   This is trivial application of Ito's lemma. Since $sigma(x_t)$ is smooth, apply Ito's lemma to obtain  
   $
-    dif z_t = partial_x sigma(x_t)^(tns)  dif x_t + dif x_t^(tns)  partial^tns_(x x) sigma(x) dif x^tns, 
+    dif z_t = partial_x sigma(x_t)^(tns)  dif x_t + dif x_t^(tns)  partial^2_(x x) sigma(x) dif x^tns, 
   $<eq-dz-ito-lemma>
 
   then substritute for $dif x_t$ from @eq-ito-sde into @eq-dz-ito-lemma and
@@ -737,7 +738,7 @@ epsilon^alpha$, for some $alpha in (0, 1)$.
   $
     EE[lr(|integral_t^(t+s) a(tau, x_tau, lambda_tau) dif tau|) ^2]
       &<= s integral_t^(t+s)  EE[lr(|a(tau, x_tau, lambda_tau)  |) ^2] dif tau, \
-      &<= s integral_t^(t+s)  C_tau (1 + EE[ |x_tau|^2]) dif tau, \
+      &<= s integral_t^(t+s)  C (1 + EE[ |x_tau|^2]) dif tau, \
       &<= C' s^2,
   $
   and for the martingale part we have 
@@ -930,11 +931,11 @@ the interval $[t, t + delta]$.
   without any additional boundary terms. In view of
   @eq-gen-limit-with-bdry, this is possible if and only if
   $
-    C_+(x, t') partial_lambda f(1)
-      - C_-(x, t') partial_lambda f(-1) = 0,
+    C^+(x, t') partial_lambda f(1)
+    - C^-(x, t') partial_lambda f(-1) = 0,
   $
 
-  Since $C_pm (x, t')$ are non-zero for $x in cal(D)_epsilon$ due to the
+  Since $C^pm (x, t')$ are non-zero for $x in cal(D)_epsilon$ due to the
   accumulation of local time at the boundaries, the only way this can hold for
   all $x in cal(D)_(epsilon)$ is to impose the Neumann boundary conditions
   $
@@ -951,14 +952,10 @@ $
   integral_-^1 P_t (lambda | x) (cal(A)_x f_t ) (lambda) dif lambda = integral_-^1 (A^(*)_x P_t)(lambda |x )  f_t (lambda) dif lambda , quad forall  f_t in dom(cal(A)_x)
 $<eq-adjoint-def>
 
-where $t = [t', t + delta] subset [0, T]$, and $P(lambda, t | x)$ is the
+where $t = [t', t + delta] subset [0, T]$, and $P_t (lambda | x)$ is the
 occupation probability density of the switching variable $lambda$. Going
 forwards we will drop the $x$ notation in favour of $P(lambda, t)$. The forward
 generator is sumarised in the following lemma.
-
-#todo[
-  fix the subscript t notation
-]
 
 #lemma(title: [Forward generator of the switching variable])[
 
@@ -1023,34 +1020,34 @@ P_t (lambda) { partial_x sigma(x_t)^tns a(t, x, lambda)
   *Drift contribution.* Integration by parts gives
   $
     1/epsilon integral_(-1)^1 partial_lambda f(lambda)
-      P(lambda, t) tilde(a)(t, x, lambda) dif lambda
+      P_t (lambda) tilde(a)(t, x, lambda) dif lambda
       &= lr(1/epsilon f(lambda)
-        P(lambda, t) tilde(a)(t, x, lambda)|)_(-1)^1 \
+        P_t (lambda) tilde(a)(t, x, lambda)|)_(-1)^1 \
       &- 1/epsilon integral_(-1)^1
         f(lambda)
         partial_lambda [
-          P(lambda, t) tilde(a)(t, x, lambda)
+          P_t (lambda) tilde(a)(t, x, lambda)
         ] dif lambda,
   $<eq-forward-drift>
 
   *Diffusion contribution.* Employing intrgration by parts twice yields
   $
     1/(2epsilon) integral_(-1)^1 partial^2_(lambda lambda) f(lambda)
-      P(lambda, t) tilde(b)
+      P_t (lambda) tilde(b)
       tilde(b)^(tns) dif lambda  &= 
        lr(1/(2epsilon)
         partial_lambda f(lambda)
         lr([
-          P(lambda, t) tilde(b) tilde(b)^(tns)
+          P_t (lambda) tilde(b) tilde(b)^(tns)
            ])
       - 1/(2epsilon) f(lambda)
         partial_lambda [
-          P(lambda, t) tilde(b) tilde(b)^(tns)
+          P_t (lambda) tilde(b) tilde(b)^(tns)
         ] |)_(-1)^1  \
       &+ 1/(2epsilon) integral_(-1)^1
         f(lambda) partial^2_(lambda lambda)
         [
-         P(lambda, t) tilde(b) tilde(b)^(tns)
+         P_t (lambda) tilde(b) tilde(b)^(tns)
         ] dif lambda,
   $<eq-forward-diffusion>
 
@@ -1127,24 +1124,19 @@ Before we proceed it is usefull to introduce a defnition for the $L^2$ space tha
   $<eq-l2-norm-def>
 ]
 
-Since we have a probability density we will use the notation $chevron.l . , .
-chevron.r_(L^2_(P_t))$ and $||.||_(L^2_(P_t))$ where $P_t in cal(A)^*_x$.
+Since we have a probability density we will use the notation $inprod(., .,
+L^2_(P_t))$ and $l2norm(., L^2_(P_t), ,)$ where $P_t in dom(cal(A)^*_x)$.
 
 #lemma(title: [Symmetry of $cal(A)_x$])[
 
   Let $x in cal(D)_epsilon$ be fixed, $cal(A)_x$ be the backward generator
   given in @lem-bwd-gen, and $P_(ss)(lambda | x)$ satisfy $cal(A)^*_x
   P_(ss) = 0$ with $J_(ss)(pm 1) = 0$. Then $cal(A)_x$ is
-  self-adjoint in $L^2_(P_(ss))$, i.e.
+  symetric in $L^2_(P_(ss))$, that is satisfying the ralation 
 
   $
     chevron.l cal(A)_x f, g chevron.r_(L^2_(P_oo)) =
-    chevron.l f, cal(A)_x g chevron.r_(L^2_(P_oo)) 
-  $<eq-self-adjoint-def-simp>
-
-  $
-    integral_(-1)^1 (cal(A)_x f)(lambda) g(lambda) P_(ss)(lambda | x) dif lambda 
-    = integral_(-1)^1 f(lambda) (cal(A)_x g)(lambda) P_(ss)(lambda | x) dif lambda
+    chevron.l f, cal(A)_x g chevron.r_(L^2_(P_oo)) ,
   $<eq-self-adjoint-def>
 
   for all $f, g in dom(cal(A)_x)$.
@@ -1229,6 +1221,9 @@ chevron.r_(L^2_(P_t))$ and $||.||_(L^2_(P_t))$ where $P_t in cal(A)^*_x$.
 
 ]
 
+#todo[
+  add text here to say we need to introduce this theorem without proof, for the proof see .... 
+]
 
 
 #theorem(title: [Poincaré inequality])[
@@ -1236,7 +1231,7 @@ chevron.r_(L^2_(P_t))$ and $||.||_(L^2_(P_t))$ where $P_t in cal(A)^*_x$.
   Let $P_t: [-1, 1] -> (0, oo)$ be a probability density and $d: [-1, 1] -> (0, oo)$ satisfy $d(lambda) >= C_1 > 0$ and $P_t (lambda) >= C_2 > 0$ for all $lambda in [-1, 1]$. Then for all $f in C^1([-1, 1])$ with $integral_(-1)^(1) f(lambda) P_t (lambda) dif lambda = 0$ 
 
   $
-    integral_(-1)^(1) f^2(lambda) P_t (lambda) dif lambda <= 1/kappa integral_(-1)^(1) (partial_lambda f)^2 d(lambda) P_t (lambda) dif lambda,
+    integral_(-1)^(1) f^2(lambda) P_t (lambda) dif lambda <= 1/kappa integral_(-1)^(1) [partial_lambda f(lambda)]^2 d(lambda) P_t (lambda) dif lambda,
   $<eq-poincare-bound-def>
 
 where $kappa = (C_1 C_2) \/ 2$.
@@ -1286,6 +1281,51 @@ where $kappa = (C_1 C_2) \/ 2$.
 ]
 
 
+
+
+Since @thm-poincare-ineq relies on bounding the diffusion coefficient, in order
+for us to to apply it we must bound
+
+$
+  tilde(d)(t, x, lambda) eqdef partial_x sigma(x)^tns tilde(b)(t, x, lambda)  tilde(b)(t, x, lambda)^tns partial_x sigma(x).
+$<eq-d-tilde-def>
+
+Indeed $tilde(d)$ as well as the coefficients $tilde(a)$, $tilde(b)$ can all b
+can all be bounded from above as the inherit the conditions of $a$ and $b$ as
+laid out in @def-ns-gen-sde. We summarise these in the next lemma as they will
+then be used in the later results.
+
+
+#lemma(title: [Linear growth of the interpolated drift and noise amplitude])[
+
+  #todo[
+    add all of the bounds
+  ]
+
+  Let $lambda in [-1, 1]$ and satisfies the bound
+
+  $
+    |a(t, x, lambda)| + |b(t, x, lambda)| <= C (1 - |x|)
+  $
+  for some $C$ 
+
+  $
+
+    
+  $
+]<lem-lin-grow-conv>
+#proof[
+  $
+    |a(t, x, lambda)| + |b(t, x, lambda)| &<= |a^+(t, x)| + |a^-(t, x)| + |b^+(t, x)| + |b^-(t, x)|, \
+      &<=  C^+_t (1 - |x|) + C^-_t (1 - |x|), \
+      &<=  C_t (1 - |x|) 
+  $
+  #todo[complete the proof!]
+]
+
+
+
+
 #lemma(title: [Bounding zero-mean observables])[
 
   Let $cal(A)_x$ be the backward generator defined in @eq-bwd-gen in
@@ -1294,20 +1334,24 @@ where $kappa = (C_1 C_2) \/ 2$.
   P_ss)(lambda) =0$, then for all $f in dom(cal(A))_x$ satisfying
 
   $
-    integral_(-1)^(1)f(lambda) P_t (lambda) dif lambda = 0 quad  forall P_t in dom(cal(A)^*_x),
+    integral_(-1)^(1)f(lambda) P_ss (lambda) dif lambda = 0,
   $ we have the inequality
 
   $
-    ||f||_(L^2_(P_ss)) <= 1/kappa inprod(-cal(A)_x f, f, L^(2)_(P_ss)) 
+    l2norm(f, L^2_(P_ss), 2) <= 1/kappa inprod(-cal(A)_x f, f, L^(2)_(P_ss)) 
   $
 ]<lem-zero-mean-bound>
 
 #proof[
-  #todo[
-    finish
-  ] 
 
-  Show that
+  We need only show that 
+  $
+    inprod(-cal(A)_x f, f, L^(2)_(P_ss)) =  1/kappa
+    integral_(-1)^1  [partial_lambda f(lambda)]^2 tilde(d)(t, x, lambda) P_ss (lambda) dif lambda,
+  $
+
+  as the @thm-poincare-ineq bounds the 
+  
   $
     - integral_(-1)^(1) partial_lambda f(lambda)  tilde(a)(t, x, lambda) + 1/2 partial^2_(lambda lambda) f(lambda) tilde(d)(t, x, lambda) P_ss (lambda) dif lambda = integral_(-1)^1 d(t, x, lambda) [partial_lambda f(lambda)]^2 P_ss (lambda) dif lambda
   $
@@ -1419,23 +1463,6 @@ where $kappa = (C_1 C_2) \/ 2$.
   $
 ]
 
-#lemma(title: [Linear growth of the interpolated drift and noise amplitude])[
-
-  Let $lambda in [-1, 1]$ and satisfies the bound
-
-  $
-    |a(t, x, lambda)| + |b(t, x, lambda)| <= C_t (1 - |x|)
-  $
-  for some $C_t$ 
-]<lem-lin-grow-conv>
-#proof[
-  $
-    |a(t, x, lambda)| + |b(t, x, lambda)| &<= |a^+(t, x)| + |a^-(t, x)| + |b^+(t, x)| + |b^-(t, x)|, \
-      &<=  C^+_t (1 - |x|) + C^-_t (1 - |x|), \
-      &<=  C_t (1 - |x|) 
-  $
-  #todo[complete the proof!]
-]
 
 
 #definition(title: [Average SDE])[
