@@ -38,6 +38,12 @@
   )
 ])
 
+
+#show outline.entry.where(
+  level: 1
+): set block(above: 1.2em)
+
+
 #show ref: it => {
   let bibfile = read("fixlib.bib")
   let entries = bibfile.split("@")
@@ -106,6 +112,8 @@
 
 #title[On stochastic differential equations with piecewise smooth drift and
   noise amplitudes.]
+
+#outline()
 
 = Introduction
 
@@ -288,7 +296,7 @@ i.e. when $x_t in cal(D)$. These definitions allow as to recast @eq-gen-sde into
 the Ito analgoue
 
 $
-  dif x_t = [a(x_t, lambda_t) + alpha epsilon b(x_t, lambda_t)] dif t + sqrt(epsilon) b(x_t, lambda_t) dif W_t,
+  dif x_t = [a(x_t, lambda_t) + alpha epsilon c(x_t, lambda_t)] dif t + sqrt(epsilon) b(x_t, lambda_t) dif W_t,
 $<eq-ito-sde>
 
 where the correction term is
@@ -421,7 +429,7 @@ also need the dynamics of scalar observable $sigma(x_t)$ which we state in the f
   $<eq-z-sde>
   where
   $
-    tilde(a)(x, lambda) eqdef partial_x sigma(x) dot a(x, lambda)
+    tilde(a)(x, lambda) eqdef partial_x sigma(x)^(tns) [a(x, lambda) + alpha epsilon c(x, lambda)]
     + epsilon/2  trc[b(x, lambda) partial^2_(x x) sigma(x) b(x, lambda)],
   $<eq-a-tilde-def>
   and 
@@ -668,10 +676,10 @@ entirely. At fixed $epsilon>0$:
 The conditions on $delta$ ensure:
 
 - $delta >> epsilon$: The fast variable $lambda$ equilibrates to
-  $P_(ss)(lambda | x)$ within the $delta$-window (see @lem-exp-mixing).
+  $P_(ss)(lambda | x)$ within the $delta$-window (see @thm-exp-mixing).
 
 - $delta << 1$: The slow variable $x$ remains approximately frozen over the
-  $delta$-window (see @lem-slow-var-x).
+  $delta$-window (see @thm-slow-var).
 
 The effective slow dynamics follows by averaging against the stationary
 distribution:
@@ -699,7 +707,7 @@ variable.
   The choice $delta = epsilon^alpha$ for some $alpha in (0, 1)$ provides a
   concrete realisation of the ordering @eq-delta-ordering. The value of $alpha$
   does not affect the limiting averaged dynamics, provided the bounds in
-  @lem-slow-var-x and @lem-exp-mixing hold uniformly.
+  @thm-slow-var and @thm-exp-mixing hold uniformly.
 ]
 
 = Estimates for the dynamics on the intermediate time-scale  
@@ -726,9 +734,9 @@ epsilon^alpha$, for some $alpha in (0, 1)$.
         
   $<eq-slow-var-x>
   for some $C,gamma>0$.
-]<lem-slow-var-x>
+]<thm-slow-var>
 
-#proof(title: [Proof of @lem-slow-var-x])[
+#proof(title: [Proof of @thm-slow-var])[
 
   We start by bounding the squared deviation in the $delta$ time window,
   $
@@ -770,7 +778,7 @@ epsilon^alpha$, for some $alpha in (0, 1)$.
   $
 ]
 
-The consequence of @lem-slow-var-x becomes more apparent when we choose any
+The consequence of @thm-slow-var becomes more apparent when we choose any
 mesoscopic scale $delta(epsilon)$ satisfying @eq-delta-scale, e.g.
 $delta(epsilon) = epsilon^beta$, for some $beta>0$ and then letting $epsilon ->
 0$. The bound in @eq-slow-var-x ensures that for any fixed $gamma$, 
@@ -802,7 +810,7 @@ the interval $[t, t + delta]$.
 
   Let $delta > 0$ satisfying @eq-delta-scale, let $t in [t', t' + delta] subset
   [0, T]$ for some $t' in [0, T-delta]$. Let $x_t = x in cal(D)_epsilon$ be
-  fixed (see @lem-slow-var-x). Then the backward generator $cal(A)_x$ of
+  fixed (see @thm-slow-var). Then the backward generator $cal(A)_x$ of
   $lambda_t in [-1, 1]$ evolving according to @eq-lam-sde, acts on sufficently
   smooth test function $f: [-1, -1] mapsto RR$ via
 
@@ -828,7 +836,7 @@ the interval $[t, t + delta]$.
 #proof[
 
   With $x_t = x$ fixed on the interval $t in [t' , t' + delta] subset [0, T]$
-  for some $t' in [0, T]$ and $delta>0$, (see @lem-slow-var-x). Let $f in C^2([-1, 1])$ and set an initial conditoin
+  for some $t' in [0, T]$ and $delta>0$, (see @thm-slow-var). Let $f in C^2([-1, 1])$ and set an initial conditoin
   $lambda_(t') = lambda in [-1, 1]$. Applying Ito's lemma to $f(lambda_t)$ to
   yield
 
@@ -966,7 +974,7 @@ generator is sumarised in the following lemma.
 
   Let $delta > 0$ satisfying @eq-delta-scale, let $t in [t', t' + delta] subset
   [0, T]$ for some $t' in [0, T-delta]$. Let $x_t = x in cal(D)_epsilon$ be
-  fixed (see @lem-slow-var-x). Then the forward generator $cal(A)^*_x$ of
+  fixed (see @thm-slow-var). Then the forward generator $cal(A)^*_x$ of
   $lambda_t in [-1, 1]$ evolving according to @eq-lam-sde, acts on sufficently
   smooth probability density $P_t: [-1, -1] mapsto [0,  
  oo)$ via
@@ -1139,7 +1147,17 @@ then be used in the later results.
     ||a(x, lambda)|| + ||b(x, lambda)|| <= C (1 + |x|)
   $
   for some $C$ 
-]<lem-coeff-cound-cov>
+
+  $
+    tilde(b) >= tilde(M) ||partial_x sigma(x)||
+  $
+
+
+  $
+    tilde(d) = tilde(b) tilde(b)^(tns) >= tilde(M)^2 ||partial_x sigma(x)||^2 
+  $
+  
+]<lem-coeff-bounds>
 #proof[
   $
     ||a(x, lambda)|| + ||b(x, lambda)||
@@ -1155,7 +1173,7 @@ then be used in the later results.
 
 #lemma(title: [Invariant Measure])[
 
-  Let $x_t = x in cal(D)_epsilon$ be fixed (see @lem-slow-var-x), and let the
+  Let $x_t = x in cal(D)_epsilon$ be fixed (see @thm-slow-var), and let the
  forward generator of $A^*_x$ of $lambda_t$ be define in @eq-fwd-gen, then the
  invariant measure $P_ss (lambda)$ satifies $(cal(A)^*_x P_ss)(lambda) = 0$ and
  is given by
@@ -1193,7 +1211,7 @@ then be used in the later results.
   which immediately gives us the ordinary differential equation
 
   $
-    P_ss (lambda) tilde(a)(x, lambda) &= 1/2 partial_lambda  (P_ss (lambda) tilde(d)(x, lambda)). \
+    P_ss (lambda) tilde(a)(x, lambda) &= 1/2 partial_lambda  [P_ss (lambda) tilde(d)(x, lambda)]. \
   $
 
   It follows then that  
@@ -1221,7 +1239,7 @@ then be used in the later results.
    <= (tilde(C)_12 (x) exp[tilde(C)_12 (x)(1 + 4 |lambda|)]) / sinh(tilde(C)_12 (x)) 
 
   $
-]
+]<lem-inv-meas-bound>
 
 
 
@@ -1385,73 +1403,14 @@ L^2_(P_t))$ and $l2norm(., L^2_(P_t), ,)$ where $P_t in dom(cal(A)^*_x)$.
 
 #theorem(title: [Poincaré inequality])[
 
-  #todo[
-    this proof relies on 
-  ]
+  Let $P: [-1, 1] -> (0, oo)$ be a probability density and $d: [-1, 1] -> (0,
+  oo)$ satisfy $d(lambda) >= C_1 > 0$ and $P (lambda) >= C_2 > 0$ for all
+  $lambda in [-1, 1]$. Then for all $f in C^1([-1, 1])$ with $integral_(-1)^(1)
+  f(lambda) P (lambda) dif lambda = 0$
 
-  Let $P_t: [-1, 1] -> (0, oo)$ be a probability density and $d: [-1, 1] -> (0, oo)$ satisfy $d(lambda) >= C_1 > 0$ and $P_t (lambda) >= C_2 > 0$ for all $lambda in [-1, 1]$. Then for all $f in C^1([-1, 1])$ with $integral_(-1)^(1) f(lambda) P_t (lambda) dif lambda = 0$ 
-
-  $
-    integral_(-1)^(1) f^2(lambda) P_t (lambda) dif lambda <= 1/kappa integral_(-1)^(1) [partial_lambda f(lambda)]^2 d(lambda) P_t (lambda) dif lambda,
-  $<eq-poincare-bound-def-x>
-
-where $kappa = (C_1 C_2) \/ 2$.
-]<thm-poincare-ineq-x>
-
-#proof[
-  By the fudnemental thorem of calculus we have
-  $
-    f(a) - f(b) = integral_a^b partial_lambda f(lambda) dif lambda.
-  $
-  Multiplying both sides by $P_ss (b)$ and integrating over the support gives
-  $
-    integral_(-1)^(1) f(a)P_t (b) dif b - integral_(-1)^(1) P_t (b) f(b) dif b = integral_(-1)^(1) P_t (b) integral_a^b partial_lambda f(lambda) dif lambda  dif b, 
-  $
-
-  where the first integral on the left hand side simplifies due to the
-  normalisastion of probability, while the second vanishes to zero due to
-  $EE[f(lambda_t)] = 0$, giving the relation  
-  $
-    f(a) = integral_(-1)^(1) P_t (b) integral_a^b partial_lambda f(lambda) dif lambda  dif b.
-  $
-
-  Taking the absolute value, squaring and employing Caychy-Schwarz twice gives us the bound
-  $
-    | f(a)|^2 &= (integral_(-1)^(1) P_t (b) lr(|integral_a^b partial_lambda f(lambda) dif lambda |) dif b)^2 \
-      &<= (integral_(-1)^(1) P_t (b) dif b)
-      (integral_(-1)^(1)  P_t (b)
-      lr(integral_a^b |partial_lambda f(lambda) |^2 dif lambda) dif b), \
-      &<= 
-      (integral_(-1)^(1)  P_t (b)
-      integral_(-1)^(1) |partial_lambda f(lambda) |^2 dif lambda dif b), \
-      &<=  
-      2 lr(integral_(-1)^(1) lr([partial_lambda f(lambda) ])^2 dif lambda) .
-  $<eq-mod-f-bound-x>
-
-  To obtain the desired bound from @eq-mod-f-bound, we simply multiply both by
-  $P_t (a)$ and integrate over the interval to get
-  $
-    integral_(-1)^(1) |f(a)|^2 P_t (a) dif a = integral_(-1)^(1) f^2(a) P_t (a) dif a &<=2 lr(integral_(-1)^(1) lr([partial_lambda f(lambda) ])^2 dif lambda), \
-    &<= 2 lr(integral_(-1)^(1)
-    lr([partial_lambda f(lambda) ])^2 / (d(lambda) P_t (lambda))  d(lambda) P_t (lambda)dif lambda), \
-      &<=2/(C_1 C_2) lr(integral_(-1)^(1)
-      lr([partial_lambda f(lambda) ])^2   d(lambda) P_t (lambda)dif lambda), \
-  $
-
-  and letting $kappa = (C_1 C_2 )\/ 2$ yields @eq-poincare-bound-def.
-]
-
-
-
-
-
-#theorem(title: [Poincaré inequality])[
-
-  Let $P_t: [-1, 1] -> (0, oo)$ be a probability density and $d: [-1, 1] -> (0, oo)$ satisfy $d: [-1, 1](lambda) >= C_1 > 0$ and $P_t (lambda) >= C_2 > 0$ for all $lambda in [-1, 1]$. Then for all $f in C^1([-1, 1])$ with $integral_(-1)^(1) f(lambda) P_t (lambda) dif lambda = 0$ 
-
-  $
-    integral_(-1)^(1) f^2(lambda) P_t (lambda) dif lambda <= 1/kappa integral_(-1)^(1) [partial_lambda f(lambda)]^2 d(lambda) P_t (lambda) dif lambda,
-  $<eq-poincare-bound-def>
+  $ integral_(-1)^(1) f^2(lambda) P (lambda) dif lambda <= 1/kappa
+    integral_(-1)^(1) [partial_lambda f(lambda)]^2 d(lambda) P (lambda) dif
+    lambda, $<eq-poincare-bound-def>
 
 where $kappa = (C_1 C_2) \/ 2$.
 ]<thm-poincare-ineq>
@@ -1461,44 +1420,50 @@ where $kappa = (C_1 C_2) \/ 2$.
   $
     f(a) - f(b) = integral_a^b partial_lambda f(lambda) dif lambda.
   $
-  Integrating both sides by $P_t (b)$ and integrating over the support gives
+
+  Multiplying both sides by $P_ss (b)$ and integrating over the support gives
+
   $
-    integral_(-1)^(1) f(a)P_t (b) dif b - integral_(-1)^(1) P_t (b) f(b) dif b = integral_(-1)^(1) P_t (b) integral_a^b partial_lambda f(lambda) dif lambda  dif b, 
+    integral_(-1)^(1) f(a)P (b) dif b - integral_(-1)^(1) P (b) f(b) dif b
+    = integral_(-1)^(1) P (b) integral_a^b partial_lambda f(lambda) dif lambda  dif b, 
   $
 
   where the first integral on the left hand side simplifies due to the
   normalisastion of probability, while the second vanishes to zero due to
-  $EE[f(lambda_t)] = 0$, giving the relation  
+  $EE[f(lambda)] = 0$, giving the relation  
+
   $
-    f(a) = integral_(-1)^(1) P_t (b) integral_a^b partial_lambda f(lambda) dif lambda  dif b.
+    f(a) = integral_(-1)^(1) P (b) integral_a^b partial_lambda f(lambda) dif lambda  dif b.
   $
 
-  Taking the absolute value, squaring and employing Caychy-Schwarz twice gives us the bound
+  Taking the absolute value, squaring and employing Caychy-Schwarz twice gives
+  us the bound
+
   $
-    | f(a)|^2 &= (integral_(-1)^(1) P_t (b) lr(|integral_a^b partial_lambda f(lambda) dif lambda |) dif b)^2 \
-      &<= (integral_(-1)^(1) P_t (b) dif b)
-      [integral_(-1)^(1)  P_t (b)
-      lr((|b - a|integral_a^b |partial_lambda f(lambda) |^2 dif lambda)) dif b], \
+    | f(a)|^2 &= (integral_(-1)^(1) P (b) lr(|integral_a^b partial_lambda f(lambda) dif lambda |) dif b)^2 \
+      &<= (integral_(-1)^(1) P (b) dif b)
+      (integral_(-1)^(1)  P (b)
+      lr(integral_a^b |partial_lambda f(lambda) |^2 dif lambda) dif b), \
       &<= 
-      2 (integral_(-1)^(1) |partial_lambda f(lambda) |^2 dif lambda )
-(integral_(-1)^(1)  P_t (b)
-       dif b), \
+      (integral_(-1)^(1)  P (b)
+      integral_(-1)^(1) |partial_lambda f(lambda) |^2 dif lambda dif b), \
       &<=  
       2 lr(integral_(-1)^(1) lr([partial_lambda f(lambda) ])^2 dif lambda) .
   $<eq-mod-f-bound>
 
   To obtain the desired bound from @eq-mod-f-bound, we simply multiply both by
-  $P_t (a)$ and integrate over the interval to get
+  $P (a)$ and integrate over the interval to get
   $
-    integral_(-1)^(1) |f(a)|^2 P_t (a) dif a = integral_(-1)^(1) f^2(a) P_t (a) dif a &<=2 lr(integral_(-1)^(1) lr([partial_lambda f(lambda) ])^2 dif lambda), \
+    integral_(-1)^(1) |f(a)|^2 P (a) dif a = integral_(-1)^(1) f^2(a) P (a) dif a &<=2 lr(integral_(-1)^(1) lr([partial_lambda f(lambda) ])^2 dif lambda), \
     &<= 2 lr(integral_(-1)^(1)
-    lr([partial_lambda f(lambda) ])^2 / (d(lambda) P_t (lambda))  d(lambda) P_t (lambda)dif lambda), \
+    lr([partial_lambda f(lambda) ])^2 / (d(lambda) P (lambda))  d(lambda) P (lambda)dif lambda), \
       &<=2/(C_1 C_2) lr(integral_(-1)^(1)
-      lr([partial_lambda f(lambda) ])^2   d(lambda) P_t (lambda)dif lambda), \
+      lr([partial_lambda f(lambda) ])^2   d(lambda) P (lambda)dif lambda), \
   $
 
   and letting $kappa = (C_1 C_2 )\/ 2$ yields @eq-poincare-bound-def.
 ]
+
 
 
 #lemma(title: [Bounding zero-mean observables])[
@@ -1525,13 +1490,19 @@ where $kappa = (C_1 C_2) \/ 2$.
     integral_(-1)^1  [partial_lambda f(lambda)]^2 tilde(d)(x, lambda) P_ss (lambda) dif lambda,
   $
 
-  as the @thm-poincare-ineq bounds the 
+  since from @lem-coeff-bounds that $|tilde(d)(x, lambda)|$ and similarly we now
+  that $P_ss (lambda)$ is bounded from below from @lem-inv-meas-bound, therefore
+  we can direcly apply @thm-poincare-ineq.
   
   $
-    - integral_(-1)^(1) partial_lambda f(lambda)  tilde(a)(x, lambda) + 1/2 partial^2_(lambda lambda) f(lambda) tilde(d)(x, lambda) P_ss (lambda) dif lambda = integral_(-1)^1 d(x, lambda) [partial_lambda f(lambda)]^2 P_ss (lambda) dif lambda
+    - integral_(-1)^(1) f(lambda) [partial_lambda f(lambda)  tilde(a)(x, lambda) + 1/2 partial^2_(lambda lambda) f(lambda) tilde(d)(x, lambda)] P_ss (lambda) dif lambda = integral_(-1)^1 d(x, lambda) [partial_lambda f(lambda)]^2 P_ss (lambda) dif lambda
   $
 
   then the rest follows via @thm-poincare-ineq
+
+  #todo[
+    in notebook complete it.
+  ]
 ]
 
 
@@ -1553,7 +1524,7 @@ where $kappa = (C_1 C_2) \/ 2$.
   P_ss)(lambda) =0$, then for all $g in L^2([-1, 1]; RR)$ satisfying
 
   $
-    integral_(-1)^(1)g(lambda) P_t (lambda) dif lambda = 0 quad  forall P_t in dom(cal(A)^*_x),
+    integral_(-1)^(1)g(lambda) P (lambda) dif lambda = 0 quad  forall P in dom(cal(A)^*_x),
   $ we have the inequality
 
   $
@@ -1578,21 +1549,20 @@ where $kappa = (C_1 C_2) \/ 2$.
 ]
 
 
-#lemma(title: [Exponential mixing of the switching variable])[
+#theorem(title: [Exponential mixing of the switching variable])[
 
   Let $x in cal(D)_epsilon$ be fixed, let $P_t in dom(cal(A))^*_x$ represent the
-  occupation probability density of $lambda$ conditioned on $x$, let $P_ss =
-  dom(cal(A))^*_x$ such that $(cal(A)^* P_ss)(lambda) = 0$ be its steady-state
-  conditioned on $x$, and let 
-
-
-  then for any $t in [0, T]$, and for any measurable $A
+  occupation probability density of $lambda$ conditioned on $x$, let $P_ss$ be
+  the invariant density, i.e $(cal(A)^*_x P_ss)(lambda) = 0$ which is uniformly
+  bounded from below by $P_ss (lambda) >= C_1 > 0$ and let the coefficient
+  $|tilde(d)(x, lambda)| >= C_2 > 0$ defined in @eq-d-tilde-def, be uniformaly
+  bounded from below. Then for any $t in [0, T]$, and for any measurable $A
   subset [-1, 1]$, there exisits $kappa>0$ and $C > 0$ such that
 
   $
     lr(| integral_A P_(t) (lambda | x) dif lambda - integral_A P_(ss)(lambda | x)dif lambda |) <= C ee^(-kappa t).
   $
-]<lem-exp-mixing-prob>
+]<thm-exp-mixing>
 
 #proof()[
 
@@ -1631,7 +1601,7 @@ where $kappa = (C_1 C_2) \/ 2$.
 #corollary(title: [Bound on expectations])[
 
   The bound on the differences between probability measures obtained in
-  @lem-exp-mixing affords us a further bound, namely on the differences in
+  @thm-exp-mixing affords us a further bound, namely on the differences in
   expectations via
 
   $
@@ -1650,11 +1620,14 @@ where $kappa = (C_1 C_2) \/ 2$.
 
 In summary we have estabilshed the existance of an intermediate timescale
 $delta$ such that $epsilon << delta << 1$ where the following are satisfied:
-
+- bounds on the coefficents, 
+- justification of the transversality condition
 - $EE[sup_s |x_(t+s) - x_t|^2] -> 0 $ as $epsilon -> 0$, that is the slow
   varible remains fixed.
 
-- Exponentila mixing 
+- Exponentila mixing via Poincare inequality where the poincare constant is
+  obtained from the lower bounds on the invariant measure and $tilde(d)$ bounds
+- mixing bounds on the expectations of observables
 
 
 
