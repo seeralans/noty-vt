@@ -219,8 +219,8 @@ amplitude. The following definition formalises this setup.
 
   1. (A1 - Smoothnes)  $a^(pm): [0, T] times RR^d mapsto RR^d ,b^(pm) [0, T] times RR^d mapsto RR^(d times m) in C^2(RR times RR^d)$.
 
-  2. (A2 - Linear Growth) $|a^(pm)(t, x)| + |b^(pm)(t, x)| <= C^pm (1 +
-  |x|)$ for some $C>0$, where $|a^(pm)(dot, dot)|$ is the Euclidean norm and
+  2. (A2 - Linear Growth) $||a^(pm)(t, x)|| + ||b^(pm)(t, x)|| <= C^pm (1 +
+  |x|)$ for some $C>0$, where $||a^(pm)(dot, dot)||$ is the Euclidean norm and
   $
     |b^(pm) (dot, dot)| = sqrt(sum_(i j) |b_(i j) (dot, dot)|).
   $
@@ -228,7 +228,7 @@ amplitude. The following definition formalises this setup.
   3. (A3 - Lipshitz Continuity)
 
   $
-    |a^(pm)(t, x) - a^(pm)(t, y)| + |b^(pm)(t, x) - b^(pm)(t, y)| <= K^pm |x - y|,
+    ||a^(pm)(t, x) - a^(pm)(t, y)|| + |b^(pm)(t, x) - b^(pm)(t, y)| <= K^pm |x - y|,
 
 
   $
@@ -1221,68 +1221,6 @@ L^2_(P_t))$ and $l2norm(., L^2_(P_t), ,)$ where $P_t in dom(cal(A)^*_x)$.
 
 ]
 
-#todo[
-  add text here to say we need to introduce this theorem without proof, for the proof see .... 
-]
-
-
-#theorem(title: [Poincaré inequality])[
-
-  Let $P_t: [-1, 1] -> (0, oo)$ be a probability density and $d: [-1, 1] -> (0, oo)$ satisfy $d(lambda) >= C_1 > 0$ and $P_t (lambda) >= C_2 > 0$ for all $lambda in [-1, 1]$. Then for all $f in C^1([-1, 1])$ with $integral_(-1)^(1) f(lambda) P_t (lambda) dif lambda = 0$ 
-
-  $
-    integral_(-1)^(1) f^2(lambda) P_t (lambda) dif lambda <= 1/kappa integral_(-1)^(1) [partial_lambda f(lambda)]^2 d(lambda) P_t (lambda) dif lambda,
-  $<eq-poincare-bound-def>
-
-where $kappa = (C_1 C_2) \/ 2$.
-]<thm-poincare-ineq>
-
-#proof[
-  By the fudnemental thorem of calculus we have
-  $
-    f(a) - f(b) = integral_a^b partial_lambda f(lambda) dif lambda.
-  $
-  Integrating both sides by $P_t (b)$ and integrating over the support gives
-  $
-    integral_(-1)^(1) f(a)P_t (b) dif b - integral_(-1)^(1) P_t (b) f(b) dif b = integral_(-1)^(1) P_t (b) integral_a^b partial_lambda f(lambda) dif lambda  dif b, 
-  $
-
-  where the first integral on the left hand side simplifies due to the
-  normalisastion of probability, while the second vanishes to zero due to
-  $EE[f(lambda_t)] = 0$, giving the relation  
-  $
-    f(a) = integral_(-1)^(1) P_t (b) integral_a^b partial_lambda f(lambda) dif lambda  dif b.
-  $
-
-  Taking the absolute value, squaring and employing Caychy-Schwarz twice gives us the bound
-  $
-    | f(a)|^2 &= (integral_(-1)^(1) P_t (b) lr(|integral_a^b partial_lambda f(lambda) dif lambda |) dif b)^2 \
-      &<= (integral_(-1)^(1) P_t (b) dif b)
-      (integral_(-1)^(1)  P_t (b)
-      lr(integral_a^b |partial_lambda f(lambda) |^2 dif lambda) dif b), \
-      &<= 
-      (integral_(-1)^(1)  P_t (b)
-      integral_(-1)^(1) |partial_lambda f(lambda) |^2 dif lambda dif b), \
-      &<=  
-      2 lr(integral_(-1)^(1) lr([partial_lambda f(lambda) ])^2 dif lambda) .
-  $<eq-mod-f-bound>
-
-  To obtain the desired bound from @eq-mod-f-bound, we simply multiply both by
-  $P_t (a)$ and integrate over the interval to get
-  $
-    integral_(-1)^(1) |f(a)|^2 P_t (a) dif a = integral_(-1)^(1) f^2(a) P_t (a) dif a &<=2 lr(integral_(-1)^(1) lr([partial_lambda f(lambda) ])^2 dif lambda), \
-    &<= 2 lr(integral_(-1)^(1)
-    lr([partial_lambda f(lambda) ])^2 / (d(lambda) P_t (lambda))  d(lambda) P_t (lambda)dif lambda), \
-      &<=2/(C_1 C_2) lr(integral_(-1)^(1)
-      lr([partial_lambda f(lambda) ])^2   d(lambda) P_t (lambda)dif lambda), \
-  $
-
-  and letting $kappa = (C_1 C_2 )\/ 2$ yields @eq-poincare-bound-def.
-]
-
-
-
-
 Since @thm-poincare-ineq relies on bounding the diffusion coefficient, in order
 for us to to apply it we must bound
 
@@ -1324,6 +1262,63 @@ then be used in the later results.
 ]
 
 
+
+
+
+#theorem(title: [Poincaré inequality])[
+
+  Let $P_t: [-1, 1] -> (0, oo)$ be a probability density and $d: [-1, 1] -> (0, oo)$ satisfy $d(lambda) >= C_1 > 0$ and $P_t (lambda) >= C_2 > 0$ for all $lambda in [-1, 1]$. Then for all $f in C^1([-1, 1])$ with $integral_(-1)^(1) f(lambda) P_t (lambda) dif lambda = 0$ 
+
+  $
+    integral_(-1)^(1) f^2(lambda) P_t (lambda) dif lambda <= 1/kappa integral_(-1)^(1) [partial_lambda f(lambda)]^2 d(lambda) P_t (lambda) dif lambda,
+  $<eq-poincare-bound-def>
+
+where $kappa = (C_1 C_2) \/ 2$.
+]<thm-poincare-ineq>
+
+#proof[
+  By the fudnemental thorem of calculus we have
+  $
+    f(a) - f(b) = integral_a^b partial_lambda f(lambda) dif lambda.
+  $
+  Integrating both sides by $P_t (b)$ and integrating over the support gives
+  $
+    integral_(-1)^(1) f(a)P_t (b) dif b - integral_(-1)^(1) P_t (b) f(b) dif b = integral_(-1)^(1) P_t (b) integral_a^b partial_lambda f(lambda) dif lambda  dif b, 
+  $
+
+  where the first integral on the left hand side simplifies due to the
+  normalisastion of probability, while the second vanishes to zero due to
+  $EE[f(lambda_t)] = 0$, giving the relation  
+  $
+    f(a) = integral_(-1)^(1) P_t (b) integral_a^b partial_lambda f(lambda) dif lambda  dif b.
+  $
+
+  Taking the absolute value, squaring and employing Caychy-Schwarz twice gives us the bound
+  $
+    | f(a)|^2 &= (integral_(-1)^(1) P_t (b) lr(|integral_a^b partial_lambda f(lambda) dif lambda |) dif b)^2 \
+      &<= (integral_(-1)^(1) P_t (b) dif b)
+      [integral_(-1)^(1)  P_t (b)
+      lr((|b - a|integral_a^b |partial_lambda f(lambda) |^2 dif lambda)) dif b], \
+      &<= 
+      2 (integral_(-1)^(1) |partial_lambda f(lambda) |^2 dif lambda )
+(integral_(-1)^(1)  P_t (b)
+       dif b), \
+      &<=  
+      2 lr(integral_(-1)^(1) lr([partial_lambda f(lambda) ])^2 dif lambda) .
+  $<eq-mod-f-bound>
+
+  To obtain the desired bound from @eq-mod-f-bound, we simply multiply both by
+  $P_t (a)$ and integrate over the interval to get
+  $
+    integral_(-1)^(1) |f(a)|^2 P_t (a) dif a = integral_(-1)^(1) f^2(a) P_t (a) dif a &<=2 lr(integral_(-1)^(1) lr([partial_lambda f(lambda) ])^2 dif lambda), \
+    &<= 2 lr(integral_(-1)^(1)
+    lr([partial_lambda f(lambda) ])^2 / (d(lambda) P_t (lambda))  d(lambda) P_t (lambda)dif lambda), \
+      &<=2/(C_1 C_2) lr(integral_(-1)^(1)
+      lr([partial_lambda f(lambda) ])^2   d(lambda) P_t (lambda)dif lambda), \
+  $
+
+  and letting $kappa = (C_1 C_2 )\/ 2$ yields @eq-poincare-bound-def.
+]
 
 
 #lemma(title: [Bounding zero-mean observables])[
