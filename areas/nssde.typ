@@ -504,6 +504,8 @@ controlled approximation for the dynamics of the slow process by closing the
 dynamics of the switching variable $lambda_t$.
 
 
+= The intermediate timescale
+
 == Necessity of an intermediate timescale. 
 
 From @eq-lam-sde, it is evident that the switching variable $lambda_t$ evolves
@@ -698,7 +700,8 @@ variable.
   @lem-slow-var-x and @lem-exp-mixing hold uniformly.
 ]
 
-== Quasi-steady-state approximation for the switching variable.
+= Estimates for the dynamics on the intermediate time-scale  
+
 We want to study the stochastic dynamics for a small but non zero $epsilon$, so
 we will introduce an intermediate timescale $delta$ suchh that
 
@@ -1113,19 +1116,33 @@ Before we proceed it is usefull to introduce a defnition for the $L^2$ space tha
   $cal(F)$-measurable $f, g: Omega mapsto RR$, the $L^2$ inner product is defined as 
 
   $
-    chevron.l f, g chevron.r_(L^2_(mu)) eqdef  integral_(Omega) f(lambda) g(lambda) dif mu(lambda),
+    chevron.l f, g chevron.r_(L^2_(mu)) eqdef  integral_(Omega) f(omega) g(omega) dif mu(omega),
   $<eq-l2-inner-prod-def>
 
   which induces the $L^2$-norm
   
   $
-    || f ||_(L^2_(mu)) eqdef chevron.l f \, f chevron.r_(L^2_(mu))^(1/2)  =
-    (integral_(Omega) f^2(lambda) dif mu(lambda))^(1/2).
+    l2norm(f, L^2_(mu), ,) eqdef chevron.l f \, f chevron.r_(L^2_(mu))^(1/2)  =
+    (integral_(Omega) f^2(omega) dif mu(omega))^(1/2).
   $<eq-l2-norm-def>
 ]
 
+#corollary(title: [$L^2$-bound to supremum bound])[
+
+  It is straight forward to bound an $L^2$-norm using a supremum bound via the
+  argument
+
+  $
+    l2norm(f, L^2_(mu), ,)
+    = (integral_(Omega) f^2(omega) dif mu(omega))^(1/2) 
+      &= (integral_(Omega) |f(omega)|^2 dif mu(omega))^(1/2), \
+      &<= sup_(x in Omega) |f(omega)| (integral_(Omega)  dif mu(omega))^(1/2), \
+      &<= sqrt(mu(Omega))sup_(x in Omega) |f(omega)|.
+  $
+]
+
 Since we have a probability density we will use the notation $inprod(., .,
-L^2_(P_t))$ and $l2norm(., L^2_(P_t), ,)$ where $P_t in dom(cal(A)^*_x)$.
+L^2_(P_t))$ and $l2norm(., L^2_(P_t), ,)$ where $P_t in dom(cal(A)^*_x)$. 
 
 #lemma(title: [Symmetry of $cal(A)_x$])[
 
@@ -1221,6 +1238,73 @@ L^2_(P_t))$ and $l2norm(., L^2_(P_t), ,)$ where $P_t in dom(cal(A)^*_x)$.
 
 ]
 
+#todo[
+  add text here to say we need to introduce this theorem without proof, for the proof see .... 
+]
+
+
+#theorem(title: [Poincaré inequality])[
+
+  #todo[
+    this proof relies on 
+  ]
+
+  Let $P_t: [-1, 1] -> (0, oo)$ be a probability density and $d: [-1, 1] -> (0, oo)$ satisfy $d(lambda) >= C_1 > 0$ and $P_t (lambda) >= C_2 > 0$ for all $lambda in [-1, 1]$. Then for all $f in C^1([-1, 1])$ with $integral_(-1)^(1) f(lambda) P_t (lambda) dif lambda = 0$ 
+
+  $
+    integral_(-1)^(1) f^2(lambda) P_t (lambda) dif lambda <= 1/kappa integral_(-1)^(1) [partial_lambda f(lambda)]^2 d(lambda) P_t (lambda) dif lambda,
+  $<eq-poincare-bound-def>
+
+where $kappa = (C_1 C_2) \/ 2$.
+]<thm-poincare-ineq>
+
+#proof[
+  By the fudnemental thorem of calculus we have
+  $
+    f(a) - f(b) = integral_a^b partial_lambda f(lambda) dif lambda.
+  $
+  Integrating both sides by $P_t (b)$ and integrating over the support gives
+  $
+    integral_(-1)^(1) f(a)P_t (b) dif b - integral_(-1)^(1) P_t (b) f(b) dif b = integral_(-1)^(1) P_t (b) integral_a^b partial_lambda f(lambda) dif lambda  dif b, 
+  $
+
+  where the first integral on the left hand side simplifies due to the
+  normalisastion of probability, while the second vanishes to zero due to
+  $EE[f(lambda_t)] = 0$, giving the relation  
+  $
+    f(a) = integral_(-1)^(1) P_t (b) integral_a^b partial_lambda f(lambda) dif lambda  dif b.
+  $
+
+  Taking the absolute value, squaring and employing Caychy-Schwarz twice gives us the bound
+  $
+    | f(a)|^2 &= (integral_(-1)^(1) P_t (b) lr(|integral_a^b partial_lambda f(lambda) dif lambda |) dif b)^2 \
+      &<= (integral_(-1)^(1) P_t (b) dif b)
+      (integral_(-1)^(1)  P_t (b)
+      lr(integral_a^b |partial_lambda f(lambda) |^2 dif lambda) dif b), \
+      &<= 
+      (integral_(-1)^(1)  P_t (b)
+      integral_(-1)^(1) |partial_lambda f(lambda) |^2 dif lambda dif b), \
+      &<=  
+      2 lr(integral_(-1)^(1) lr([partial_lambda f(lambda) ])^2 dif lambda) .
+  $<eq-mod-f-bound>
+
+  To obtain the desired bound from @eq-mod-f-bound, we simply multiply both by
+  $P_t (a)$ and integrate over the interval to get
+  $
+    integral_(-1)^(1) |f(a)|^2 P_t (a) dif a = integral_(-1)^(1) f^2(a) P_t (a) dif a &<=2 lr(integral_(-1)^(1) lr([partial_lambda f(lambda) ])^2 dif lambda), \
+    &<= 2 lr(integral_(-1)^(1)
+    lr([partial_lambda f(lambda) ])^2 / (d(lambda) P_t (lambda))  d(lambda) P_t (lambda)dif lambda), \
+      &<=2/(C_1 C_2) lr(integral_(-1)^(1)
+      lr([partial_lambda f(lambda) ])^2   d(lambda) P_t (lambda)dif lambda), \
+  $
+
+  and letting $kappa = (C_1 C_2 )\/ 2$ yields @eq-poincare-bound-def.
+]
+
+
+
+
+>>>>>>> 6b6895a0bf051c646395a597f8e30090e48abf54
 Since @thm-poincare-ineq relies on bounding the diffusion coefficient, in order
 for us to to apply it we must bound
 
@@ -1400,37 +1484,35 @@ where $kappa = (C_1 C_2) \/ 2$.
 
 #lemma(title: [Exponential mixing of the switching variable])[
 
-  Let $x in cal(D)_epsilon$ be fixed,  $t in [0, T]$, ...
+  Let $x in cal(D)_epsilon$ be fixed, let $P_t in dom(cal(A))^*_x$ represent the
+  occupation probability density of $lambda$ conditioned on $x$, let $P_ss =
+  dom(cal(A))^*_x$ such that $(cal(A)^* P_ss)(lambda) = 0$ be its steady-state
+  conditioned on $x$, and let 
 
-  #todo[
-    add text
-  ]
 
-  then there exisits
-  $kappa>0$ such that for any measurable $A subset [-1, 1]$, the probability
-  measure of $lambda_s$ satisfies
+  then for any $t in [0, T]$, and for any measurable $A
+  subset [-1, 1]$, there exisits $kappa>0$ and $C > 0$ such that
 
   $
-    lr(| integral_A P_(t) (lambda | x) dif lambda - integral_A P_(ss)(lambda |  x)dif lambda |) <= C ee^(-kappa t),
+    lr(| integral_A P_(t) (lambda | x) dif lambda - integral_A P_(ss)(lambda | x)dif lambda |) <= C ee^(-kappa t).
   $
-
-  where $P_(ss)(lambda | x)$ is the stationary probability density
-  of the fast variable $lambda$ conditional on a the slow variable $x$.
 ]<lem-exp-mixing-prob>
 
 #proof()[
 
-  To aid in the proof we define $xi_t (lambda) eqdef P_t (lambda) - P_ss (lambda)$, and $zeta_t
-  (lambda) eqdef xi_t (lambda) \/ P_ss (lambda)$. Clearly $zeta_t (lambda)$ has 
+  To aid in the proof we define $xi_t (lambda) eqdef P_t (lambda) - P_ss
+  (lambda)$, and $zeta_t (lambda) eqdef xi_t (lambda) \/ P_ss (lambda)$, where
+  we have dropped the conditional argument in the noation. Clearly $zeta_t
+  (lambda)$ has
 
   $
     lr(|integral_A [P_t (lambda) - P (lambda)] dif lambda |)
-      &= lr(|integral_A zeta_t (lambda) P_ss (lambda) dif lambda|) \
-      &<= integral_(-1)^1 |zeta_t (lambda)| P_ss (lambda) dif lambda  \
-      &<= (integral_(-1)^1 zeta^2_t (lambda) P_ss (lambda) dif lambda )^(1/2)
-          (integral_(-1)^1  P_ss (lambda) dif lambda)^(1/2) \ 
-      &<= (integral_(-1)^1 zeta^2_t (lambda) P_ss (lambda) dif lambda )^(1/2) \
-      &= l2norm(zeta_t, L^2_(P_ss),  ,)
+      &= lr(|integral_A zeta_t (lambda) P_ss (lambda) dif lambda|), \
+      &<= integral_(-1)^1 |zeta_t (lambda)| P_ss (lambda) dif lambda,  \
+      &<= (integral_(-1)^1 zeta^2_t (lambda) P_ss (lambda) dif lambda )^(1\/2)
+          (integral_(-1)^1  P_ss (lambda) dif lambda)^(1\/2), \ 
+      &<= (integral_(-1)^1 zeta^2_t (lambda) P_ss (lambda) dif lambda )^(1\/2), \
+      &= l2norm(zeta_t, L^2_(P_ss),  ,).
   $
   Then it only remains to bound $l2norm(zeta_t, L^2_(P_ss),  ,)$
   $
@@ -1448,23 +1530,44 @@ where $kappa = (C_1 C_2) \/ 2$.
   defining $C = l2norm(zeta_0, L^2_(P_ss),  ,)$ yields the relation in the lemma.
 ]
 
+
+
 #corollary(title: [Bound on expectations])[
+
+  The bound on the differences between probability measures obtained in
+  @lem-exp-mixing affords us a further bound, namely on the differences in
+  expectations via
+
   $
     lr(|EE[f(lambda_t)] - integral^(1)_(-1) f(lambda)  P_ss (lambda) dif lambda |) 
-      &= lr(|integral_(-1)^(1) f(lambda) zeta_t (lambda) P_ss (lambda) dif lambda|) \
-      &= lr(|inprod(f,  zeta_t,L^2_(P_ss))|) \
-      &<= l2norm(f, L^2_(P_ss),  ,) l2norm(zeta_t, L^2_(P_ss),  ,) \
-      &<= 2 l2norm(f, L^2_(P_ss),  ,) ee^(-kappa t)
+      &= lr(|integral_(-1)^(1) f(lambda) zeta_t (lambda) P_ss (lambda) dif lambda|) ,\
+      &= lr(|inprod(f,  zeta_t,L^2_(P_ss))|) ,\
+      &<= l2norm(f, L^2_(P_ss),  ,) l2norm(zeta_t, L^2_(P_ss),  ,) ,\
+      &<= 2 l2norm(f, L^2_(P_ss),  ,) ee^(-kappa t), \
+      &<= 2 sup_(lambda in [-1, 1]) | f(lambda) | ee^(-kappa t).
   $
+
+  The final supremum bound is of course only meaningful when we have bounded $f$
+  on the interval $lambda in [-1, 1]$.
 ]
 
 
+In summary we have estabilshed the existance of an intermediate timescale
+$delta$ such that $epsilon << delta << 1$ where the following are satisfied:
 
-#definition(title: [Average SDE])[
+- $EE[sup_s |x_(t+s) - x_t|^2] -> 0 $ as $epsilon -> 0$, that is the slow
+  varible remains fixed.
+
+- Exponentila mixing 
+
+
+
+#definition(title: [The Reduced SDE])[
 
   $
   dif x_t = 
   $
+
 ]
 
 
