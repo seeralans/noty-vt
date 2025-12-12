@@ -170,8 +170,8 @@ with weak noise SDEs with smooth drift and noise amplitude.
 
   $
     (dif  x) / (dif t)  = cases(
-    a^+(t, x) quad sigma(x) > 0,
-    a^-(t, x) quad sigma(x) < 0) 
+    a^+(x) quad sigma(x) > 0,
+    a^-(x) quad sigma(x) < 0) 
   $
   where $a^(pm): [0, oo) times RR^d mapsto RR^d$ are smooth vector fields. 
 ]
@@ -199,42 +199,44 @@ amplitude. The following definition formalises this setup.
   processes satisfying the SDE
 
   $
-    dif x_t = a(t, x_t) dif t + sqrt(epsilon) b(t, x_t) limits(*)^alpha dif W_t,
+    dif x_t = a(x_t) dif t + sqrt(epsilon) b(x_t) limits(*)^alpha dif W_t,
   $<eq-gen-sde>
 
   where 
   $  
-    a(t, x) eqdef cases(
-    a^+(t, x) quad sigma(x) > 0\,, 
-    a^-(t, x) quad sigma(x) < 0\,, 
+    a(x) eqdef cases(
+    a^+(x) quad sigma(x) > 0\,, 
+    a^-(x) quad sigma(x) < 0\,, 
     )
     quad
-    b(t, x) eqdef cases(
-    b^+(t, x) quad sigma(x) > 0\,, 
-    b^-(t, x) quad sigma(x) < 0\,, 
+    b(x) eqdef cases(
+    b^+(x) quad sigma(x) > 0\,, 
+    b^-(x) quad sigma(x) < 0\,, 
     )
   $<eq-ab-pw-def>
-  are piecewise smooth drift and noise amplitudes respectively satisfying the
+  are piecewise smooth drift and diffusion coefficients respectively satisfying the
   following conditions:
 
-  1. (A1 - Smoothnes)  $a^(pm): [0, T] times RR^d mapsto RR^d ,b^(pm) [0, T] times RR^d mapsto RR^(d times m) in C^2(RR times RR^d)$.
+  1. (A1 - Smoothnes) The constituent coefficients are sufficiently smooth $a^(pm) in C^2(RR^d; RR^d)$ and $b^(pm)in C^2(RR^d; RR^(d times m))$.
 
-  2. (A2 - Linear Growth) $||a^(pm)(t, x)|| + ||b^(pm)(t, x)|| <= C^pm (1 +
-  |x|)$ for some $C>0$, where $||a^(pm)(dot, dot)||$ is the Euclidean norm and
+  2. (A2 - Linear Growth) We have $ ||a^(pm)(x)|| + ||b^(pm)(x)|| <= C^pm (1 +
+  |x|) $ for some $C>0$, where $||a^(pm)(dot, dot)||$ is the Euclidean norm and
   $
-    |b^(pm) (dot, dot)| = sqrt(sum_(i j) |b_(i j) (dot, dot)|).
+    ||b^(pm) (dot, dot)|| = sqrt(sum_(i j) |b_(i j) (dot, dot)|^2).
   $
 
   3. (A3 - Lipshitz Continuity)
-
   $
-    ||a^(pm)(t, x) - a^(pm)(t, y)|| + |b^(pm)(t, x) - b^(pm)(t, y)| <= K^pm |x - y|,
+    ||a^(pm)(x) - a^(pm)(y)|| + ||b^(pm)(x) - b^(pm)(y)|| <= K^pm |x - y|,
+  $ for some $K^pm >0$.
+
+  4. (A4 - Transversality ) $
+    ||partial_(x) sigma(x)^tns b^pm (x)||  >= M^pm > 0. 
+  $ 
 
 
-  $
+  The $alpha$ is used to control evaluation point of the stochastic integral.
 
-  for some $K^pm >0$. The $alpha$ is used to control evaluation point of the
-  stochastic integral.
 ]<def-ns-gen-sde>
 
 The conditions (A1-3) ensure that away from the discontinuity set, that is
@@ -251,11 +253,11 @@ Instead, we must fisrt employ Filippov's convex construction @filippov2013book
 for the drift and noise amplitude, with $lambda in [-1, 1]$ we define the convex
 combinations
 $
-  a(t, x, lambda) eqdef 1/2(1 + lambda)a^+(t, x) + 1/2(1 - lambda)a^-(t, x),
+  a(x, lambda) eqdef 1/2(1 + lambda)a^+(x) + 1/2(1 - lambda)a^-(x),
 $<eq-a-def>
 and
 $
-  b(t, x, lambda)  eqdef 1/2(1 + lambda)b^+(t, x) + 1/2(1 - lambda)b^-(t, x),
+  b(x, lambda)  eqdef 1/2(1 + lambda)b^+(x) + 1/2(1 - lambda)b^-(x),
 $<eq-b-def>
 
 which are smooth in $lambda$, as well as $x$ and $t$ as they inherit the
@@ -286,17 +288,17 @@ i.e. when $x_t in cal(D)$. These definitions allow as to recast @eq-gen-sde into
 the Ito analgoue
 
 $
-  dif x_t = [a(t, x_t, lambda_t) + alpha epsilon b(t, x_t, lambda_t)] dif t + sqrt(epsilon) b(t, x_t, lambda_t) dif W_t,
+  dif x_t = [a(x_t, lambda_t) + alpha epsilon b(x_t, lambda_t)] dif t + sqrt(epsilon) b(x_t, lambda_t) dif W_t,
 $<eq-ito-sde>
 
 where the correction term is
 
 $
-  c(t, x, lambda)  = sum_j J_x [b_j (t, x, lambda)] b_j (t, x, lambda).
+  c(x, lambda)  = sum_j J_x [b_j (x, lambda)] b_j (x, lambda).
 $ <eq-ito-al-cor-term>
 
-with $b_j (t, x, lambda)$ denoting the $j^#text("th")$ column of the matrix
-$b(t, x, lambda)$ and $J_x (dot)$ is the Jacobian matrix of the vector argument
+with $b_j (x, lambda)$ denoting the $j^#text("th")$ column of the matrix
+$b(x, lambda)$ and $J_x (dot)$ is the Jacobian matrix of the vector argument
 with respect to $x$. Obiously $lambda$ is itself a stochastic variable since it
 dependends on $x_t$ via $lambda_t = Lambda_(epsilon)[sigma(x_t)]$, and, like its
 deterministic counterpart is dynamic on the the much faster timescale
@@ -415,16 +417,16 @@ also need the dynamics of scalar observable $sigma(x_t)$ which we state in the f
   then the random variable $z_t = sigma(x_t)$ evolves according to the SDE
 
   $
-    dif z_t = tilde(a)(t, x_t, lambda_t) dif t + sqrt(epsilon)tilde(b)(t, x_t, lambda_t) dif W_t,
+    dif z_t = tilde(a)(x_t, lambda_t) dif t + sqrt(epsilon)tilde(b)(x_t, lambda_t) dif W_t,
   $<eq-z-sde>
   where
   $
-    tilde(a)(t, x, lambda) eqdef partial_x sigma(x) dot a(t, x, lambda)
-    + epsilon/2  trc[b(t, x, lambda) partial^2_(x x) sigma(x) b(t, x, lambda)],
+    tilde(a)(x, lambda) eqdef partial_x sigma(x) dot a(x, lambda)
+    + epsilon/2  trc[b(x, lambda) partial^2_(x x) sigma(x) b(x, lambda)],
   $<eq-a-tilde-def>
   and 
   $
-    tilde(b)(t, x, lambda) eqdef partial_x sigma(x)^(tns) b(t, x, lambda)],
+    tilde(b)(x, lambda) eqdef partial_x sigma(x)^(tns) b(x, lambda)],
   $<eq-b-tilde-def>
 ]<lem-z-sde>
 #proof[
@@ -452,13 +454,13 @@ an SDE.
   the switching variable $lambda_t = Lambda_epsilon [sigma(x_t)]$ evolves in the
   interval interval [-1, 1] according to the SDE
   $
-    dif lambda_t &= 1/epsilon bb(1)_((-epsilon, epsilon])[sigma(x_t)] tilde(a)(t, x_t, lambda_t) dif t
-    + 1/sqrt(epsilon) bb(1)_((-epsilon, epsilon])[sigma(x_t)] tilde(b)(t, x_t, lambda_t) dif W_t \
+    dif lambda_t &= 1/epsilon bb(1)_((-epsilon, epsilon])[sigma(x_t)] tilde(a)(x_t, lambda_t) dif t
+    + 1/sqrt(epsilon) bb(1)_((-epsilon, epsilon])[sigma(x_t)] tilde(b)(x_t, lambda_t) dif W_t \
       &+ 1/epsilon [dif L_t^(z)(-epsilon) - dif L_t^(z)(epsilon)]
     , \
   $<eq-lam-sde>
 
-  where $tilde(a)(t, x, lambda)$ and $tilde(b)(t, x, lambda)$ are defined in
+  where $tilde(a)(x, lambda)$ and $tilde(b)(x, lambda)$ are defined in
   @eq-a-tilde-def and @eq-b-tilde-def respectively, $dif L_t^(z)(pm epsilon)$ is the
   change in the local time of $z_t$ at $z = pm epsilon$ where the evolution of
   $z_t$ is given by @eq-z-sde. 
@@ -478,8 +480,8 @@ as a measure given in @eq-big-lam-sec-deriv, it then follows from
   $
   By letting $lambda_t = Lambda_epsilon (z_t = sigma(x_t))$, and using  @lem-z-sde we obtain 
   $
-    lambda_t &= lambda_0 + integral_0^t 1/epsilon bb(1)_((-epsilon, epsilon])[sigma(x_s)] tilde(a)(s, x_s, lambda_s) dif t
-    + 1/sqrt(epsilon) integral_0^t bb(1)_((-epsilon, epsilon])[sigma(x)] tilde(b)(s, x_s, lambda_s) dif W_s \
+    lambda_t &= lambda_0 + integral_0^t 1/epsilon bb(1)_((-epsilon, epsilon])[sigma(x_s)] tilde(a)(x_s, lambda_s) dif t
+    + 1/sqrt(epsilon) integral_0^t bb(1)_((-epsilon, epsilon])[sigma(x)] tilde(b)(x_s, lambda_s) dif W_s \
       &+ 1/epsilon [ L_t^(z)(-epsilon) -  L_t^(z)(epsilon)].
 $<eq-lam-sde-meyer-ito-full>
 ]
@@ -487,17 +489,17 @@ $<eq-lam-sde-meyer-ito-full>
 The dynamics of the full system are then represented by the coupled SDE 
 
 $
-  dif x_t &= [a(t, x_t, lambda_t)
-  + alpha epsilon b(t, x_t, lambda_t)] dif t
-  + sqrt(epsilon) b(t, x_t, lambda_t) dif W_t, \
-  dif lambda_t &= 1/epsilon bb(1)_((-epsilon, epsilon])[sigma(x_t)] tilde(a)(t, x_t, lambda_t) dif t
-  + 1/sqrt(epsilon) bb(1)_((-epsilon, epsilon])[sigma(x_t)] tilde(b)(t, x_t, lambda_t) dif W_t \
+  dif x_t &= [a(x_t, lambda_t)
+  + alpha epsilon b(x_t, lambda_t)] dif t
+  + sqrt(epsilon) b(x_t, lambda_t) dif W_t, \
+  dif lambda_t &= 1/epsilon bb(1)_((-epsilon, epsilon])[sigma(x_t)] tilde(a)(x_t, lambda_t) dif t
+  + 1/sqrt(epsilon) bb(1)_((-epsilon, epsilon])[sigma(x_t)] tilde(b)(x_t, lambda_t) dif W_t \
     &+ 1/epsilon [dif L_t^(z)(-epsilon) - dif L_t^(z)(epsilon)]
     , 
 $<eq-x-lam-sde-pair>
 
-where $a(t, x, lambda)$ and $b(t, x, lambda)$ are defined, respectively, in
-@eq-a-def and @eq-b-def, while $tilde(a)(t, x, lambda)$ and $tilde(b)(t, x,
+where $a(x, lambda)$ and $b(x, lambda)$ are defined, respectively, in
+@eq-a-def and @eq-b-def, while $tilde(a)(x, lambda)$ and $tilde(b)(x,
 lambda)$ are given defined in @eq-a-tilde-def and @eq-b-tilde-def respectively.
 The coupled system is a slow-fast stochastic system, and our goal is to obtain
 controlled approximation for the dynamics of the slow process by closing the
@@ -530,7 +532,7 @@ local time terms in @eq-lam-sde which we do in the following lemma.
 
   Let $x_t in RR^d$ be a stochastic process given the SDE
   $
-    dif x_t =  a(t, x_t) dif t + b(t, x_t) dif W_t,
+    dif x_t =  a(x_t) dif t + b(x_t) dif W_t,
   $
 
   $
@@ -548,16 +550,16 @@ expectation of both sides we obtain
 $
   EE[L^z_t (a)] &= EE[ lim_(delta arrow.b 0) 1/(2delta) integral_0^t bb(1)_((a - delta, a + delta)) (z_s) dif chevron.l  z chevron.r_s], \
     &= lim_(delta arrow.b 0) 1/(2delta) integral_0^t EE[bb(1)_((a - delta, a + delta))   dif chevron.l  z chevron.r_s] \ 
-    &= lim_(delta arrow.b 0) 1/(2delta)  integral_0^t epsilon EE[bb(1)_((a - delta, a + delta))tilde(b)^2 (s, x_s, lambda_s) ]  dif s, \ 
+    &= lim_(delta arrow.b 0) 1/(2delta)  integral_0^t epsilon EE[bb(1)_((a - delta, a + delta))tilde(b)^2 (x_s, lambda_s) ]  dif s, \ 
     &=   epsilon  integral_0^t lim_(delta arrow.b 0) 1/(2delta)
-    integral_(a - delta)^(a + delta) P^((z))(a, s) tilde(b)^2 (s, x_s,  lambda_s) dif s, \
-    &=  epsilon integral_0^t P^((z))(a, s) tilde(b)^2 (s, x_s,  lambda_s) dif s,  #<eq-local-time-exp-z-int>\
+    integral_(a - delta)^(a + delta) P^((z))(a, s) tilde(b)^2 (x_s,  lambda_s) dif s, \
+    &=  epsilon integral_0^t P^((z))(a, s) tilde(b)^2 (x_s,  lambda_s) dif s,  #<eq-local-time-exp-z-int>\
 $
 
 or equivalently in differential form
 
 $
-  dif EE[L^z_t (a)]  = epsilon P^((z))(a, t) tilde(b)^2(t, x_t, lambda_t)   dif  t.
+  dif EE[L^z_t (a)]  = epsilon P^((z))(a, t) tilde(b)^2(x_t, lambda_t)   dif  t.
 $<eq-diff-ee-lt>
 
 From @eq-diff-ee-lt we conclude that $dif L^z_t(a) ~ epsilon P^((z))(a, t) tilde(b)^2(t,
@@ -567,9 +569,9 @@ epsilon^(beta \/2) dif W_tau$. Applying this to @eq-lam-sde obtain
 
 $
   O(epsilon^(beta - 1)) &: bb(1)_((-epsilon, epsilon])[sigma(x_(tau))]
-  tilde(a)(tau, x_tau, lambda_tau) dif tau, \
+  tilde(a)(x_tau, lambda_tau) dif tau, \
   O(epsilon^((beta - 1)/2)) &: bb(1)_((-epsilon, epsilon])[sigma(x_(tau))]
-  tilde(b)(tau, x_tau, lambda_tau) dif W_tau, \
+  tilde(b)(x_tau, lambda_tau) dif W_tau, \
   O(epsilon^beta) &:  dif L_(tau)^(z)(a).  \
 $
 
@@ -675,15 +677,15 @@ The effective slow dynamics follows by averaging against the stationary
 distribution:
 
 $
-  macron(a)(t, x) = integral_(-1)^1 a(t, x, lambda) P_(ss)(lambda | x) dif lambda,
+  macron(a)(x) = integral_(-1)^1 a(x, lambda) P_(ss)(lambda | x) dif lambda,
   quad
-  macron(b)(t, x) = integral_(-1)^1 b(t, x, lambda) P_(ss)(lambda | x) dif lambda.
+  macron(b)(x) = integral_(-1)^1 b(x, lambda) P_(ss)(lambda | x) dif lambda.
 $<eq-averaged-coeffs>
 
 The resulting equation,
 
 $
-  dif x_t = macron(a)(t, x_t) dif t + sqrt(epsilon) macron(b)(t, x_t) dif W_t,
+  dif x_t = macron(a)(x_t) dif t + sqrt(epsilon) macron(b)(x_t) dif W_t,
 $<eq-averaged-sde>
 
 remains a weak-noise SDE with $epsilon$-dependent coefficients, to which
@@ -731,23 +733,23 @@ epsilon^alpha$, for some $alpha in (0, 1)$.
   We start by bounding the squared deviation in the $delta$ time window,
   $
     EE[ |x_(t+s) - x_t|^2]
-      &= EE[ lr(|integral_t^(t+s) a(tau, x_tau, lambda_(tau)) dif tau 
-      + sqrt(epsilon) integral_t^(t+s) b(tau, x_tau, lambda_tau) dif W_(tau) |)^2],  \
-      &<= 2EE[ lr(|integral_t^(t+s) a(tau, x_tau, lambda_tau) dif tau|) ^2 ]
-      + 2 epsilon EE[ lr(|integral_t^(t+s) b(tau, x_tau, lambda_s) dif W_tau |)^2]. \
+      &= EE[ lr(|integral_t^(t+s) a(x_tau, lambda_(tau)) dif tau 
+      + sqrt(epsilon) integral_t^(t+s) b(x_tau, lambda_tau) dif W_(tau) |)^2],  \
+      &<= 2EE[ lr(|integral_t^(t+s) a(x_tau, lambda_tau) dif tau|) ^2 ]
+      + 2 epsilon EE[ lr(|integral_t^(t+s) b(x_tau, lambda_s) dif W_tau |)^2]. \
   $
 
   We will bound each integral term separately, for the drift part we have
   $
-    EE[lr(|integral_t^(t+s) a(tau, x_tau, lambda_tau) dif tau|) ^2]
-      &<= s integral_t^(t+s)  EE[lr(|a(tau, x_tau, lambda_tau)  |) ^2] dif tau, \
+    EE[lr(|integral_t^(t+s) a(x_tau, lambda_tau) dif tau|) ^2]
+      &<= s integral_t^(t+s)  EE[lr(|a(x_tau, lambda_tau)  |) ^2] dif tau, \
       &<= s integral_t^(t+s)  C (1 + EE[ |x_tau|^2]) dif tau, \
       &<= C' s^2,
   $
   and for the martingale part we have 
   $
-    EE[ lr(|integral_t^(t+s) b(s, x_s, lambda_s) dif W_s |)^2] 
-      &<=  integral_t^(t+s)EE[ lr(||b(s, x_s, lambda_s) ||)^2]dif s   \
+    EE[ lr(|integral_t^(t+s) b(x_s, lambda_s) dif W_s |)^2] 
+      &<=  integral_t^(t+s)EE[ lr(||b(x_s, lambda_s) ||)^2]dif s   \
       &<=  integral_t^(t+s) C (1 + EE[ |x_s|^2])dif s   \
       &<= C'' s.
   $
@@ -806,10 +808,10 @@ the interval $[t, t + delta]$.
 
   $
     (cal(A)_x f)(lambda) &= 1/epsilon partial_lambda
-    f(lambda){partial_x sigma(x_t)^tns a(t, x, lambda)
-    + epsilon/2 trc[b(t, x, lambda)^(tns) partial^2_(x x) sigma(x) b(t, x, lambda)] } \ 
+    f(lambda){partial_x sigma(x)^tns a(x, lambda)
+    + epsilon/2 trc[b(x, lambda)^(tns) partial^2_(x x) sigma(x) b(x, lambda)] } \ 
       &+ 1/(2 epsilon) partial^2_(lambda lambda)f(lambda)
-      partial_x sigma(x_t)^tns  b(t, x, lambda) b(t, x, lambda)^tns partial_x sigma(x_t),
+      partial_x sigma(x)^tns  b(x, lambda) b(x, lambda)^tns partial_x sigma(x),
   $<eq-bwd-gen>
 
   with the domain
@@ -850,7 +852,7 @@ the interval $[t, t + delta]$.
   $
     I^((1))_t
       &eqdef 1/epsilon integral_0^t partial_lambda f(lambda_s)
-        tilde(a)(s, x, lambda_s) dif s, \
+        tilde(a)(x, lambda_s) dif s, \
     I^((2))_t
       &eqdef 1/epsilon integral_0^t partial_lambda f(lambda_s)
         [dif L_s^(z)(-epsilon) - dif L_s^(z)(epsilon)], \
@@ -865,7 +867,7 @@ the interval $[t, t + delta]$.
     1/2 integral_(t')^t partial^2_(lambda lambda) f(lambda_s)
     dif chevron.l lambda chevron.r_s = I^((3))_t eqdef 
       = 1/(2 epsilon) integral_0^t partial^2_(lambda lambda) f(lambda_s)
-        tilde(b)(s, x, lambda_s) tilde(b)(s, x, lambda_s)^(tns) dif s, \
+        tilde(b)(x, lambda_s) tilde(b)(x, lambda_s)^(tns) dif s, \
   $
 
   Taking expectations, the martingale term vanishes leaving
@@ -882,10 +884,10 @@ the interval $[t, t + delta]$.
   $
     lim_(t -> t') 1/t EE[I^((1))_t]
       = 1/epsilon partial_lambda f(lambda)
-        tilde(a)(t', x, lambda), \
+        tilde(a)(x, lambda), \
         lim_(t -> t') 1/t EE[II^((3))_t]
       = 1/(2 epsilon) partial^2_(lambda lambda) f(lambda)
-        tilde(b)(t', x, lambda) tilde(b)(t', x, lambda)^(tns),
+        tilde(b)(x, lambda) tilde(b)(x, lambda)^(tns),
   $
 
   hence, the interior contribution to the generator is  the right-hand side
@@ -905,7 +907,7 @@ the interval $[t, t + delta]$.
   $
     dif EE[partial_lambda f(pm 1) L_t^(z)(pm epsilon)] &= partial_lambda f(pm 1) dif EE[ L_t^(z)(pm epsilon)], \
       &= epsilon partial_lambda f(pm 1) P^((z))(pm epsilon, t)
-      tilde(b)(t, x, lambda_t) tilde(b)(t, x, lambda_t)^(tns) dif t,
+      tilde(b)(x, lambda_t) tilde(b)(x, lambda_t)^(tns) dif t,
   $
   from which we conclude
   $
@@ -969,11 +971,11 @@ generator is sumarised in the following lemma.
   smooth probability density $P_t: [-1, -1] mapsto [0,  
  oo)$ via
   $
-    (cal(A)^*_x f)(lambda) &= - 1/epsilon partial_lambda  ( 
-    P_t (lambda) { partial_x sigma(x_t)^tns a(t, x, lambda)
-    + epsilon/2 trc[b(t, x, lambda)^(tns) partial^2_(x x) sigma(x) b(t, x, lambda)] }) \ 
+    (cal(A)^*_x P_t)(lambda) &= - 1/epsilon partial_lambda  ( 
+    P_t (lambda) { partial_x sigma(x_t)^tns a(x, lambda)
+    + epsilon/2 trc[b(x, lambda)^(tns) partial^2_(x x) sigma(x) b(x, lambda)] }) \ 
       &+ 1/(2 epsilon) partial^2_(lambda lambda)[P_t (lambda)
-      partial_x sigma(x_t)^tns  b(t, x, lambda) b(t, x, lambda)^tns partial_x sigma(x_t)],
+      partial_x sigma(x_t)^tns  b(x, lambda) b(x, lambda)^tns partial_x sigma(x_t)],
   $<eq-fwd-gen>
   with the domain 
 
@@ -984,10 +986,10 @@ generator is sumarised in the following lemma.
 
   $
     J_t (lambda) &= 
-P_t (lambda) { partial_x sigma(x_t)^tns a(t, x, lambda)
-    + epsilon/2 trc[b(t, x, lambda)^(tns) partial^2_(x x) sigma(x) b(t, x, lambda)] } \ 
+P_t (lambda) { partial_x sigma(x_t)^tns a(x, lambda)
+    + epsilon/2 trc[b(x, lambda)^(tns) partial^2_(x x) sigma(x) b(x, lambda)] } \ 
       &- 1/(2 ) partial_(lambda)[P_t (lambda)
-      partial_x sigma(x_t)^tns  b(t, x, lambda) b(t, x, lambda)^tns partial_x sigma(x_t)],
+      partial_x sigma(x_t)^tns  b(x, lambda) b(x, lambda)^tns partial_x sigma(x_t)],
   $
 
   is the scaled probability current, i.e. $J_t (lambda) \/ epsilon$ would be the
@@ -1006,30 +1008,30 @@ P_t (lambda) { partial_x sigma(x_t)^tns a(t, x, lambda)
   $
     1/epsilon   integral_(-1)^1  P_t (lambda) 
     partial_lambda
-    f(lambda) tilde(a)(t, x, lambda) + 1/(2 epsilon) integral_(-1)^(1)
-    P_t (lambda) partial^2_(lambda lambda)f(lambda)  tilde(b)(t, x, lambda) tilde(b)(t, x, lambda)^(tns) \
+    f(lambda) tilde(a)(x, lambda) + 1/(2 epsilon) integral_(-1)^(1)
+    P_t (lambda) partial^2_(lambda lambda)f(lambda)  tilde(b)(x, lambda) tilde(b)(x, lambda)^(tns) \
  =  integral_(-1)^(1) f_t (lambda) (cal(A)^*_x P_t)(lambda) 
   $
 
   $
     (cal(A)_x f)(lambda) &= 1/epsilon partial_lambda
-    f(lambda){partial_x sigma(x_t)^tns a(t, x, lambda)
-    + epsilon/2 trc[b(t, x, lambda)^(tns) partial^2_(x x) sigma(x) b(t, x, lambda)] } \ 
+    f(lambda){partial_x sigma(x_t)^tns a(x, lambda)
+    + epsilon/2 trc[b(x, lambda)^(tns) partial^2_(x x) sigma(x) b(x, lambda)] } \ 
       &+ 1/(2 epsilon) partial^2_(lambda lambda)f(lambda)
-      partial_x sigma(x_t)^tns  b(t, x, lambda) b(t, x, lambda)^tns partial_x sigma(x_t).
+      partial_x sigma(x_t)^tns  b(x, lambda) b(x, lambda)^tns partial_x sigma(x_t).
   $<eq-adj-deriv-setup>
   We treat the drift and diffusion contributions seperately.
 
   *Drift contribution.* Integration by parts gives
   $
     1/epsilon integral_(-1)^1 partial_lambda f(lambda)
-      P_t (lambda) tilde(a)(t, x, lambda) dif lambda
+      P_t (lambda) tilde(a)(x, lambda) dif lambda
       &= lr(1/epsilon f(lambda)
-        P_t (lambda) tilde(a)(t, x, lambda)|)_(-1)^1 \
+        P_t (lambda) tilde(a)(x, lambda)|)_(-1)^1 \
       &- 1/epsilon integral_(-1)^1
         f(lambda)
         partial_lambda [
-          P_t (lambda) tilde(a)(t, x, lambda)
+          P_t (lambda) tilde(a)(x, lambda)
         ] dif lambda,
   $<eq-forward-drift>
 
@@ -1054,7 +1056,7 @@ P_t (lambda) { partial_x sigma(x_t)^tns a(t, x, lambda)
         ] dif lambda,
   $<eq-forward-diffusion>
 
-  where the arguments $(t, x, lambda)$ are dropped in the notation of $tilde(a)$
+  where the arguments $(x, lambda)$ are dropped in the notation of $tilde(a)$
   and $tilde(b)$ for clarity. Since $f in dom(cal(A)) = { f in C^2([-1, 1]) |
   partial_lambda f(pm 1)=0 }$, all boundary terms proportional to
   $partial_lambda f(pm 1)$ vanish. The remaining boundary terms must also vanish
@@ -1063,9 +1065,9 @@ P_t (lambda) { partial_x sigma(x_t)^tns a(t, x, lambda)
 
   $
     lr([
-      P(lambda, t) tilde(a)(t, x_t, lambda)
+      P_t (lambda) tilde(a)(x_t, lambda)
       - 1/2 partial_lambda (
-      P(lambda, t) tilde(b)(t,x, lambda) tilde(b)(t,x, lambda)^(tns)
+      P_t (lambda) tilde(b)(x, lambda) tilde(b)(x, lambda)^(tns)
       )
       ])_(-1)^1 = 0.
   $<eq-forward-zero-flux>
@@ -1073,13 +1075,13 @@ P_t (lambda) { partial_x sigma(x_t)^tns a(t, x, lambda)
   Using @eq-forward-drift, @eq-forward-diffusion, and enforcing
   @eq-forward-zero-flux, we identify the forward operator as
   $
-    (cal(A)^* P)(lambda, t)
+    (cal(A)^*_x P_t)(lambda)
       = - 1/epsilon partial_lambda [
-          P(lambda, t) tilde(a)(t, x_t, lambda)
+          P_t (lambda) tilde(a)(x, lambda)
         ]
         + 1/(2epsilon) partial^2_(lambda lambda) [
-          P(lambda, t) tilde(b)(t, x_t, lambda)
-                       tilde(b)(t, x_t, lambda)^(tns)
+          P_t (lambda) tilde(b)(x, lambda)
+                       tilde(b)(x, lambda)^(tns)
         ].
   $<eq-forward-generator-final>
 
@@ -1097,14 +1099,150 @@ P_t (lambda) { partial_x sigma(x_t)^tns a(t, x, lambda)
   condtion
 
   $
-    J_t (lambda) &= P_t (lambda) { partial_x sigma(x_t)^tns a(t, x, lambda)
-    + epsilon/2 trc[b(t, x, lambda)^(tns) partial^2_(x x) sigma(x) b(t, x, lambda)] } \ 
+    J_t (lambda) &= P_t (lambda) { partial_x sigma(x_t)^tns a(x, lambda)
+    + epsilon/2 trc[b(x, lambda)^(tns) partial^2_(x x) sigma(x) b(x, lambda)] } \ 
       &- 1/(2 ) partial_(lambda)[P_t (lambda)
-      partial_x sigma(x_t)^tns  b(t, x, lambda) b(t, x, lambda)^tns partial_x sigma(x_t)] = 0.
+      partial_x sigma(x_t)^tns  b(x, lambda) b(x, lambda)^tns partial_x sigma(x_t)] = 0.
   $<eq-db-on-lam>
 
   This ofcourse also means detailed balance is satified,.
 ]<rem-db-lam>
+
+
+
+#todo[
+  fix this text introducing the linear bounds
+]
+Since @thm-poincare-ineq relies on bounding the diffusion coefficient, in order
+for us to to apply it we must bound
+
+$
+  tilde(d)(x, lambda) eqdef tilde(b)(x, lambda) tilde(b)(x, lambda)^tns
+  = partial_x sigma(x)^tns b(x, lambda) b(x, lambda)^tns partial_x sigma(x).
+$<eq-d-tilde-def>
+
+Indeed $tilde(d)$ as well as the coefficients $tilde(a)$, $tilde(b)$ can all b
+can all be bounded from above as the inherit the conditions of $a$ and $b$ as
+laid out in @def-ns-gen-sde. We summarise these in the next lemma as they will
+then be used in the later results.
+
+
+#lemma(title: [Bounds on the coefficients])[
+
+  #todo[
+    add all of the bounds
+  ]
+
+  Let $lambda in [-1, 1]$ and satisfies the bound
+
+  $
+    ||a(x, lambda)|| + ||b(x, lambda)|| <= C (1 + |x|)
+  $
+  for some $C$ 
+]<lem-coeff-cound-cov>
+#proof[
+  $
+    ||a(x, lambda)|| + ||b(x, lambda)||
+      &= 1/2 (1 + lambda) [ ||a_+ (x)|| + ||b_+ (x)|| ] + 1/2 (1 - lambda) [ ||a_- (x)|| + ||b_- (x)|| ] \
+      &<= 1/2  [(1 + lambda) C_+ + (1 - lambda) C_- ]  (1 + |x|)  \
+      &<= (C_+ + C_- )(1 + |x|)    
+  $
+  #todo[complete the proof!]
+]
+
+
+
+
+#lemma(title: [Invariant Measure])[
+
+  Let $x_t = x in cal(D)_epsilon$ be fixed (see @lem-slow-var-x), and let the
+ forward generator of $A^*_x$ of $lambda_t$ be define in @eq-fwd-gen, then the
+ invariant measure $P_ss (lambda)$ satifies $(cal(A)^*_x P_ss)(lambda) = 0$ and
+ is given by
+
+  $
+    P_ss (lambda) = R(x) / (tilde(d)(x, lambda))
+    exp(integral_(-1)^(lambda) (tilde(a)(x, nu)) / (tilde(d)(x, nu)) dif nu),
+  $
+
+  where
+  $
+    R(x) = [integral_(-1)^(1) 1/ (tilde(d)(x, lambda))
+    exp(integral_(-1)^(lambda) (tilde(a)(x, nu)) / (tilde(d)(x, nu)) dif nu) dif lambda]^(-1),
+  $<eq-p-inv-norm-const>
+
+  is an $x$-dependent normalisation constant, $tilde(a)(x, lambda)$, and
+  $tilde(b)(x, lambda)$ are defined in @eq-a-tilde-def and @eq-d-tilde-def,
+  respectively.
+
+]
+
+#proof[
+
+  The proof is a direct trivial calulation. We have
+  $
+    (cal(A)^* P_ss)(lambda)
+      = - 1/epsilon partial_lambda [
+          P_ss (lambda) tilde(a)(x, lambda)
+        ]
+        + 1/(2epsilon) partial^2_(lambda lambda) [
+          P_ss (lambda) tilde(d)(x, lambda)
+        ] = 0,
+  $
+
+  which immediately gives us the ordinary differential equation
+
+  $
+    P_ss (lambda) tilde(a)(x, lambda) &= 1/2 partial_lambda  (P_ss (lambda) tilde(d)(x, lambda)). \
+  $
+
+  It follows then that  
+  $
+    (partial_lambda P_ss (lambda)) / (P_ss (lambda)) = (2 tilde(a)(x, lambda) - partial_lambda  tilde(d)(x, lambda)) / (tilde(d)(x, lambda)),
+  $
+  which after intergrating both sides with respect to $lambda$ we obtain 
+
+  $
+    ln P_ss (lambda) =  2 integral_(-1)^lambda (tilde(a)(x, nu)) / (tilde(d)(x, nu)) dif nu - ln tilde(d)(x, lambda) + ln R(x),
+  $
+
+  where $R(x)$ is an integration constant. Enforcing normalisation on the
+  invariant density gives @eq-p-inv-norm-const.
+  
+]
+
+#lemma(title: [Bounds on the Invariant Measure])[
+
+  For all $x in cal(D)_epsilon$ fixed  and $||tilde(a)(x, lambda)|| <= tilde(C)_1 (x)$  and $||tilde(b)(x, lambda)|| >= tilde(C)_1 (x) > 0$, set $tilde(C)_(12)(x) = (tilde(C)_1 (x)) / (tilde(C)_2 (x))$
+
+
+  $
+    (tilde(C)_12 (x) exp[-tilde(C)_12 (x)(1 + 4 |lambda|)]) / sinh(tilde(C)_12 (x)) <= P_ss (lambda)
+   <= (tilde(C)_12 (x) exp[tilde(C)_12 (x)(1 + 4 |lambda|)]) / sinh(tilde(C)_12 (x)) 
+
+  $
+]
+
+
+
+#proof[
+
+  #todo[
+    proof in notebook add it in.
+  ]
+  
+
+  $
+    (alpha ee^(-2 alpha (1 + 4 |lambda|)))/ sinh(alpha/2)
+    <= P_ss (lambda)
+   <= (alpha ee^(2 alpha (1 + 4 |lambda|)))/ sinh(alpha/2)
+
+  $
+]
+
+
+
+= Norm tings
 
 
 Before we proceed it is usefull to introduce a defnition for the $L^2$ space that we will be working in, but first let us consider the general defintion of an $L^2$ inner product and norms on real functions.
@@ -1170,61 +1308,61 @@ L^2_(P_t))$ and $l2norm(., L^2_(P_t), ,)$ where $P_t in dom(cal(A)^*_x)$.
   where
   $
     I_1  &eqdef integral_(-1)^1 partial_lambda
-    f(lambda) tilde(a)(t, x, lambda) g(lambda) P_(ss)(lambda) dif lambda ,\
-    I_2 &eqdef 1/2 integral_(-1)^1 partial^2_(lambda lambda) f(lambda) tilde(d)(t, x, lambda) g(lambda) P_(ss), dif lambda
+    f(lambda) tilde(a)(x, lambda) g(lambda) P_(ss)(lambda) dif lambda ,\
+    I_2 &eqdef 1/2 integral_(-1)^1 partial^2_(lambda lambda) f(lambda) tilde(d)(x, lambda) g(lambda) P_(ss), dif lambda
   $
   are, respectively, the drift and diffusion contributions which we treat separately.
 
   *Drift term.* Integration by parts gives
 
   $
-    I_1     &= lr(f(lambda) tilde(a)(t, x, lambda) g P_(ss)(lambda)|)_(-1)^1 
-    - integral_(-1)^1 f(lambda) partial_lambda [tilde(a)(t, x, lambda) g(lambda) P_(ss)(lambda)] dif lambda.
+    I_1     &= lr(f(lambda) tilde(a)(x, lambda) g P_(ss)(lambda)|)_(-1)^1 
+    - integral_(-1)^1 f(lambda) partial_lambda [tilde(a)(x, lambda) g(lambda) P_(ss)(lambda)] dif lambda.
   $<eq-drift-adj-1>
 
-  *Diffusion term.* Let $tilde(d)(t, x, lambda) eqdef tilde(b)(t, x, lambda)
-   tilde(b)(t, x, lambda)^tns$. Integrating by parts twice yeilds
+  *Diffusion term.* Let $tilde(d)(x, lambda) eqdef tilde(b)(x, lambda)
+   tilde(b)(x, lambda)^tns$. Integrating by parts twice yeilds
 
   $
-    I_2 &= 1/2 lr(partial_lambda f(lambda) d(t, x, lambda) g(lambda) P_(ss)(lambda)|)_(-1)^1
-    - 1/2 integral_(-1)^1 partial_lambda f(lambda) partial_lambda [d(t, x, lambda) g(lambda) P_(ss)(lambda)] dif lambda, \
-      &= -1/2 lr(f(lambda) partial_lambda  [d(t, x, lambda) g(lambda) P_(ss)(lambda)]|)_(-1)^1
-      + 1/2 integral_(-1)^1 f(lambda) partial^2_(lambda lambda) [d(t, x, lambda) g(lambda) P_(ss)(lambda)] dif lambda,
+    I_2 &= 1/2 lr(partial_lambda f(lambda) d(x, lambda) g(lambda) P_(ss)(lambda)|)_(-1)^1
+    - 1/2 integral_(-1)^1 partial_lambda f(lambda) partial_lambda [d(x, lambda) g(lambda) P_(ss)(lambda)] dif lambda, \
+      &= -1/2 lr(f(lambda) partial_lambda  [d(x, lambda) g(lambda) P_(ss)(lambda)]|)_(-1)^1
+      + 1/2 integral_(-1)^1 f(lambda) partial^2_(lambda lambda) [d(x, lambda) g(lambda) P_(ss)(lambda)] dif lambda,
   $<eq-diff-adj-1>
 
   where the boundary term on the first line vanishes as $partial_lambda f(pm 1)
   = 0$. Considering only the boundary terms from @eq-drift-adj-1 and @eq-diff-adj-1, 
 
   $
-    &lr(f(lambda)  {tilde(a)(t, x, lambda) g(lambda) P_(ss)(lambda) - 
-    1/2 partial_lambda [tilde(d)(t, x, lambda) g(lambda) P_(ss)(lambda)]}|)_(-1)^1, \
-      &= lr(f(lambda)  {tilde(a)(t, x, lambda) g(lambda) P_(ss)(lambda) - 
-    1/2 partial_lambda g(lambda) tilde(d)(t, x, lambda) g(lambda) P_(ss)(lambda) - g(lambda) partial_lambda [tilde(d)(t, x, lambda)  P_(ss)(lambda)]}|)_(-1)^1, \
-      &= lr(f(lambda) g(lambda) {tilde(a)(t, x, lambda)  P_(ss)(lambda) 
-      -  partial_lambda [tilde(d)(t, x, lambda)  P_(ss)(lambda)]}|)_(-1)^1 = 0,
+    &lr(f(lambda)  {tilde(a)(x, lambda) g(lambda) P_(ss)(lambda) - 
+    1/2 partial_lambda [tilde(d)(x, lambda) g(lambda) P_(ss)(lambda)]}|)_(-1)^1, \
+      &= lr(f(lambda)  {tilde(a)(x, lambda) g(lambda) P_(ss)(lambda) - 
+    1/2 partial_lambda g(lambda) tilde(d)(x, lambda) g(lambda) P_(ss)(lambda) - g(lambda) partial_lambda [tilde(d)(x, lambda)  P_(ss)(lambda)]}|)_(-1)^1, \
+      &= lr(f(lambda) g(lambda) {tilde(a)(x, lambda)  P_(ss)(lambda) 
+      -  partial_lambda [tilde(d)(x, lambda)  P_(ss)(lambda)]}|)_(-1)^1 = 0,
   $
   where we have used $partial_lambda g(pm 1) = 0$ and the condition in @eq-db-on-lam. Expanding the integrand of the first integral gives
 
   $
-    f(lambda)  partial_lambda [g(lambda) tilde(a)(t, x, lambda) P_(ss)(lambda)] = 
-    f(lambda) [partial_lambda g(lambda) tilde(a)(t, x, lambda)  P_(ss)(lambda) + g(lambda)partial_lambda [tilde(a)(t, x, lambda) P_(ss)(lambda)]],
+    f(lambda)  partial_lambda [g(lambda) tilde(a)(x, lambda) P_(ss)(lambda)] = 
+    f(lambda) [partial_lambda g(lambda) tilde(a)(x, lambda)  P_(ss)(lambda) + g(lambda)partial_lambda [tilde(a)(x, lambda) P_(ss)(lambda)]],
   $
   similarlay for the second integrand
   $
-    1/2 f(lambda) partial^2_(lambda lambda) [d(t, x, lambda) g(lambda) P_(ss)(lambda)]  &= 
+    1/2 f(lambda) partial^2_(lambda lambda) [d(x, lambda) g(lambda) P_(ss)(lambda)]  &= 
     1/2 f(lambda) {
-      partial^2_(lambda lambda) g(lambda) tilde(d)(t, x, lambda)  P_(ss)(lambda) \
-        &+ 2 partial_lambda g(lambda) partial_lambda [tilde(d)(t, x, lambda)  P_(ss)(lambda)]  \
-        &+ g(lambda) partial^2_(lambda lambda) [tilde(d)(t, x, lambda)  P_(ss)(lambda)] }.
+      partial^2_(lambda lambda) g(lambda) tilde(d)(x, lambda)  P_(ss)(lambda) \
+        &+ 2 partial_lambda g(lambda) partial_lambda [tilde(d)(x, lambda)  P_(ss)(lambda)]  \
+        &+ g(lambda) partial^2_(lambda lambda) [tilde(d)(x, lambda)  P_(ss)(lambda)] }.
   $
 
   The coeffcients of $g(lambda)$ vanish due to the steady-state condition on $P_(ss)(lambda)$, ie. $(cal(A)^(*)_x P_(ss))(lambda) = 0$, leaving
   $
-    &1/2 f(lambda) partial^2_(lambda lambda) [d(t, x, lambda) g(lambda) P_(ss)(lambda)] - f(lambda)  partial_lambda [g(lambda) tilde(a)(t, x, lambda) P_(ss)(lambda)] \
+    &1/2 f(lambda) partial^2_(lambda lambda) [d(x, lambda) g(lambda) P_(ss)(lambda)] - f(lambda)  partial_lambda [g(lambda) tilde(a)(x, lambda) P_(ss)(lambda)] \
       &= f(lambda) lr({
-        partial_lambda g(lambda) [tilde(a)(t, x, lambda)
-      + 1/2 partial^2_(lambda lambda) g(lambda) tilde(d)(t, x, lambda) ] P_(ss)(lambda)  \
-            &quad  quad quad  - 2 partial_lambda g(lambda) [tilde(a)(t, x, lambda) P_(ss)(lambda) - 1/2 partial_lambda [tilde(d)(t, x, lambda)  P_(ss)(lambda)]]
+        partial_lambda g(lambda) [tilde(a)(x, lambda)
+      + 1/2 partial^2_(lambda lambda) g(lambda) tilde(d)(x, lambda) ] P_(ss)(lambda)  \
+            &quad  quad quad  - 2 partial_lambda g(lambda) [tilde(a)(x, lambda) P_(ss)(lambda) - 1/2 partial_lambda [tilde(d)(x, lambda)  P_(ss)(lambda)]]
       }).
   $
 
@@ -1237,6 +1375,8 @@ L^2_(P_t))$ and $l2norm(., L^2_(P_t), ,)$ where $P_t in dom(cal(A)^*_x)$.
   $
 
 ]
+
+
 
 #todo[
   add text here to say we need to introduce this theorem without proof, for the proof see .... 
@@ -1253,17 +1393,17 @@ L^2_(P_t))$ and $l2norm(., L^2_(P_t), ,)$ where $P_t in dom(cal(A)^*_x)$.
 
   $
     integral_(-1)^(1) f^2(lambda) P_t (lambda) dif lambda <= 1/kappa integral_(-1)^(1) [partial_lambda f(lambda)]^2 d(lambda) P_t (lambda) dif lambda,
-  $<eq-poincare-bound-def>
+  $<eq-poincare-bound-def-x>
 
 where $kappa = (C_1 C_2) \/ 2$.
-]<thm-poincare-ineq>
+]<thm-poincare-ineq-x>
 
 #proof[
   By the fudnemental thorem of calculus we have
   $
     f(a) - f(b) = integral_a^b partial_lambda f(lambda) dif lambda.
   $
-  Integrating both sides by $P_t (b)$ and integrating over the support gives
+  Multiplying both sides by $P_ss (b)$ and integrating over the support gives
   $
     integral_(-1)^(1) f(a)P_t (b) dif b - integral_(-1)^(1) P_t (b) f(b) dif b = integral_(-1)^(1) P_t (b) integral_a^b partial_lambda f(lambda) dif lambda  dif b, 
   $
@@ -1286,7 +1426,7 @@ where $kappa = (C_1 C_2) \/ 2$.
       integral_(-1)^(1) |partial_lambda f(lambda) |^2 dif lambda dif b), \
       &<=  
       2 lr(integral_(-1)^(1) lr([partial_lambda f(lambda) ])^2 dif lambda) .
-  $<eq-mod-f-bound>
+  $<eq-mod-f-bound-x>
 
   To obtain the desired bound from @eq-mod-f-bound, we simply multiply both by
   $P_t (a)$ and integrate over the interval to get
@@ -1304,54 +1444,10 @@ where $kappa = (C_1 C_2) \/ 2$.
 
 
 
->>>>>>> 6b6895a0bf051c646395a597f8e30090e48abf54
-Since @thm-poincare-ineq relies on bounding the diffusion coefficient, in order
-for us to to apply it we must bound
-
-$
-  tilde(d)(t, x, lambda) eqdef partial_x sigma(x)^tns tilde(b)(t, x, lambda)  tilde(b)(t, x, lambda)^tns partial_x sigma(x).
-$<eq-d-tilde-def>
-
-Indeed $tilde(d)$ as well as the coefficients $tilde(a)$, $tilde(b)$ can all b
-can all be bounded from above as the inherit the conditions of $a$ and $b$ as
-laid out in @def-ns-gen-sde. We summarise these in the next lemma as they will
-then be used in the later results.
-
-
-#lemma(title: [Linear growth of the interpolated drift and noise amplitude])[
-
-  #todo[
-    add all of the bounds
-  ]
-
-  Let $lambda in [-1, 1]$ and satisfies the bound
-
-  $
-    |a(t, x, lambda)| + |b(t, x, lambda)| <= C (1 - |x|)
-  $
-  for some $C$ 
-
-  $
-
-    
-  $
-]<lem-lin-grow-conv>
-#proof[
-  $
-    |a(t, x, lambda)| + |b(t, x, lambda)| &<= |a^+(t, x)| + |a^-(t, x)| + |b^+(t, x)| + |b^-(t, x)|, \
-      &<=  C^+_t (1 - |x|) + C^-_t (1 - |x|), \
-      &<=  C_t (1 - |x|) 
-  $
-  #todo[complete the proof!]
-]
-
-
-
-
 
 #theorem(title: [Poincaré inequality])[
 
-  Let $P_t: [-1, 1] -> (0, oo)$ be a probability density and $d: [-1, 1] -> (0, oo)$ satisfy $d(lambda) >= C_1 > 0$ and $P_t (lambda) >= C_2 > 0$ for all $lambda in [-1, 1]$. Then for all $f in C^1([-1, 1])$ with $integral_(-1)^(1) f(lambda) P_t (lambda) dif lambda = 0$ 
+  Let $P_t: [-1, 1] -> (0, oo)$ be a probability density and $d: [-1, 1] -> (0, oo)$ satisfy $d: [-1, 1](lambda) >= C_1 > 0$ and $P_t (lambda) >= C_2 > 0$ for all $lambda in [-1, 1]$. Then for all $f in C^1([-1, 1])$ with $integral_(-1)^(1) f(lambda) P_t (lambda) dif lambda = 0$ 
 
   $
     integral_(-1)^(1) f^2(lambda) P_t (lambda) dif lambda <= 1/kappa integral_(-1)^(1) [partial_lambda f(lambda)]^2 d(lambda) P_t (lambda) dif lambda,
@@ -1426,13 +1522,13 @@ where $kappa = (C_1 C_2) \/ 2$.
   We need only show that 
   $
     inprod(-cal(A)_x f, f, L^(2)_(P_ss)) =  1/kappa
-    integral_(-1)^1  [partial_lambda f(lambda)]^2 tilde(d)(t, x, lambda) P_ss (lambda) dif lambda,
+    integral_(-1)^1  [partial_lambda f(lambda)]^2 tilde(d)(x, lambda) P_ss (lambda) dif lambda,
   $
 
   as the @thm-poincare-ineq bounds the 
   
   $
-    - integral_(-1)^(1) partial_lambda f(lambda)  tilde(a)(t, x, lambda) + 1/2 partial^2_(lambda lambda) f(lambda) tilde(d)(t, x, lambda) P_ss (lambda) dif lambda = integral_(-1)^1 d(t, x, lambda) [partial_lambda f(lambda)]^2 P_ss (lambda) dif lambda
+    - integral_(-1)^(1) partial_lambda f(lambda)  tilde(a)(x, lambda) + 1/2 partial^2_(lambda lambda) f(lambda) tilde(d)(x, lambda) P_ss (lambda) dif lambda = integral_(-1)^1 d(x, lambda) [partial_lambda f(lambda)]^2 P_ss (lambda) dif lambda
   $
 
   then the rest follows via @thm-poincare-ineq

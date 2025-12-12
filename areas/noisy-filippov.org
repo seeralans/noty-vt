@@ -531,6 +531,7 @@ condition for $\bar{\lambda}(x) = \lambda^{*}(x)$ would be to have equal noise
 amplitudes on either side of the discontinuity.
 
 
+
 * Example
 Let us start of with the following simple example inspired by the microtubule project
 #+name: eq-sde-linear
