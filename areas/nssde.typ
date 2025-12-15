@@ -111,7 +111,9 @@
 #set text(lang: "en")
 
 #title[On stochastic differential equations with piecewise smooth drift and
-  noise amplitudes.]
+  noise coefficients.]
+
+
 
 #outline()
 
@@ -126,7 +128,7 @@ models. The resulting SDEs have two key features:
 1. *Piecewise-smooth drift*: The deterministic dynamics has a discontinuity
    across a codimension-one switching manifold
 
-2. *Multiplicative noise*: The noise amplitude depends on the state inherited
+2. *Multiplicative noise*: The noise coefficient depends on the state inherited
    from the underlying CME
 
 Our goal is to compute the Gaussian envelope of fluctuations around deterministic
@@ -148,14 +150,17 @@ coefficients. Extensions to piecewise-smooth systems include:
 - *Hill-Zanetell-Gemmer* @hilletal2022: Most probable paths via
   with mollification (smearing the shit out of), additive noise only
 
-The gap: No existing work treats *multiplicative noise* with *discontinuous
-diffusion coefficient* and derives the *Gaussian fluctuation structure* near the
-switching manifold.
+
+The gap: No existing work treats multiplicative noise with discontinuous
+diffusion coefficient and derives the Gaussian fluctuations near the
+switching manifold. None have ever attempted to resolve the case when we have
+hidden dynamics. 
+- this requries one to obtain estimates for higher moments of $lambda$ not just the mean
 
 == Main Contributions
 
-1. Derivation of the switching variable dynamics via Meyer-Itô calculus
-2. Analysis of the fast Fokker-Planck equation with reflecting boundaries
+1. Derivation of the switching variable dynamics via Meyer-Itō
+2. Rigourous derivation of the fast Fokker-Planck equation with reflecting boundaries, via intermediate timescale
 3. Averaging principle for the slow dynamics
 4. Explicit formula for the Gaussian envelope including contributions from
    switching variable fluctuations
@@ -165,11 +170,11 @@ switching manifold.
 == Literature Gap
 
 The Freidlin-Wentzell theory of large deviations @freidlinwentzell1998book deals
-with weak noise SDEs with smooth drift and noise amplitude.
+with weak noise SDEs with smooth drift and noise coefficient.
 
 
 
-== Background <sec-background>
+= Background <sec-background>
 
 #definition(title: [Piecewise-smooth ODE])[ 
 
@@ -189,8 +194,12 @@ $
    &1 quad sigma(x) > 0 ,
   -&1 quad sigma(x) < 0 ,
 )
-
 $<eq-lam-def>
+
+$
+  a(x, lambda)  =  1/2 (1 + lambda) a_+ (x) + 1/2 (1 - lambda) a_- (x) + (1 - lambda^2) h(x)
+$
+
 
 
 = Piecewise-Smooth Stochastic Differential Equations
@@ -253,12 +262,12 @@ solutions. In other words away from $cal(D)$, one can employ standard methods of
 SDE theory to analyse the dynamics, while near the discontinuity one can The
 stochastic integral in @eq-gen-sde is understood in the α–sense, i.e. with
 evaluation point $(1 - alpha) x_t + alpha x_(t+ Delta t)$. While the recasting
-of typical $alpha$-SDE into an Ito form is straight forward, see for example,
+of typical $alpha$-SDE into an Itō form is straight forward, see for example,
 @oksendal2013book or @gardiner2009book, one cannot naively follow the procedure
-here as the noise amplitude does not have a continuous derivative.
+here as the noise coefficient does not have a continuous derivative.
 
 Instead, we must fisrt employ Filippov's convex construction @filippov2013book
-for the drift and noise amplitude, with $lambda in [-1, 1]$ we define the convex
+for the drift and noise coefficient, with $lambda in [-1, 1]$ we define the convex
 combinations
 $
   a(x, lambda) eqdef 1/2(1 + lambda)a^+(x) + 1/2(1 - lambda)a^-(x),
@@ -293,7 +302,7 @@ $
 
 and which affords a precise meaning to the term dynamics near the discontinuity,
 i.e. when $x_t in cal(D)$. These definitions allow as to recast @eq-gen-sde into
-the Ito analgoue
+the Itō analgoue
 
 $
   dif x_t = [a(x_t, lambda_t) + alpha epsilon c(x_t, lambda_t)] dif t + sqrt(epsilon) b(x_t, lambda_t) dif W_t,
@@ -310,10 +319,10 @@ $b(x, lambda)$ and $J_x (dot)$ is the Jacobian matrix of the vector argument
 with respect to $x$. Obiously $lambda$ is itself a stochastic variable since it
 dependends on $x_t$ via $lambda_t = Lambda_(epsilon)[sigma(x_t)]$, and, like its
 deterministic counterpart is dynamic on the the much faster timescale
-$cal(O)(1\/epsilon)$. However, one cannot simply employ Ito's Lemma on $lambda_t
+$cal(O)(1\/epsilon)$. However, one cannot simply employ Itō's Lemma on $lambda_t
 = Lambda_(epsilon)[sigma(x_t)]$ as the latter is not a smooth function of $x_t$.
 Instead to study the dynamics of $lambda_t$ we must first introduce two new
-concepts: local time of a semi-martingale and the Meyer-Ito Theorem.
+concepts: local time of a semi-martingale and the Meyer-Itō Theorem.
 
 Local time of a semi-martingale $x_t$, denoted with $L^x_t (z)$is a measure of
 the "visits" of the proccess on a given value $z$ for times up to $t$. It is
@@ -335,7 +344,7 @@ given via Tanaka's formula which we summarise in the folowing defintion.
 ]
 // #proof(title: [Proof Sketch])[
 // 
-//   Start with a smooth approximation $psi_n$ for $|x - u|$, apply Ito's lemma and
+//   Start with a smooth approximation $psi_n$ for $|x - u|$, apply Itō's lemma and
 //   one would find that
 // 
 //   $
@@ -345,11 +354,11 @@ given via Tanaka's formula which we summarise in the folowing defintion.
 // ]
 
 For derivation and discussion see See Chap. 3 of @karatzasshreve2014book, and
-Chap. IV of @protter2012book. Secondly we require the Meyer-Ito theorem, also
-called the genearlised Ito's formula. We restate it here without the proof which
+Chap. IV of @protter2012book. Secondly we require the Meyer-Itō theorem, also
+called the genearlised Itō's formula. We restate it here without the proof which
 can be found in Theorem 70, Chapter IV of @protter2012book.
 
-#theorem(title: [Meyer-Ito])[ 
+#theorem(title: [Meyer-Itō])[ 
 
   Let $f: RR^d mapsto RR$ be the difference of two convex functions, $f^('-)$
   denote its left derivative, $mu_(f'')$ be signed measure of the second
@@ -363,7 +372,7 @@ can be found in Theorem 70, Chapter IV of @protter2012book.
   @eq-ito-meyer is a Lebesque-Stieltjes integral.
 ]<thm-ito-meyer>
 
-For $f in C^2 [RR^D, RR]$, @thm-ito-meyer redues to Ito's Lemma, 
+For $f in C^2 [RR^D, RR]$, @thm-ito-meyer redues to Itō's Lemma, 
 
 
 
@@ -416,11 +425,11 @@ $
   mu_(Lambda_epsilon^'')(u) = 1/epsilon delta(u + epsilon) - 1/epsilon delta(u - epsilon),
 $<eq-big-lam-sec-deriv>
 
-where $delta(u)$ is the Dirac-delta distribution. In order to apply Meyer-Ito we
+where $delta(u)$ is the Dirac-delta distribution. In order to apply Meyer-Itō we
 also need the dynamics of scalar observable $sigma(x_t)$ which we state in the following lemma.
 #lemma(title: [SDE for $z_t = sigma(x_t)$])[
 
-  Let $lambda in [-1, 1]$, $sigma in C^2(RR^d, RR)$, $x_t$ be an Ito process
+  Let $lambda in [-1, 1]$, $sigma in C^2(RR^d, RR)$, $x_t$ be an Itō process
   according to @eq-ito-sde, supplemented by the conditions in @def-ns-gen-sde,
   then the random variable $z_t = sigma(x_t)$ evolves according to the SDE
 
@@ -439,13 +448,13 @@ also need the dynamics of scalar observable $sigma(x_t)$ which we state in the f
 ]<lem-z-sde>
 #proof[
 
-  This is trivial application of Ito's lemma. Since $sigma(x_t)$ is smooth, apply Ito's lemma to obtain  
+  This is trivial application of Itō's lemma. Since $sigma(x_t)$ is smooth, apply Itō's lemma to obtain  
   $
     dif z_t = partial_x sigma(x_t)^(tns)  dif x_t + dif x_t^(tns)  partial^2_(x x) sigma(x) dif x^tns, 
   $<eq-dz-ito-lemma>
 
   then substritute for $dif x_t$ from @eq-ito-sde into @eq-dz-ito-lemma and
-  apply Ito's product rule.
+  apply Itō's product rule.
 
 ]
 
@@ -594,7 +603,7 @@ a fundemental technical hurdle. We have three contributions to the dynamics of
 $lambda$ that operate on on incompatible scales. Any rescaling followed by
 $epsilon->0$ necessarily discards at least one of these contributions.
 
-=== Objection II: Loss of physical interpretation.
+=== Objection II: Loss of physical interpretation. Not a good reason
 
 Even granting mathematical well-posedness, the $epsilon -> 0$ limit produces an
 object whose physical meaning has degenerated. As $epsilon -> 0$:
@@ -603,25 +612,25 @@ object whose physical meaning has degenerated. As $epsilon -> 0$:
   the codimension-1 surface $cal(D) = {x : sigma(x) = 0}$.
 
 + The switching variable $lambda in [-1, 1]$ parametrises a convex interpolation
-  between the vector fields $a^pm$ and noise amplitudes $b^pm$. This
+  between the vector fields $a^pm$ and noise coefficients $b^pm$. This
   interpolation only has meaning within the layer, where the dynamics
   transitions between the two regimes.
 
 + The stationary distribution $P_(ss)^epsilon (lambda | x)$ converges
   to some limiting distribution on $[-1, 1]$, but this limit lives on a domain
-  whose connection to the original geometry has been severed.
+  whose connection to the original geometry has been los.
 
 In the deterministic case, the $epsilon -> 0$ limit yields a single value
 $lambda^* (x)$ i.e. the Filippov sliding mode (see @sec-background). In that
 case, interpretation is clear, $lambda^*$ selects the unique convex combination
 that keeps trajectories on the discontinuity surface.
 
-In the stochastic scenario,, even in the limit $epsilon -> 0$, one retains a
-distribution over $lambda$ rather than a single value. But what is this
-distribution the distribution _of_, when the layer on which $lambda$ was defined
-has vanished? The switching variable was introduced to parametrise dynamics
-within $cal(D)_epsilon$; without the layer, $lambda$ becomes an abstract
-coordinate detached from the underlying phase space.
+// In the stochastic scenario,, even in the limit $epsilon -> 0$, one retains a
+// distribution over $lambda$ rather than a single value. But what is this
+// distribution the distribution _of_, when the layer on which $lambda$ was defined
+// has vanished? The switching variable was introduced to parametrise dynamics
+// within $cal(D)_epsilon$; without the layer, $lambda$ becomes an abstract
+// coordinate detached from the underlying phase space.
 
 ==== Objection III: Incompatibility with weak-noise analysis.
 
@@ -631,12 +640,11 @@ asymptotic expansion. The objects of interest are beyon the typcal paths,
 obtained by minimising the Freidlin-Wentzell action functional or analgously the
 deterministic limit $epsilon -> 0$, instead we are interested in charertising
 the Gaussian fluctuations around the most probable path, arising at order
-$cal(O)(sqrt(epsilon))$. These phenomena are intrinsically $epsilon$-dependent.
-The noise is not a nuisance to be eliminated but rather the object of study. The
-stationary distribution $P_(ss)(lambda | x)$ at finite $epsilon$
-encodes how noise selects among the continuum of Filippov solutions, how it
-smooths the transition across $cal(D)$, and what the fluctuation structure looks
-like near the discontinuity.
+$cal(O)(sqrt(epsilon))$. These phenomena are intrinsically $epsilon$-dependent
+and the noise is the object of study. The stationary distribution $P_(ss)(lambda
+| x)$ at finite $epsilon$ encodes how noise selects among the continuum of
+Filippov solutions, how it smooths the transition across $cal(D)$, and what the
+fluctuation structure looks like near the discontinuity.
 
 Taking $epsilon -> 0$ in the fast dynamics collapses this structure to a
 deterministic Filippov vector field. Thus it eliminates the noise-induced
@@ -645,7 +653,7 @@ discardign the stochastic phenomena and precluding the study of fluctaions which
 we set out to analyse in the first place.
 
 The weak-noise SDE is already the result of retaining terms to second order in
-the noise amplitude. Consistency demands that $epsilon$ be preserved throughout
+the noise coefficient. Consistency demands that $epsilon$ be preserved throughout
 the analysis, including in the treatment of the fast variable.
 
 
@@ -837,7 +845,7 @@ the interval $[t, t + delta]$.
 
   With $x_t = x$ fixed on the interval $t in [t' , t' + delta] subset [0, T]$
   for some $t' in [0, T]$ and $delta>0$, (see @thm-slow-var). Let $f in C^2([-1, 1])$ and set an initial conditoin
-  $lambda_(t') = lambda in [-1, 1]$. Applying Ito's lemma to $f(lambda_t)$ to
+  $lambda_(t') = lambda in [-1, 1]$. Applying Itō's lemma to $f(lambda_t)$ to
   yield
 
   $
@@ -1003,7 +1011,7 @@ P_t (lambda) { partial_x sigma(x_t)^tns a(x, lambda)
   is the scaled probability current, i.e. $J_t (lambda) \/ epsilon$ would be the
   probability current of the process.
 
-]
+]<lem-fwd-gen>
 
 #proof[
 
@@ -1165,7 +1173,7 @@ then be used in the later results.
       &<= 1/2  [(1 + lambda) C_+ + (1 - lambda) C_- ]  (1 + |x|)  \
       &<= (C_+ + C_- )(1 + |x|)    
   $
-  #todo[complete the proof!]
+  #todo[complete the proof! check notebook]
 ]
 
 
@@ -1465,7 +1473,6 @@ where $kappa = (C_1 C_2) \/ 2$.
 ]
 
 
-
 #lemma(title: [Bounding zero-mean observables])[
 
   Let $cal(A)_x$ be the backward generator defined in @eq-bwd-gen in
@@ -1490,7 +1497,7 @@ where $kappa = (C_1 C_2) \/ 2$.
     integral_(-1)^1  [partial_lambda f(lambda)]^2 tilde(d)(x, lambda) P_ss (lambda) dif lambda,
   $
 
-  since from @lem-coeff-bounds that $|tilde(d)(x, lambda)|$ and similarly we now
+  since from @lem-coeff-bounds that $|tilde(d)(x, lambda)|$ and similarly we know
   that $P_ss (lambda)$ is bounded from below from @lem-inv-meas-bound, therefore
   we can direcly apply @thm-poincare-ineq.
   
@@ -1629,15 +1636,53 @@ $delta$ such that $epsilon << delta << 1$ where the following are satisfied:
   obtained from the lower bounds on the invariant measure and $tilde(d)$ bounds
 - mixing bounds on the expectations of observables
 
-
+= Averaging Principle
+We are now ready to introduce the averaging principle for the slow dynamics
 
 #definition(title: [The Reduced SDE])[
 
+  Let $x_t in cal(D)_epsilon$ be a solution of the piecewise-smooth SDE given
+  in @def-ns-gen-sde, and let $lambda in [-1, 1]$ be the switching variable
+  parametrising the convex interpolation
+
   $
-  dif x_t = 
+    a(t, x, lambda) &= 1/2(1 + lambda) a^+(t, x) + 1/2(1 - lambda) a^-(t, x), \
+    b(t, x, lambda) &= 1/2(1 + lambda) b^+(t, x) + 1/2(1 - lambda) b^-(t, x),
   $
 
-]
+  between the piecewise-smooth coefficients $a^pm$ and $b^pm$. Let
+  $P_(upright(s s))(lambda | x)$ denote the stationary distribution of the
+  switching variable conditional on $x$, satisfying $cal(A)_x^* P_(upright(s s))
+  = 0$ with zero-flux boundary conditions (see @lem-fwd-gen). The reduced SDE is
+
+  $
+    dif overline(x)_t = [overline(a)(overline(x)_t) + alpha epsilon overline(c)(overline(x)_t)] dif t + sqrt(epsilon) overline(b)(overline(x)_t) dif W_t,
+  $<eq-reduced-sde>
+
+  where the averaged coefficients are
+
+  $
+    overline(a)(t, x) &= integral_(-1)^(1) a(t, x, lambda) P_(upright(s s))(lambda | t, x) dif lambda, \
+    overline(b)(t, x) &= integral_(-1)^(1) b(t, x, lambda) P_(upright(s s))(lambda | t, x) dif lambda, \
+    overline(c)(t, x) &= integral_(-1)^(1) c(t, x, lambda) P_(upright(s s))(lambda | t, x) dif lambda,
+  $
+
+  and
+
+  $
+    c(x, lambda) = sum_j J_x [b_j (x, lambda)] b_j (x, lambda)
+  $
+
+  is the Itō correction arising from the $alpha$-interpretation of the
+  stochastic integral, with $b_j (x, lambda)$ denoting the $j$-th column of
+  $b(x, lambda)$ and $J_x (dot)$ the Jacobian with respect to $x$.
+
+]<def-reduced-sde>
+
+
+
+Unsurprisingly, without any hidden term in the dynamics we require only the mean from the distribution $P_ss (lambda)$, 
+
 
 
 
