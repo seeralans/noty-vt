@@ -104,7 +104,7 @@
 
 
 #let l2norm(f, mu, p) = {
-  [$|| #f ||^(#p)_(#mu)$]
+  [$||#f ||^(#p)_(#mu)$]
 }
 
 
@@ -237,7 +237,7 @@ amplitude. The following definition formalises this setup.
   1. (A1 - Smoothnes) The constituent coefficients are sufficiently smooth $a^(pm) in C^2(RR^d; RR^d)$ and $b^(pm)in C^2(RR^d; RR^(d times m))$.
 
   2. (A2 - Linear Growth) We have $ ||a^(pm)(x)|| + ||b^(pm)(x)|| <= C^pm (1 +
-  |x|) $ for some $C>0$, where $||a^(pm)(dot, dot)||$ is the Euclidean norm and
+  ||x||) $ for some $C>0$, where $||a^(pm)(dot, dot)||$ is the Euclidean norm and
   $
     ||b^(pm) (dot, dot)|| = sqrt(sum_(i j) |b_(i j) (dot, dot)|^2).
   $
@@ -733,7 +733,7 @@ defines $delta$ as a function of $epsilon$, e.g. $delta(epsilon) =
 epsilon^alpha$, for some $alpha in (0, 1)$.
 
 
-#lemma(title: [Slow variation of $x_t$  in the $delta$-window])[
+#theorem(title: [Slow variation of $x_t$  in the $delta$-window])[
 
   Let $x_t in cal(D)_epsilon$ and $delta>0$ satisfying @eq-delta-scale, then  
   $
@@ -744,7 +744,7 @@ epsilon^alpha$, for some $alpha in (0, 1)$.
   for some $C,gamma>0$.
 ]<thm-slow-var>
 
-#proof(title: [Proof of @thm-slow-var])[
+#proof[
 
   We start by bounding the squared deviation in the $delta$ time window,
   $
@@ -1616,13 +1616,13 @@ where $kappa = (C_1 C_2) \/ 2$.
       &= lr(|integral_(-1)^(1) f(lambda) zeta_t (lambda) P_ss (lambda) dif lambda|) ,\
       &= lr(|inprod(f,  zeta_t,L^2_(P_ss))|) ,\
       &<= l2norm(f, L^2_(P_ss),  ,) l2norm(zeta_t, L^2_(P_ss),  ,) ,\
-      &<= 2 l2norm(f, L^2_(P_ss),  ,) ee^(-kappa t), \
-      &<= 2 sup_(lambda in [-1, 1]) | f(lambda) | ee^(-kappa t).
+      &<=  l2norm(f, L^2_(P_ss),  ,) l2norm(zeta_0, L^2_(P_ss),  ,) ee^(-kappa t), \
+      &<=  sup_(lambda in [-1, 1]) | f(lambda) | l2norm(P_(t) (lambda) - P_(ss) (lambda), L^2_(P_ss),  ,) ee^(-kappa t).
   $
 
   The final supremum bound is of course only meaningful when we have bounded $f$
   on the interval $lambda in [-1, 1]$.
-]
+]<cor-exp-mixing-obs>
 
 
 In summary we have estabilshed the existance of an intermediate timescale
@@ -1656,15 +1656,15 @@ We are now ready to introduce the averaging principle for the slow dynamics
   = 0$ with zero-flux boundary conditions (see @lem-fwd-gen). The reduced SDE is
 
   $
-    dif overline(x)_t = [overline(a)(overline(x)_t) + alpha epsilon overline(c)(overline(x)_t)] dif t + sqrt(epsilon) overline(b)(overline(x)_t) dif W_t,
+    dif y_t = [overline(a)(t, y_t) + alpha epsilon overline(c)(t, y_t)] dif t + sqrt(epsilon)" "overline(b)(t, y_t) dif W_t,
   $<eq-reduced-sde>
 
   where the averaged coefficients are
 
   $
-    overline(a)(t, x) &= integral_(-1)^(1) a(t, x, lambda) P_(upright(s s))(lambda | t, x) dif lambda, \
-    overline(b)(t, x) &= integral_(-1)^(1) b(t, x, lambda) P_(upright(s s))(lambda | t, x) dif lambda, \
-    overline(c)(t, x) &= integral_(-1)^(1) c(t, x, lambda) P_(upright(s s))(lambda | t, x) dif lambda,
+    overline(a)(t, x) &= integral_(-1)^(1) a(t, x, lambda) P_(upright(s s))(lambda |t, x) dif lambda, \
+    overline(b)(t, x) &= integral_(-1)^(1) b(t, x, lambda) P_(upright(s s))(lambda |t, x) dif lambda, \
+    overline(c)(t, x) &= integral_(-1)^(1) c(t, x, lambda) P_(upright(s s))(lambda |t, x) dif lambda,
   $
 
   and
@@ -1683,10 +1683,183 @@ We are now ready to introduce the averaging principle for the slow dynamics
 
 Unsurprisingly, without any hidden term in the dynamics we require only the mean from the distribution $P_ss (lambda)$, 
 
+#lemma(title: [Bounds on average Coefficients])[
+  
+]<lem-avg-coeff-bounds>
+
+
+
+#theorem(title: [Error estimates for the averaged SDE ])[
+
+  Let $x_t$ evolve according to the, let $t in [0, T]$ for some $T>0$, and intiaila condition $x_0 = y_0 in RR^d$
+  $
+    PP[sup_(s in [0, t]) | x_s - y_s| > gamma ] <= C/gamma^2 R(epsilon, delta)
+  $
+
+   
+
+
+  #todo[
+    finish typing out the statment
+  ]
+]
+
+#proof[
+  We know from Markov's inequality that 
+  $
+    PP[sup_(s in [0, t]) | x_s - y_s| > gamma ] <= 1/gamma^2 EE[sup_(s in [0, t]) |x_s - y_s|^2],
+  $
+
+  Let us define $xi_t eqdef x_t - y_t$, which gives us the initial condition $x_0 = 0$
+
+  then substrituting in the definition for the  
+  $
+    xi_t = integral^t_0 a(s, x_s, lambda_s)  - overline(a)(s, y_s) dif s
+    + sqrt(epsilon) integral^t_0 b(s, x_s, y_s) - overline(b)(s, y_s) dif W_s,
+  $
+
+  Note that $lambda_t$ evolves acording to its own SDE given by @eq-lam-sde, but
+  for our purposes of bounding we do not have to explicitly take it into account
+  here in the proof.
+
+  Let us define the following integrands
+
+  $
+    I_a (s) &eqdef a(s, x_s, lambda_s) - overline(a)(s, x_s), \
+    I I_a (s) &eqdef overline(a)(s, x_s) - overline(a)(s, y_s) ,
+  $
+  similarly for the noise coefficient we have
+  $
+    I_b (s) &eqdef b(s, x_s, lambda_s) - overline(b)(s, x_s), \
+    I I_b (s) &eqdef overline(b)(s, x_s) - overline(b)(s, y_s) ,
+  $
+
+  Then consider 
+
+  $
+    ||xi_t||^2 &<= 2 lr(||integral^t_0   I_a (s) + I I_a (s) dif s||)^2
+              + 2 epsilon lr(||integral^t_0   I_b (s) + I I_b (s) dif W_s||)^2, \
+    &<= 2 t integral^t_0   ||I_a (s) + I I_a (s)||^2 dif s
+              + 2 epsilon lr(||integral^t_0   I_b (s) + I I_b (s) dif W_s||)^2 \
+  $
+
+  where in the first instance we have used the inequality $|a + b|^2 <= 2 (|a|^2
+  + |b|^2)$, and in the second case we have used Cauchy-Schwarz. Taking the
+  expectation allows us to use Ito isometry on teh stochastic integral, 
+
+  $
+    EE[ ||xi_t||^2] <= 2 t EE[ integral^t_0   ||I_a (s) + I I_a (s)||^2 dif s]
+    + 2 epsilon EE[integral^t_0   ||I_b (s) + I I_b (s)||^2 dif s],
+  $
+  and using Cauchy-Schwarz again on the intergrand gives
+
+  $
+    EE[||xi_t||^2] <= 2 t EE[ integral^t_0   ||I_a (s)||^2 + ||I I_a (s)||^2 dif s]
+    + 2epsilon EE[integral^t_0   ||I_b (s)||^2 + ||I I_b (s)||^2 dif s].
+  $
+
+  From @lem-avg-coeff-bounds we know that $I I_a (s)$ and $I I_b (s)$ can be
+  bounded as it is is just an application of Lipshitz, 
+
+  $
+    2t || I I_a (s) ||^2 + 2epsilon || I I_b (s) ||^2 &= 2t||overline(a)(s, x_s) - overline(a)(s, y_s) ||^2
+    + 2epsilon||overline(b)(s, x_s) - overline(b)(s, y_s) ||^2 \
+      &<=  2 overline(K)^2 ||xi_(s)||^2(t + epsilon).
+  $ 
+
+  For the other two integrals we consider first the parition of $[0, t]$ into
+  the windows $[k delta, (k+1) delta]$ with $k = 0, 1, ... N-1$ where $N = t\/
+  delta$ and then recasting the integrals as, for example,
+
+  $
+    integral_(0)^(t) ||I_a (s)|| dif s = sum_(k = 0)^(N-1) integral_(k delta)^((k+1)delta) ||I_a (s)|| dif s.
+  $
+
+  We then recast the integrand as
+
+  $
+    I_a (s) = underbrace(a(s, x_s, lambda_s)
+    - a(s, x_(k delta), lambda_s), eqdef J^((1))_(a, k) (s))
+    + underbrace(a(s, x_(k delta), lambda_s)
+    - overline(a)(s, x_(k delta)), eqdef J^((2))_(a, k) (s))
+    + underbrace(overline(a)(s, x_(k delta))
+    - overline(a)(s, x_s), eqdef J^((2))_(a, k) (s))
+  $
+  Clearly,
+  $
+    ||I_a||^2 <= 4 (||J^((1))_(a, k)||^2 + ||J^((2))_(a, k)||^2 + ||J^((3))_(a, k)||^2)
+  $
+
+ Employing the Lipshitz conditions in @def-ns-gen-sde, and @lem-avg-coeff-bounds
+  as well as @thm-slow-var we obtain
+
+  $
+    EE[ ||J^((1))_(a, k)||^2] &<= K^2 EE[ ||x_s - x_(k delta)||^2] &&<=  K^2 C (delta^2 + epsilon delta),  \
+    EE[ ||J^((3))_(a, k)||^2] &<= overline(K)^2 EE[ ||x_s - x_(k delta)||^2] &&<= overline(K)^2 C (delta^2 + epsilon delta).
+  $
+
+  We rewrite $J^((2))_(a, k)(s)$ as
+  $
+    J^((2))_(a, k)(s) = integral_(-1)^(1) a(s, x_(k delta), lambda)  [P_s (lambda | x_(k delta)) - P_s (lambda | x_(k delta))] dif lambda,
+  $
+  and then use @cor-exp-mixing-obs to obtain the bound
+
+  $
+    ||J^((2))_(a, k)(s)||^2 &<= sup_(lambda)  | a(s, x_(k delta),  dot )|  Q ee^(-kappa s ),\
+    &<= 
+  $
+  where $ Q eqdef sup_(x in cal(D)_(epsilon)) l2norm(P_s (lambda | x_(k delta)) - P_ss (lambda | x_(k delta)), L^2_(P_ss),  ,)
+  $ 
+  
+
+
+
+  
+
+
+
+]
+
 
 
 
 #pagebreak()
+= Needs Testing
+#lemma(title: [Concentration of $P_(upright(s s))$ at tangency])[
+
+  Let $x in cal(D)_epsilon$ and suppose the transversality condition (A4) holds.
+  Define
+
+  $
+    nu^pm (x) = partial_x sigma(x)^tns a^pm (x),
+  $
+
+  the normal components of the drift at $x$. Then:
+
+  + If $nu^+ (x) < 0$ and $nu^- (x) > 0$ (sliding region), $P_(upright(s s))(lambda | x)$
+    has support on $(-1, 1)$ with a density bounded away from zero.
+
+  + If $nu^+ (x) -> 0$ with $nu^- (x) > 0$ fixed, then $P_(upright(s s))(lambda | x) ->
+    delta_(lambda = 1)$ weakly.
+
+  + If $nu^- (x) -> 0$ with $nu^+ (x) < 0$ fixed, then $P_(upright(s s))(lambda | x) ->
+    delta_(lambda = -1)$ weakly.
+
+  + If $nu^+ (x) > 0$ or $nu^- (x) < 0$ (crossing region), the process exits
+    $cal(D)_epsilon$ in finite time and no stationary distribution exists.
+
+  In cases (ii) and (iii), the averaged coefficients satisfy
+
+  $
+    overline(a)(x) -> a^pm (x), quad overline(b)(x) -> b^pm (x),
+  $
+
+  recovering the smooth dynamics on the corresponding side of $cal(D)$.
+
+]<lem-tangency-concentration>
+
+#pagebreak()
+
 #bibliography("fixlib.bib")   
 
 // Local Variables:
