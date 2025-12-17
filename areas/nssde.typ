@@ -16,7 +16,7 @@
   // customize `highlight` color
   hl: theme-color.muted.yellow,
   // is the document printable?
-  print: false,
+  print: true,
 )
 
 
@@ -104,7 +104,7 @@
 
 
 #let l2norm(f, mu, p) = {
-  [$||#f ||^(#p)_(#mu)$]
+  [$|#f|^(#p)_(#mu)$]
 }
 
 
@@ -1243,7 +1243,7 @@ then be used in the later results.
 
 
   $
-    (tilde(C)_12 (x) exp[-tilde(C)_12 (x)(1 + 4 |lambda|)]) / sinh(tilde(C)_12 (x)) <= P_ss (lambda)
+    (tilde(C)_12 (x) exp[-tilde(C)_12 (x)(1 + 4 |lambda|)]) / sinh(tilde(C)_12 (x)) <= P_ss (lambda | x)
    <= (tilde(C)_12 (x) exp[tilde(C)_12 (x)(1 + 4 |lambda|)]) / sinh(tilde(C)_12 (x)) 
 
   $
@@ -1564,10 +1564,10 @@ where $kappa = (C_1 C_2) \/ 2$.
   bounded from below by $P_ss (lambda) >= C_1 > 0$ and let the coefficient
   $|tilde(d)(x, lambda)| >= C_2 > 0$ defined in @eq-d-tilde-def, be uniformaly
   bounded from below. Then for any $t in [0, T]$, and for any measurable $A
-  subset [-1, 1]$, there exisits $kappa>0$ and $C > 0$ such that
+  subset [-1, 1]$, there exisits $kappa(x)>0$ and $C(x) > 0$ such that
 
   $
-    lr(| integral_A P_(t) (lambda | x) dif lambda - integral_A P_(ss)(lambda | x)dif lambda |) <= C ee^(-kappa t).
+    lr(| integral_A P_(t) (lambda | x) dif lambda - integral_A P_(ss)(lambda | x)dif lambda |) <= C(x) ee^(-kappa(x) t).
   $
 ]<thm-exp-mixing>
 
@@ -1597,13 +1597,26 @@ where $kappa = (C_1 C_2) \/ 2$.
   Then by Gronwall's inequality, 
 
   $
-    l2norm(zeta_t, L^2_(P_ss),  ,) <= l2norm(zeta_0, L^2_(P_ss),  ,) ee^(- kappa t),
+    l2norm(zeta_t, L^2_(P_ss),  ,) <= l2norm(zeta_0, L^2_(P_ss),  ,) ee^(- kappa t).
   $
 
-  defining $C = l2norm(zeta_0, L^2_(P_ss),  ,)$ yields the relation in the lemma.
+  We know from @lem-inv-meas-bound that $0 < C(x) <= P_ss (lambda | x)$, hence
+
+  $
+    l2norm(zeta_0, L^2_(P_ss), 2,) &= integral^(1)_(-1)
+    [P_0 (lambda | x) - P_ss (lambda)]^2 / (P^2_(ss)(lambda |x))
+    P_ss (lambda | x) dif lambda, \
+      &<= 1/(C_(P)(x)) integral^(1)_(-1)
+    P^2_0 (lambda | x) + P^2_ss (lambda | x) dif lambda \
+      &<= 2/(C_(P)(x))\
+  $
+
+  defining $C(x) = sqrt(2 \/ C_(P)(x))$ yields the relation in the lemma.
 ]
 
+#corollary(title: [upper on probability])[
 
+]
 
 #corollary(title: [Bound on expectations])[
 
@@ -1800,22 +1813,17 @@ Unsurprisingly, without any hidden term in the dynamics we require only the mean
 
   We rewrite $J^((2))_(a, k)(s)$ as
   $
-    J^((2))_(a, k)(s) = integral_(-1)^(1) a(s, x_(k delta), lambda)  [P_s (lambda | x_(k delta)) - P_s (lambda | x_(k delta))] dif lambda,
+    J^((2))_(a, k)(s) &= integral_(-1)^(1) a(s, x_(k delta), lambda)  [P_s (lambda | x_(k delta)) - P_ss (lambda | x_(k delta))] dif lambda \
+      &= inprod(a(s, x_(k delta), dot), zeta_s  , L^2_(P_ss)) \
+      &<= l2norm(a(s, x_(k delta), dot), L^2_(P_ss), 2) l2norm(zeta_s, L^2_(P_ss), 2) \
+      &<= l2norm(a(s, x_(k delta), dot), L^2_(P_ss), 2) l2norm(zeta_(k delta), L^2_(P_ss), 2) \
+      &<= Q(x_(k delta))/2 (1 + ||x_(k delta)||) ,
   $
-  and then use @cor-exp-mixing-obs to obtain the bound
-
+  where $zeta_s = [P_s (lambda | x_(k delta)) - P_ss (lambda | x_(k delta))] \/ P_ss (lambda | x_(k delta))$ (from @thm-exp-mixing) and with $Q(x_(k delta)) \/ 2 >= l2norm(zeta_(k delta), L^2_(P_ss),  ,)$. Then we have
   $
-    ||J^((2))_(a, k)(s)||^2 &<= sup_(lambda)  | a(s, x_(k delta),  dot )|  Q ee^(-kappa s ),\
-    &<= 
+    EE[ ||J^((2))_(a, k)(s)||^2] <= 
   $
-  where $ Q eqdef sup_(x in cal(D)_(epsilon)) l2norm(P_s (lambda | x_(k delta)) - P_ss (lambda | x_(k delta)), L^2_(P_ss),  ,)
-  $ 
   
-
-
-
-  
-
 
 
 ]
@@ -1825,38 +1833,38 @@ Unsurprisingly, without any hidden term in the dynamics we require only the mean
 
 #pagebreak()
 = Needs Testing
-#lemma(title: [Concentration of $P_(upright(s s))$ at tangency])[
-
-  Let $x in cal(D)_epsilon$ and suppose the transversality condition (A4) holds.
-  Define
-
-  $
-    nu^pm (x) = partial_x sigma(x)^tns a^pm (x),
-  $
-
-  the normal components of the drift at $x$. Then:
-
-  + If $nu^+ (x) < 0$ and $nu^- (x) > 0$ (sliding region), $P_(upright(s s))(lambda | x)$
-    has support on $(-1, 1)$ with a density bounded away from zero.
-
-  + If $nu^+ (x) -> 0$ with $nu^- (x) > 0$ fixed, then $P_(upright(s s))(lambda | x) ->
-    delta_(lambda = 1)$ weakly.
-
-  + If $nu^- (x) -> 0$ with $nu^+ (x) < 0$ fixed, then $P_(upright(s s))(lambda | x) ->
-    delta_(lambda = -1)$ weakly.
-
-  + If $nu^+ (x) > 0$ or $nu^- (x) < 0$ (crossing region), the process exits
-    $cal(D)_epsilon$ in finite time and no stationary distribution exists.
-
-  In cases (ii) and (iii), the averaged coefficients satisfy
-
-  $
-    overline(a)(x) -> a^pm (x), quad overline(b)(x) -> b^pm (x),
-  $
-
-  recovering the smooth dynamics on the corresponding side of $cal(D)$.
-
-]<lem-tangency-concentration>
+// #lemma(title: [Concentration of $P_(upright(s s))$ at tangency])[
+// 
+//   Let $x in cal(D)_epsilon$ and suppose the transversality condition (A4) holds.
+//   Define
+// 
+//   $
+//     nu^pm (x) = partial_x sigma(x)^tns a^pm (x),
+//   $
+// 
+//   the normal components of the drift at $x$. Then:
+// 
+//   + If $nu^+ (x) < 0$ and $nu^- (x) > 0$ (sliding region), $P_(upright(s s))(lambda | x)$
+//     has support on $(-1, 1)$ with a density bounded away from zero.
+// 
+//   + If $nu^+ (x) -> 0$ with $nu^- (x) > 0$ fixed, then $P_(upright(s s))(lambda | x) ->
+//     delta_(lambda = 1)$ weakly.
+// 
+//   + If $nu^- (x) -> 0$ with $nu^+ (x) < 0$ fixed, then $P_(upright(s s))(lambda | x) ->
+//     delta_(lambda = -1)$ weakly.
+// 
+//   + If $nu^+ (x) > 0$ or $nu^- (x) < 0$ (crossing region), the process exits
+//     $cal(D)_epsilon$ in finite time and no stationary distribution exists.
+// 
+//   In cases (ii) and (iii), the averaged coefficients satisfy
+// 
+//   $
+//     overline(a)(x) -> a^pm (x), quad overline(b)(x) -> b^pm (x),
+//   $
+// 
+//   recovering the smooth dynamics on the corresponding side of $cal(D)$.
+// 
+// ]<lem-tangency-concentration>
 
 #pagebreak()
 
