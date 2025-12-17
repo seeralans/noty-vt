@@ -1866,6 +1866,8 @@ Unsurprisingly, without any hidden term in the dynamics we require only the mean
 // 
 // ]<lem-tangency-concentration>
 
+- whether we obtain the limits $P_ss -> delta(lambda pm 1)$ at the tangency points, in reverse time an forward time and backward w.r.t entry and exit points,  
+  - Ovs i only needs to check one of the cases, then by time reversal symmetry the other will also hold. 
 #pagebreak()
 
 #bibliography("fixlib.bib")   
