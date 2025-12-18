@@ -693,10 +693,10 @@ the analysis, including in the treatment of the fast variable.
 // distribution:
 // 
 $
-  macron(a)(x) = integral_(-1)^1 a(t, x, lambda) P_(ss)(lambda | x) dif lambda,
-  quad
-  macron(b)(x) = integral_(-1)^1 b(t, x, lambda) P_(ss)(lambda | x) dif lambda.
-$<eq-averaged-coeffs>
+//   macron(a)(x) = integral_(-1)^1 a(t, x, lambda) P_(ss)(lambda | x) dif lambda,
+//   quad
+//   macron(b)(x) = integral_(-1)^1 b(t, x, lambda) P_(ss)(lambda | x) dif lambda.
+// $<eq-averaged-coeffs>
 // 
 // The resulting equation,
 // 
