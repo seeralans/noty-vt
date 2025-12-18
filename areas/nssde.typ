@@ -17,7 +17,7 @@
   // customize `highlight` color
   hl: theme-color.muted.yellow,
   // is the document printable?
-  print: true,
+  print: false,
 )
 
 
@@ -1038,11 +1038,14 @@ P_t (lambda) { partial_x sigma(x_t)^tns a(t, x, lambda)
         ].
   $<eq-forward-generator-final>
 
-  This is also called the Fokker–Planck or Kolmogorov forward operator
-  associated with the dynamics of the switching variable $lambda_t$ conditional
-  on $x_t = x in cal(D)_(epsilon)$. Substituting the definitions @eq-a-tilde-def
+Substituting the definitions @eq-a-tilde-def
   @eq-b-tilde-def yields the defnition give in the lemma.
 ]
+
+The operator $cal(A)^*_x$ is also called the Fokker–Planck or Kolmogorov forward
+operator associated with the dynamics of the switching variable $lambda_t$, in
+our case however, it is conditional on $x_t = x in cal(D)_(epsilon)$. 
+
 
 #remark[
 
@@ -1062,7 +1065,16 @@ P_t (lambda) { partial_x sigma(x_t)^tns a(t, x, lambda)
 ]<rem-db-lam>
 
 
-== Bounds on various coefficients
+== Bounds on the density of the switching variables
+
+#todo[
+
+  add stuff to say in this section we want obtain estimates of the density, and
+  to do that we will start with the bounds on the coefficients.
+
+]
+
+
 Let us recapitulate the various coefficients that we discussed: $a^pm (t, x)$
 and $b^pm (t, x)$ are the drift and noise coefficients for the SDE on either
 side of the discontinuity from @def-ns-gen-sde; $a(t, x, lambda)$ and $b(t, x,
@@ -1145,7 +1157,12 @@ in the later results.
 ]
 
 
-#lemma(title: [Invariant Measure])[
+#lemma(title: [Invariant density of the switching variable])[
+
+  
+  #todo[
+    convert this into an non autonomous,  The statement should say something like fixing the coefficients $tilde(a)$ and $tilde(b)$. 
+  ]
 
   Let $x_t = x in cal(D)_epsilon$ be fixed (see @thm-slow-var), and let the
  forward generator of $A^*_x$ of $lambda_t$ be define in @eq-fwd-gen, then the
@@ -1202,6 +1219,38 @@ in the later results.
   invariant density gives @eq-p-inv-norm-const.
   
 ]
+
+
+#lemma(title: [Instantaneous smoothing of the switching variable density])[
+
+
+  Let $x in cal(D)_(epsilon)$ fixed, and let $lambda_t$ ​ evolve according to the
+  SDE with forward generator $A^*_x$ given by @lem-fwd-gen, let the diffusion
+  coefficient satisfies $tilde(d)(t,x,lambda)≥C_2>0$ and let $lambda_0 in [-1,
+  1]$ be any initial conditions giving a Dirac distribtion for the intial
+  profile. Then for any $tau>0$, the occupation probability density of
+  $P_(tau)(lambda_(tau) | x, lambda_0)$​ satisfies
+
+  $
+    R_("L")/sqrt(tau) exp[-(C'_(1)(lambda -lambda_0)^2 )/ tau] <= P_(tau)(lambda_(tau) | x, lambda_0) <= R_("U") / sqrt(tau) exp[-(C'_(1)(lambda - lambda_0)^2 )/ tau]
+  $
+  where $R_L$, $R_U$, $C'_(1)$  and $C'_(1)$ constants that depends on ... 
+  #todo[
+    add the constant dependence
+  ]
+
+]
+
+#proof[
+  The proof is a direct consequence from Aronson,  Theorem 1 in @aronson1967
+
+
+  #todo[
+    I dont need this I can justy use Nashs result cited in @aronson1967 6.
+  ] 
+]
+
+
 
 #lemma(title: [Bounds on the Invariant Measure])[
 
@@ -1528,18 +1577,20 @@ where $kappa = (C_1 C_2) \/ 2$.
 ]
 
 
+
 #theorem(title: [Exponential mixing of the switching variable])[
 
   Let $x in cal(D)_epsilon$ be fixed, let $P_t in dom(cal(A))^*_x$ represent the
   occupation probability density of $lambda$ conditioned on $x$, let $P_ss$ be
   the invariant density, i.e $(cal(A)^*_x P_ss)(lambda) = 0$ which is uniformly
-  bounded from below by $P_ss (lambda) >= C_1 > 0$ and let the coefficient
-  $|tilde(d)(t, x, lambda)| >= C_2 > 0$ defined in @eq-d-tilde-def, be uniformaly
-  bounded from below. Then for any $t in [0, T]$, and for any measurable $A
-  subset [-1, 1]$, there exisits $kappa(x)>0$ and $C(x) > 0$ such that
+  bounded from below by $P_ss (lambda) >= C_1 > 0$ and let the diffusion
+  coefficient satisfy $|tilde(d)(t, x, lambda)| >= C_2 > 0$ defined in
+  @eq-d-tilde-def, be uniformaly bounded from below. Then for any $t, t_0 in [0,
+  T]$ such that $0 < t_0 <= t$, and for any measurable $A subset [-1, 1]$, there
+  exisits $kappa(x)>0$ and $C(x) > 0$ such that
 
   $
-    lr(| integral_A P_(t) (lambda | x) dif lambda - integral_A P_(ss)(lambda | x)dif lambda |) <= C(x) ee^(-kappa(x) t).
+    lr(| integral_A [P_(t) (lambda | x) dif lambda - P_(ss)(lambda | x)]dif lambda |) <= C(x) ee^(-kappa(x) (t - t_0)).
   $
 ]<thm-exp-mixing>
 
@@ -1569,17 +1620,17 @@ where $kappa = (C_1 C_2) \/ 2$.
   Then by Gronwall's inequality, 
 
   $
-    l2norm(zeta_t, L^2_(P_ss),  ,) <= l2norm(zeta_0, L^2_(P_ss),  ,) ee^(- kappa t).
+    l2norm(zeta_t, L^2_(P_ss),  ,) <= l2norm(zeta_(t_0), L^2_(P_ss),  ,) ee^(- kappa (t - t_0)).
   $
 
   We know from @lem-inv-meas-bound that $0 < C_P (x) <= P_ss (lambda | x)$, hence
 
   $
     l2norm(zeta_0, L^2_(P_ss), 2,) &= integral^(1)_(-1)
-    [P_0 (lambda | x) - P_ss (lambda)]^2 / (P^2_(ss)(lambda |x))
+    [P_(t_0) (lambda | x) - P_ss (lambda)]^2 / (P^2_(ss)(lambda |x))
     P_ss (lambda | x) dif lambda, \
       &<= 1/(C_(P)(x)) integral^(1)_(-1)
-    P^2_0 (lambda | x) + P^2_ss (lambda | x) dif lambda \
+   [P^2_0 (lambda | x) + P^2_ss (lambda | x)] dif lambda \
       &<= 2/(C_(P)(x))\
   $
 
@@ -1665,6 +1716,9 @@ We are now ready to introduce the averaging principle for the slow dynamics
 Unsurprisingly, without any hidden term in the dynamics we require only the mean from the distribution $P_ss (lambda)$, 
 
 #lemma(title: [Bounds on average Coefficients])[
+  #todo[
+    THis is almost a repetition as @lem-coeff-bounds
+  ]
   
 ]<lem-avg-coeff-bounds>
 
