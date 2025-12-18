@@ -2,6 +2,7 @@
 #import "@preview/equate:0.3.2": equate
 #import "@preview/gruvy:2.1.0": gruvbox, theme-colors, colors
 #import "@preview/note-me:0.6.0": *
+#import emoji: face
 #import cosmos.simple: *
 
 // choose your preferred theme color
@@ -16,7 +17,7 @@
   // customize `highlight` color
   hl: theme-color.muted.yellow,
   // is the document printable?
-  print: false,
+  print: true,
 )
 
 
@@ -39,9 +40,9 @@
 ])
 
 
-#show outline.entry.where(
-  level: 1
-): set block(above: 1.2em)
+// #show outline.entry.where(
+//   level: 3
+// ): set block(above: 1.2em)
 
 
 #show ref: it => {
@@ -109,12 +110,20 @@
 
 #set text(lang: "en")
 
-#title[On stochastic differential equations with piecewise smooth drift and
-  noise coefficients.]
+#align(center)[
+  #text(18pt, weight: "bold")[
+    On stochastic differential equations with piecewise smooth drift and
+    noise coefficients.]
+]
 
 
+#align(center)[
+  #text(14pt, weight: "bold")[
+    Seeralan Sarvaharman $#emoji.lemon$ $dot$ Aljaz Godec $#emoji.lemon^2$]
+]
 
-#outline()
+#outline(depth: 2)
+
 
 = Introduction
 
@@ -250,6 +259,10 @@ amplitude. The following definition formalises this setup.
   4. (A4 - Transversality )  For any $x in cal(D)$ $
     ||partial_(x) sigma(x)^tns b^pm (x)||  >= M^pm > 0. 
   $ 
+
+  #todo[
+    It may be that we need the condition A4 for $x in cal(D)_(epsilon)$
+  ]
 
 
   The $alpha$ is used to control evaluation point of the stochastic integral.
@@ -522,7 +535,6 @@ The coupled system is a slow-fast stochastic system, and our goal is to obtain
 controlled approximation for the dynamics of the slow process by closing the
 dynamics of the switching variable $lambda_t$.
 
-
 = The intermediate timescale
 
 == Necessity of an intermediate timescale. 
@@ -542,68 +554,65 @@ problem given in @def-ns-gen-sde, that must be addressed individually.
 
 === Objection I: Incompatible scaling of the dynamics.
 
-Before we attempt to rescale time must first clarify the $epsilon$-order of
-local time terms in @eq-lam-sde which we do in the following lemma. 
+Before we attempt to rescale time we must first clarify the $epsilon$-order of
+local time terms in @eq-lam-sde.
 
 #lemma(title: [Scaling of local time terms])[
 
-  Let $x_t in RR^d$ be a stochastic process given the SDE
-  $
-    dif x_t =  a(x_t) dif t + b(x_t) dif W_t,
-  $
+  Let $z_t$ be a stochastic processes defined in @eq-z-sde with quadratic variation $dif chevron.l z
+  chevron.r_t = epsilon tilde(b)(x_t, lambda_t) tilde(b)(x_t, lambda_t)^(tns)
+  dif t$. Then
 
   $
-    EE[L^x_t (a)] <= C t
+    dif EE[L^z_t (a)] = epsilon P^((z))(a, t) tilde(b)^2(x_t, lambda_t) dif t,
   $
-  
-]<lem-local-time-scaling>
-#todo[
-  Rewrite whats below as the scaling lemma 
-]
+  where $P^((z))(a, t)$ denotes the density of $z_t$ at level $a$.
+]<lem-local-time-scaling-x>
 
-Taking @eq-local-time-def and taking the
-expectation of both sides we obtain
+#proof[
+  Taking the expectation of @eq-local-time-def,
 
 $
   EE[L^z_t (a)] &= EE[ lim_(delta arrow.b 0) 1/(2delta) integral_0^t bb(1)_((a - delta, a + delta)) (z_s) dif chevron.l  z chevron.r_s], \
     &= lim_(delta arrow.b 0) 1/(2delta) integral_0^t EE[bb(1)_((a - delta, a + delta))   dif chevron.l  z chevron.r_s] \ 
-    &= lim_(delta arrow.b 0) 1/(2delta)  integral_0^t epsilon EE[bb(1)_((a - delta, a + delta))tilde(b)^2 (x_s, lambda_s) ]  dif s, \ 
+    &= lim_(delta arrow.b 0) 1/(2delta)  integral_0^t epsilon EE[bb(1)_((a - delta, a + delta))tilde(b)(x_s, lambda_s) tilde(b)(x_s, lambda_s)^(tns) ]  dif s, \ 
     &=   epsilon  integral_0^t lim_(delta arrow.b 0) 1/(2delta)
-    integral_(a - delta)^(a + delta) P^((z))(a, s) tilde(b)^2 (x_s,  lambda_s) dif s, \
-    &=  epsilon integral_0^t P^((z))(a, s) tilde(b)^2 (x_s,  lambda_s) dif s,  #<eq-local-time-exp-z-int>\
+    integral_(a - delta)^(a + delta) P^((z))(a, s) tilde(b) (x_s,  lambda_s) tilde(b)(x_s,  lambda_s)^(tns) dif s, \
+    &=  epsilon integral_0^t P^((z))(a, s) tilde(b) (x_s,  lambda_s) tilde(b)(x_s,  lambda_s)^(tns) dif s,  #<eq-local-time-exp-z-int>\
 $
+  
+  The result follows by differentiation.
+]
 
-or equivalently in differential form
 
-$
-  dif EE[L^z_t (a)]  = epsilon P^((z))(a, t) tilde(b)^2(x_t, lambda_t)   dif  t.
-$<eq-diff-ee-lt>
+From @eq-diff-ee-lt we conclude that $dif L^z_t(a) ~ epsilon P^((z))(a, t)
+tilde(b)^2(t, x_t, lambda_t) dif t$. The following lemma establishes that no
+time rescaling can balance all contributions to the $lambda$-dynamics.
 
-From @eq-diff-ee-lt we conclude that $dif L^z_t(a) ~ epsilon P^((z))(a, t) tilde(b)^2(t,
-x_t, lambda_t) dif t$. Now let us consider the rescaling $t = epsilon^beta tau$
-for some $beta > 0$, then we have $dif t = epsilon^beta dif tau$ and $dif W_t =
-epsilon^(beta \/2) dif W_tau$. Applying this to @eq-lam-sde obtain  
+#lemma(title: [Incompatibility of scaling])[
 
-$
-  O(epsilon^(beta - 1)) &: bb(1)_((-epsilon, epsilon])[sigma(x_(tau))]
-  tilde(a)(x_tau, lambda_tau) dif tau, \
-  O(epsilon^((beta - 1)/2)) &: bb(1)_((-epsilon, epsilon])[sigma(x_(tau))]
-  tilde(b)(x_tau, lambda_tau) dif W_tau, \
-  O(epsilon^beta) &:  dif L_(tau)^(z)(a).  \
-$
+  Let $t = epsilon^beta tau$ for $beta > 0$. Under this rescaling, the terms in
+  @eq-lam-sde scale as:
 
-The naive rescaling from the determinisitic dynamics would be to have $beta = 1$
-which would put drift and martingale terms on $cal(O)(1)$, but the local time
-contribution would be $cal(O)(epsilon)$ and vanishes in the limit. Clearly there
-is no $beta$ that would bring all of these terms together on equal fotting such
-that under $epsilon -> 0$ all of the features of the dynamics are maintained:
-balancing drift and noise suppresses the local time; preserving the local time
-would require a slower timescale on which drift or noise diverges. This presents
-a fundemental technical hurdle. We have three contributions to the dynamics of
-$lambda$ that operate on on incompatible scales. Any rescaling followed by
-$epsilon->0$ necessarily discards at least one of these contributions.
+  $
+    "Drift:" &bb(1)_((-epsilon, epsilon])[sigma(x_(tau))]
+    tilde(a)(x_tau, lambda_tau) dif tau, quad &&cal(O)(epsilon^(beta - 1)), \
+  "Martingale:" &bb(1)_((-epsilon, epsilon])[sigma(x_(tau))]
+  tilde(b)(x_tau, lambda_tau) dif W_tau, quad &&cal(O)(epsilon^((beta - 1)/2)), \
+  "Local time:" &dif L_(tau)^(z)(a), quad &&cal(O)(epsilon^beta).
+  $
+  No choice of $beta > 0$ brings all three contributions to the same order as $epsilon -> 0$.
+]<lem-scaling-incompatibility>
 
-=== Objection II: Loss of physical interpretation. Not a good reason
+#proof[
+  The rescaling gives $dif t = epsilon^beta dif tau$ and $dif W_t = epsilon^(beta/2) dif W_tau$. The drift term in @eq-lam-sde carries a factor $epsilon^(-1)$ from the layer dynamics, yielding order $epsilon^(beta-1)$. The martingale term similarly yields order $epsilon^((beta-1)/2)$. By @lem-local-time-scaling, the local time contribution is $cal(O)(epsilon)$ in original time, hence $cal(O)(epsilon^(beta+1))$ after rescaling.
+
+  The naive choice $beta = 1$ places drift and martingale at $cal(O)(1)$, but the local time term becomes $cal(O)(epsilon^2)$ and vanishes in the limit. Balancing drift and local time requires $beta - 1 = beta + 1$, which has no solution. Balancing martingale and local time requires $(beta-1)/2 = beta + 1$, giving $beta = -3$, which violates $beta > 0$.
+]
+
+This presents a fundamental technical hurdle: the three contributions to the dynamics of $lambda$ operate on incompatible scales. Any rescaling followed by $epsilon -> 0$ necessarily discards at least one contribution.
+
+=== Objection II: Loss of physical interpretation.
 
 Even granting mathematical well-posedness, the $epsilon -> 0$ limit produces an
 object whose physical meaning has degenerated. As $epsilon -> 0$:
@@ -618,126 +627,53 @@ object whose physical meaning has degenerated. As $epsilon -> 0$:
 
 + The stationary distribution $P_(ss)^epsilon (lambda | x)$ converges
   to some limiting distribution on $[-1, 1]$, but this limit lives on a domain
-  whose connection to the original geometry has been los.
+  whose connection to the original geometry has been lost.
 
 In the deterministic case, the $epsilon -> 0$ limit yields a single value
-$lambda^* (x)$ i.e. the Filippov sliding mode (see @sec-background). In that
-case, interpretation is clear, $lambda^*$ selects the unique convex combination
-that keeps trajectories on the discontinuity surface.
+$lambda^* (x)$, the Filippov sliding mode. The interpretation is clear: $lambda^*$ selects the unique convex combination that keeps trajectories on the discontinuity surface. In the stochastic setting, one retains a distribution over $lambda$ rather than a single value, but this distribution becomes detached from the layer on which $lambda$ was defined.
 
-// In the stochastic scenario,, even in the limit $epsilon -> 0$, one retains a
-// distribution over $lambda$ rather than a single value. But what is this
-// distribution the distribution _of_, when the layer on which $lambda$ was defined
-// has vanished? The switching variable was introduced to parametrise dynamics
-// within $cal(D)_epsilon$; without the layer, $lambda$ becomes an abstract
-// coordinate detached from the underlying phase space.
+=== Objection III: Incompatibility with weak-noise analysis.
 
-==== Objection III: Incompatibility with weak-noise analysis.
+The most fundamental objection concerns the purpose of the analysis. The weak-noise framework treats $epsilon$ as the small parameter governing the asymptotic expansion. The objects of interest are not the typical paths obtained by minimising the Freidlin-Wentzell action functional, but the Gaussian fluctuations around the most probable path at order $cal(O)(sqrt(epsilon))$. These phenomena are intrinsically $epsilon$-dependent.
 
-The most fundamental objection concerns the purpose of the analysis. The
-weak-noise framework treats $epsilon$ as the small parameter governing the
-asymptotic expansion. The objects of interest are beyon the typcal paths,
-obtained by minimising the Freidlin-Wentzell action functional or analgously the
-deterministic limit $epsilon -> 0$, instead we are interested in charertising
-the Gaussian fluctuations around the most probable path, arising at order
-$cal(O)(sqrt(epsilon))$. These phenomena are intrinsically $epsilon$-dependent
-and the noise is the object of study. The stationary distribution $P_(ss)(lambda
-| x)$ at finite $epsilon$ encodes how noise selects among the continuum of
-Filippov solutions, how it smooths the transition across $cal(D)$, and what the
-fluctuation structure looks like near the discontinuity.
+The stationary distribution $P_(ss)(lambda | x)$ at finite $epsilon$ encodes how noise selects among the continuum of Filippov solutions and determines the fluctuation structure near the discontinuity. Taking $epsilon -> 0$ collapses this to a deterministic Filippov vector field, eliminating precisely the phenomena we set out to analyse.
 
-Taking $epsilon -> 0$ in the fast dynamics collapses this structure to a
-deterministic Filippov vector field. Thus it eliminates the noise-induced
-selection mechanism among sliding vectors returns us to the deterministic theory
-discardign the stochastic phenomena and precluding the study of fluctaions which
-we set out to analyse in the first place.
+Consistency demands that $epsilon$ be preserved throughout the analysis, including in the treatment of the fast variable.
 
-The weak-noise SDE is already the result of retaining terms to second order in
-the noise coefficient. Consistency demands that $epsilon$ be preserved throughout
-the analysis, including in the treatment of the fast variable.
+== The intermediate timescale resolution
 
-
-// === The intermediate timescale resolution.
-// The intermediate timescale $delta$ satisfying
-// 
-// $
-//   epsilon << delta << 1
-// $<eq-delta-ordering>
-// 
-// resolves all three by avoiding the $epsilon -> 0$ limit in the layer dynamics
-// entirely. At fixed $epsilon>0$:
-// 
-// - *Well-defined quantities*: The layer $cal(D)_epsilon$ has finite width, the
-//   boundaries $pm epsilon$ are well-separated, and all probabilistic quantities
-//   --- including local times and their contributions to the stationary
-//   distribution --- are well-defined without singular limits.
-// 
-// - *Preserved interpretation*: The switching variable $lambda$ retains its
-//   meaning as parametrising the interpolation within a layer of finite width. The
-//   stationary distribution $P_(ss)(lambda | x)$ describes the
-//   equilibrium of $lambda$ within this layer, with clear geometric content.
-// 
-// - *Retained noise structure*: The parameter $epsilon$ appears throughout the
-//   effective slow dynamics, preserving the weak-noise structure required for
-//   Freidlin-Wentzell analysis.
-// 
-// The conditions on $delta$ ensure:
-// 
-// - $delta >> epsilon$: The fast variable $lambda$ equilibrates to
-//   $P_(ss)(lambda | x)$ within the $delta$-window (see @thm-exp-mixing).
-// 
-// - $delta << 1$: The slow variable $x$ remains approximately frozen over the
-//   $delta$-window (see @thm-slow-var).
-// 
-// The effective slow dynamics follows by averaging against the stationary
-// distribution:
-// 
-$
-//   macron(a)(x) = integral_(-1)^1 a(t, x, lambda) P_(ss)(lambda | x) dif lambda,
-//   quad
-//   macron(b)(x) = integral_(-1)^1 b(t, x, lambda) P_(ss)(lambda | x) dif lambda.
-// $<eq-averaged-coeffs>
-// 
-// The resulting equation,
-// 
-// $
-//   dif x_t = macron(a)(x_t) dif t + sqrt(epsilon) macron(b)(x_t) dif W_t,
-// $<eq-averaged-sde>
-// 
-// remains a weak-noise SDE with $epsilon$-dependent coefficients, to which
-// standard Freidlin-Wentzell theory applies. This is the stochastic analogue of
-// Filippov's construction: where the deterministic theory yields a unique sliding
-// vector field via an algebraic condition, the stochastic theory yields an
-// averaged vector field weighted by the stationary distribution of the fast
-// variable.
-// 
-// #remark[
-//   The choice $delta = epsilon^alpha$ for some $alpha in (0, 1)$ provides a
-//   concrete realisation of the ordering @eq-delta-ordering. The value of $alpha$
-//   does not affect the limiting averaged dynamics, provided the bounds in
-//   @thm-slow-var and @thm-exp-mixing hold uniformly.
-// ]
-
-= Estimates for the dynamics on the intermediate time-scale  
-
-We want to study the stochastic dynamics for a small but non zero $epsilon$, so
-we will introduce an intermediate timescale $delta$ suchh that
+The preceding objections share a common source: they arise from taking $epsilon -> 0$ in the layer dynamics. The resolution is to avoid this limit entirely. We introduce an intermediate timescale $delta$ satisfying
 
 $
   epsilon << delta << 1.
-$<eq-delta-scale>
+$<eq-delta-ordering>
 
-On this time scale, the dynamics of $x_t$ is frozen but the dynamics of
-$lambda_t$ has equilibriated on to a steady state distribution. Typically one
-defines $delta$ as a function of $epsilon$, e.g. $delta(epsilon) =
-epsilon^alpha$, for some $alpha in (0, 1)$.
+At fixed $epsilon > 0$, all quantities remain well-defined:
+
+- The layer $cal(D)_epsilon$ has finite width and the boundaries $pm epsilon$ are well-separated. All probabilistic quantities, including local times, require no singular limits.
+
+- The switching variable $lambda$ retains its meaning as parametrising the interpolation within a layer of finite width. The stationary distribution $P_(ss)(lambda | x)$ describes the equilibrium of $lambda$ within this layer.
+
+- The parameter $epsilon$ appears throughout the dynamics, preserving the weak-noise structure required for fluctuation analysis.
+
+The conditions on $delta$ encode a separation of timescales. The condition $delta >> epsilon$ ensures the fast variable $lambda$ equilibrates to $P_(ss)(lambda | x)$ within the $delta$-window. The condition $delta << 1$ ensures the slow variable $x$ remains approximately frozen over this window. A concrete realisation is $delta = epsilon^alpha$ for $alpha in (0, 1)$; the value of $alpha$ does not affect the limiting dynamics provided the relevant estimates hold uniformly.
+
+= Estimates for the dynamics on the intermediate timescale
+
+We proceed to establish the estimates that justify the timescale separation. On
+the intermediate timescale $delta$ satisfying @eq-delta-ordering, the dynamics
+of $x_t$ is frozen while the dynamics of $lambda_t$ equilibrates to a
+steady-state distribution. Let us obtain estimates for the variation in the slow
+variable $x_t$ on this time scale
 
 
 #theorem(title: [Slow variation of $x_t$  in the $delta$-window])[
 
-  Let $x_t in cal(D)_epsilon$ and $delta>0$ satisfying @eq-delta-scale, then  
+  Let $x_t in cal(D)_epsilon$ and $delta>0$ satisfying @eq-delta-ordering and
+  $delta -> 0$ as $epsilon -> 0$, then
+
   $
-    // EE[ sup_(0<=s<=delta) |x_(t+s) - x_t|^2 ] <= C (delta^2  + epsilon delta), 
+    EE[ sup_(0<=s<=delta) |x_(t+s) - x_t|^2 ] <= C (delta^2  + epsilon delta),  \
     PP[sup_(0<=s<=delta) |x_(t+s) - x_t| > gamma ] <= C/gamma^2 (delta^2  + epsilon delta)
         
   $<eq-slow-var-x>
@@ -762,7 +698,7 @@ epsilon^alpha$, for some $alpha in (0, 1)$.
       &<= s integral_t^(t+s)  C (1 + EE[ |x_tau|^2]) dif tau, \
       &<= C' s^2,
   $
-  and for the martingale part we have 
+  and for the martingale part we have  by Ito isometry
   $
     EE[ lr(|integral_t^(t+s) b(x_s, lambda_s) dif W_s |)^2] 
       &<=  integral_t^(t+s)EE[ lr(||b(x_s, lambda_s) ||)^2]dif s   \
@@ -787,7 +723,7 @@ epsilon^alpha$, for some $alpha in (0, 1)$.
 ]
 
 The consequence of @thm-slow-var becomes more apparent when we choose any
-mesoscopic scale $delta(epsilon)$ satisfying @eq-delta-scale, e.g.
+mesoscopic scale $delta(epsilon)$ satisfying @eq-delta-ordering, e.g.
 $delta(epsilon) = epsilon^beta$, for some $beta>0$ and then letting $epsilon ->
 0$. The bound in @eq-slow-var-x ensures that for any fixed $gamma$, 
 
@@ -816,7 +752,7 @@ the interval $[t, t + delta]$.
 
 #lemma(title: [Backward generator of the switching variable])[
 
-  Let $delta > 0$ satisfying @eq-delta-scale, let $t in [t', t' + delta] subset
+  Let $delta > 0$ satisfying @eq-delta-ordering, let $t in [t', t' + delta] subset
   [0, T]$ for some $t' in [0, T-delta]$. Let $x_t = x in cal(D)_epsilon$ be
   fixed (see @thm-slow-var). Then the backward generator $cal(A)_x$ of
   $lambda_t in [-1, 1]$ evolving according to @eq-lam-sde, acts on sufficently
@@ -893,7 +829,7 @@ the interval $[t, t + delta]$.
       = EE[I^((1))_t] + EE[I^((2))_t] + EE[I^((3))_t]. 
   $<eq-gen-decomp-expect>
 
-  *Interior terms.* The terms $I^((1))_t$ and $I^((3))_t$ are the drift and
+  Interior terms. The terms $I^((1))_t$ and $I^((3))_t$ are the drift and
   diffusion on the interior of the [-1, 1], i.e. for $lambda in (-1, 1)$. Since
   the coefficients are continious in $t$, we have
 
@@ -910,7 +846,7 @@ the interval $[t, t + delta]$.
   of @eq-bwd-gen when we express $tilde(a)$ and $tilde(b)$ in terms of $a$ and
   $b$ using @eq-a-tilde-def and @eq-b-tilde-def.
 
-  *Local time term.* For the local time contribution $I^((2))_t$, we know that
+  Local time term. For the local time contribution $I^((2))_t$, we know that
   when $z_t = pm epsilon$, we have $lambda_t = pm 1$, thus $partial_lambda
   f(lambda_s) = partial_lambda f(pm 1)$ and
 
@@ -980,7 +916,7 @@ generator is sumarised in the following lemma.
 
 #lemma(title: [Forward generator of the switching variable])[
 
-  Let $delta > 0$ satisfying @eq-delta-scale, let $t in [t', t' + delta] subset
+  Let $delta > 0$ satisfying @eq-delta-ordering, let $t in [t', t' + delta] subset
   [0, T]$ for some $t' in [0, T-delta]$. Let $x_t = x in cal(D)_epsilon$ be
   fixed (see @thm-slow-var). Then the forward generator $cal(A)^*_x$ of
   $lambda_t in [-1, 1]$ evolving according to @eq-lam-sde, acts on sufficently
@@ -1012,6 +948,7 @@ P_t (lambda) { partial_x sigma(x_t)^tns a(t, x, lambda)
   probability current of the process.
 
 ]<lem-fwd-gen>
+
 
 #proof[
 
@@ -1276,6 +1213,10 @@ in the later results.
    <= (tilde(C)_12 (x) exp[tilde(C)_12 (x)(1 + 4 |lambda|)]) / sinh(tilde(C)_12 (x)) 
 
   $
+
+  #todo[
+    rewrite in a simpler form by introducing some auxiliary $G(x)$
+  ]
 ]<lem-inv-meas-bound>
 
 
@@ -1549,7 +1490,9 @@ where $kappa = (C_1 C_2) \/ 2$.
 ]<lem-dense-l2>
 
 #proof[
-  
+  #todo[
+    Look at zeidler
+  ]
 ]
 
 #lemma(title: [zero mean observables in $L^2$])[
@@ -1580,7 +1523,7 @@ where $kappa = (C_1 C_2) \/ 2$.
   dom(cal(A)_x)$, hence we can extend the  @lem-zero-mean-bound to generic $g$ 
 
   #todo[
-    finish proof.
+    finish proof, it's in zeidler
   ]
 ]
 
@@ -1641,10 +1584,6 @@ where $kappa = (C_1 C_2) \/ 2$.
   $
 
   defining $C(x) = sqrt(2 \/ C_(P)(x))$ yields the relation in the lemma.
-]
-
-#corollary(title: [upper on probability])[
-
 ]
 
 #corollary(title: [Bound on expectations])[
