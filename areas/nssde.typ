@@ -17,7 +17,7 @@
   // customize `highlight` color
   hl: theme-color.muted.yellow,
   // is the document printable?
-  print: false,
+  print: true,
 )
 
 
@@ -98,6 +98,7 @@
 #let epsilon = math.epsilon.alt
 #let sign = math.op(text("sign"))
 #let ss   = math.op($oo$)
+#let giv   = math.op($|$)
 #let inprod(f, g, mu) = {
   [$chevron.l #f | #g chevron.r_(#mu)$]
 }
@@ -112,7 +113,7 @@
 
 #align(center)[
   #text(18pt, weight: "bold")[
-    On stochastic differential equations with piecewise smooth drift and
+    On stochastic differential equations with piecewise-smooth drift and
     noise coefficients.]
 ]
 
@@ -1119,7 +1120,7 @@ in the later results.
        || tilde(b)(t, x, lambda) || >= tilde(M) > 0, quad || tilde(d)(t, x, lambda) || >= tilde(M)^2 >  0.
      $<eq-ab-trans-bound>
 
-]<lem-coeff-bounds>
+]<lem-coeff-tilde-bounds>
 
 #proof[
 
@@ -1155,6 +1156,89 @@ in the later results.
      the square gives the bound on the projected diffusion coefficent.
 
 ]
+
+
+Notice that our transversality condition from @def-ns-gen-sde, and subsequently the 
+in @lem-coeff-tilde-bounds give rise to ellipticity condition for the Fokker-Planck equation.
+
+
+
+#todo[
+  maybe introduce the notion of the green's function before here?
+]
+
+#lemma(title: [Instantaneous smoothing of the switching variable density])[
+
+
+  Let $x in cal(D)_(epsilon)$ fixed, and let $lambda_t$ ​ evolve according to the
+  SDE with forward generator $A^*_x$ given by @lem-fwd-gen, let $rho (t, lambda
+  | x, lambda_0)$ with $lambda_0 in [-1, 1]$ be the Greens's function solution
+  to $partial_t rho = A^*_x rho$ with the intial condition $rho_0 (lambda | x,
+  lambda_0) = delta(lambda - lambda_0)$ and let the diffusion coefficient
+  satisfies $0 < C_1 (x) <= tilde(d)(t,x,lambda)<= C_2 (x)$. Then for any $t in (0, T]$,
+  the Greens's function satifies
+
+  $
+    R_("L")/sqrt(t) exp[-(C'_(1)(lambda -lambda_0)^2 )/ t]
+    <= rho(t, lambda | x, lambda_0)
+    <= R_("U") / sqrt(t) exp[-(C'_(1)(lambda - lambda_0)^2 )/ t],
+  $
+
+  where $R_L$, $R_U$, $C'_(1)$ and $C'_(1)$ constants that depends on $x$, upper
+  and lower bounds for the diffusion coefficient which are dependnet on $x$ but
+  uniform in $lambda$ and $T$.
+
+  #todo[
+    - maybe we can just use Nash's bound cited in @aronson1967 6.
+    $
+      rho_t (lambda | x, lambda_0) <= K / sqrt(t)
+    $
+  ]
+
+]<lem-lam-smooth-denst>
+
+#proof[
+
+  The proof is a direct consequence from Aronson, Theorem 1 in @aronson1967. Let
+  us work directly with the Fokker-Planck equation, using the definition of
+  $A^*_x$ in @lem-fwd-gen we have
+
+  $
+    partial_t rho(t, lambda giv x, lambda_0)
+    = -1/epsilon partial_lambda [tilde(a)(t, x, lambda) rho(t, lambda giv x)] + 1/(2 epsilon) partial^2_(lambda lambda) [tilde(d)(t, x, lambda) rho(t, lambda giv x, lambda_0 )],
+  $
+
+  where $tilde(a)$ and $tilde(d)$ are defined in @eq-a-tilde-def and
+  @eq-d-tilde-def respectively. Recasting in the divergence form we have
+  $
+    partial_t rho(t, lambda giv x, lambda_0)  = partial_(lambda)
+    [A(t, x, lambda) rho(t, lambda giv x, lambda_0)
+    + B(t, x, lambda) partial_(lambda)rho(t, lambda giv x, lambda_0) ],
+  $
+
+  where
+
+  $
+    A(t, x, lambda) = 1/epsilon [1/2 partial_lambda tilde(d)(t, x, lambda) - tilde(a)(t, x, lambda)], quad
+    B(t, x, lambda) = 1/(2 epsilon) tilde(d)(t, x, lambda).
+  $
+
+  In order to apply Aronson's result we must show that there exists a constant
+  $nu >= 1$ such that the inequality
+  $
+    1/nu <= ||B(t, x, lambda)|| <= nu,
+  $<eq-aronson-cond>
+
+  is satisfied. Since we know that $tilde(d)(t, x, lambda) <= 2 C^2 (1 +
+  ||x||^2)$ and $tilde(d)(t, x, lambda) >= tilde(M)^2 > 0$ by by the linear
+  growth bound and the transversality condition in @lem-coeff-tilde-bounds, we
+  can satisfy @eq-aronson-cond by defining $ nu(x) eqdef max[2 epsilon\/
+  tilde(M)^2, 2 C^2 (1 + ||x||^2), 1]. $ 
+  
+]
+
+
+
 
 
 #lemma(title: [Invariant density of the switching variable])[
@@ -1218,36 +1302,6 @@ in the later results.
   where $R(x)$ is an integration constant. Enforcing normalisation on the
   invariant density gives @eq-p-inv-norm-const.
   
-]
-
-
-#lemma(title: [Instantaneous smoothing of the switching variable density])[
-
-
-  Let $x in cal(D)_(epsilon)$ fixed, and let $lambda_t$ ​ evolve according to the
-  SDE with forward generator $A^*_x$ given by @lem-fwd-gen, let the diffusion
-  coefficient satisfies $tilde(d)(t,x,lambda)≥C_2>0$ and let $lambda_0 in [-1,
-  1]$ be any initial conditions giving a Dirac distribtion for the intial
-  profile. Then for any $tau>0$, the occupation probability density of
-  $P_(tau)(lambda_(tau) | x, lambda_0)$​ satisfies
-
-  $
-    R_("L")/sqrt(tau) exp[-(C'_(1)(lambda -lambda_0)^2 )/ tau] <= P_(tau)(lambda_(tau) | x, lambda_0) <= R_("U") / sqrt(tau) exp[-(C'_(1)(lambda - lambda_0)^2 )/ tau]
-  $
-  where $R_L$, $R_U$, $C'_(1)$  and $C'_(1)$ constants that depends on ... 
-  #todo[
-    add the constant dependence
-  ]
-
-]
-
-#proof[
-  The proof is a direct consequence from Aronson,  Theorem 1 in @aronson1967
-
-
-  #todo[
-    I dont need this I can justy use Nashs result cited in @aronson1967 6.
-  ] 
 ]
 
 
@@ -1516,7 +1570,7 @@ where $kappa = (C_1 C_2) \/ 2$.
     integral_(-1)^1  [partial_lambda f(lambda)]^2 tilde(d)(t, x, lambda) P_ss (lambda) dif lambda,
   $
 
-  since from @lem-coeff-bounds that $|tilde(d)(t, x, lambda)|$ and similarly we know
+  since from @lem-coeff-tilde-bounds that $|tilde(d)(t, x, lambda)|$ and similarly we know
   that $P_ss (lambda)$ is bounded from below from @lem-inv-meas-bound, therefore
   we can direcly apply @thm-poincare-ineq.
   
@@ -1617,25 +1671,36 @@ where $kappa = (C_1 C_2) \/ 2$.
       &<= -2kappa l2norm(zeta_t, L^2_(P_ss),  2,), quad #text[(by @lem-zero-mean-bound-l2)].
   $ 
 
-  Then by Gronwall's inequality, 
+  Then by Gronwall's inequality we have 
 
   $
     l2norm(zeta_t, L^2_(P_ss),  ,) <= l2norm(zeta_(t_0), L^2_(P_ss),  ,) ee^(- kappa (t - t_0)).
   $
 
   We know from @lem-inv-meas-bound that $0 < C_P (x) <= P_ss (lambda | x)$, hence
-
   $
-    l2norm(zeta_0, L^2_(P_ss), 2,) &= integral^(1)_(-1)
+    l2norm(zeta_0, L^2_(P_ss), 2,) &= integral^(1)_(-1) {
     [P_(t_0) (lambda | x) - P_ss (lambda)]^2 / (P^2_(ss)(lambda |x))
-    P_ss (lambda | x) dif lambda, \
-      &<= 1/(C_(P)(x)) integral^(1)_(-1)
-   [P^2_0 (lambda | x) + P^2_ss (lambda | x)] dif lambda \
-      &<= 2/(C_(P)(x))\
+    P_ss (lambda | x)} dif lambda, \
+      &<= 2/(C_(P)(x)) integral^(1)_(-1)
+      [P^2_(t_0) (lambda | x) + P^2_ss (lambda | x)] dif lambda \
+      &<= 2/(C_(P)(x)),\
   $
 
-  defining $C(x) = sqrt(2 \/ C_(P)(x))$ yields the relation in the lemma.
-]
+  where we have implicitly used that fact that $l2norm(P_(t_0), L^2_(P_ss), ,) <
+  oo$ for any $t_0 > 0$ which is guaranteed by @lem-lam-smooth-denst. Finally,
+  defining $C(x) = sqrt(2 \/ C_(P)(x))$ yields the relation in the lemma.]
+
+
+ ignore   below
+  $
+    l2norm(zeta_0, L^2_(P_ss), 2,) &= integral^(1)_(-1) {
+    [P_(t_0) (lambda | x) - P_ss (lambda)]^2 / (P^2_(ss)(lambda |x))
+    P_ss (lambda | x) }dif lambda,  \
+      &<= integral^(1)_(-1) {[(P_(t_0) (lambda | x)) /(P_ss (lambda | x))  - 1]^2 P_ss (lambda | x)} dif lambda \
+      &<= 2 integral^(1)_(-1) [(P_(t_0) (lambda | x)) /(P_ss (lambda | x))  - 1]^2 P_ss (lambda | x) dif lambda \
+    
+  $
 
 #corollary(title: [Bound on expectations])[
 
@@ -1717,7 +1782,7 @@ Unsurprisingly, without any hidden term in the dynamics we require only the mean
 
 #lemma(title: [Bounds on average Coefficients])[
   #todo[
-    THis is almost a repetition as @lem-coeff-bounds
+    THis is almost a repetition as @lem-coeff-tilde-bounds
   ]
   
 ]<lem-avg-coeff-bounds>
@@ -1837,7 +1902,14 @@ Unsurprisingly, without any hidden term in the dynamics we require only the mean
   $
     J^((2))_(a, k)(s) &= integral_(-1)^(1) a(s, x_(k delta), lambda)  [P_s (lambda | x_(k delta)) - P_ss (lambda | x_(k delta))] dif lambda
   $
-  where $P_s (lambda | x_(k delta)) = ee^(s cal(A)^* (x)) delta(lambda - lambda_(k  delta))$. Defining $zeta_s (lambda) eqdef [P_s (lambda | x_(k delta)) - P_ss (lambda | x_(k delta))] \/ P_ss (lambda | x_(k delta))$, similar to the proof of @thm-exp-mixing, we then have 
+
+  where $P_s (lambda | x_(k delta)) = ee^(s cal(A)^*_(x_(k delta))) Q(lambda |
+  x_(k delta) )$ with $Q(lambda | x_(k delta))$ is the normalised probability
+  density of $lambda$ at the start of the interval $[k delta, (k+1) delta]$ .
+  Defining $zeta_s (lambda) eqdef [P_s (lambda | x_(k delta)) - P_ss (lambda |
+  x_(k delta))] \/ P_ss (lambda | x_(k delta))$, similar to the proof of
+  @thm-exp-mixing, we then have
+
   $
     J^((2))_(a, k)(s) &= inprod(a(s, x_(k delta), dot), zeta_s  , L^2_(P_ss)) \
       &<= l2norm(a(s, x_(k delta), dot), L^2_(P_ss), 2) l2norm(zeta_s, L^2_(P_ss), 2) \
