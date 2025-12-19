@@ -1887,7 +1887,7 @@ Unsurprisingly, without any hidden term in the dynamics we require only the mean
   $
   Clearly,
   $
-    ||I_a||^2 <= 4 (||J^((1))_(a, k)||^2 + ||J^((2))_(a, k)||^2 + ||J^((3))_(a, k)||^2)
+    ||I_a||^2 <= 3 (||J^((1))_(a, k)||^2 + ||J^((2))_(a, k)||^2 + ||J^((3))_(a, k)||^2)
   $
 
  Employing the Lipshitz conditions in @def-ns-gen-sde, and @lem-avg-coeff-bounds
