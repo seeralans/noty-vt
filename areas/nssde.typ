@@ -1980,7 +1980,7 @@ Unsurprisingly, without any hidden term in the dynamics we require only the mean
   $
     J^((2))_(a, k)(s) &= inprod(a(s, x_(k delta), dot), zeta_s  , L^2_(P_ss)) \
       &<= l2norm(a(s, x_(k delta), dot), L^2_(P_ss), ,) l2norm(zeta_s, L^2_(P_ss), ,) \
-      &<= sup_(lambda) |a(s, x_(k delta),lambda)| l2norm(zeta_(0), L^2_(P_ss), ,) \
+      &<= sup_(lambda) |a(s, x_(k delta),lambda)| l2norm(zeta_(0), L^2_(P_ss), ,) ee^(-kappa(x_(k delta))()) \
       &<= (C_a Q(x_(k delta)))/2 (1 + ||x_(k delta)||) ,
   $
   where in the third line we have used @cor-l2-to-sup
