@@ -2,6 +2,8 @@
 #import "@preview/equate:0.3.2": equate
 #import "@preview/gruvy:2.1.0": gruvbox, theme-colors, colors
 #import "@preview/note-me:0.6.0": *
+#import "@preview/cetz:0.4.2"
+
 #import emoji: face
 #import cosmos.simple: *
 
@@ -121,6 +123,33 @@
   #text(14pt, weight: "bold")[
     Seeralan Sarvaharman $#emoji.lemon$ $dot$ Aljaz Godec $#emoji.lemon^2$]
 ]
+
+// #figure(
+//   caption: [A simple circle drawn with CeTZ],
+//   cetz.canvas({
+//     import cetz.draw: *
+//     set-style(
+//       stroke: 1.0pt,
+//       grid: (
+//         stroke: gray + 0.2pt,
+//         step: 0.5
+//       ),
+//       mark: (
+//         transform-shape: false,
+//         fill: black
+//       )
+//     )
+//     grid((-5, -5), (5, 5), step: 0.5, stroke: black + 0.2pt)
+//     
+// 
+//     line((-1, 0), (1, 0), mark: (end: "stealth"))
+// 
+//     // circle((0, 0), radius: 1.5, fill: blue.lighten(50%))
+//     // // content((0, 0), [Cunt])
+// 
+//   })
+// )
+// #pagebreak()
 
 #outline(depth: 2)
 
