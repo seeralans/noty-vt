@@ -19,7 +19,7 @@
   // customize `highlight` color
   hl: theme-color.muted.yellow,
   // is the document printable?
-  print: true,
+  print: false,
 )
 
 
@@ -95,7 +95,7 @@
 #let trc = math.op("Tr")
 #let dom = math.op("Dom")
 #let pm  = math.op($plus.minus$)
-#let eqdef  = math.op($eq.def$)
+#let eqdef  = math.op($eq.triple$)
 #let ee  = math.op($upright(e)$)
 #let epsilon = math.epsilon.alt
 #let sign = math.op(text("sign"))
@@ -1196,7 +1196,7 @@ in @lem-coeff-tilde-bounds give rise to ellipticity condition for the Fokker-Pla
   maybe introduce the notion of the green's function before here?
 ]
 
-#lemma(title: [Instantaneous smoothing of the switching variable density])[
+#theorem(title: [Instantaneous smoothing of the switching variable density])[
 
 
   Let $x in cal(D)_(epsilon)$ fixed, and let $lambda_t$ ​ evolve according to the
@@ -1204,16 +1204,18 @@ in @lem-coeff-tilde-bounds give rise to ellipticity condition for the Fokker-Pla
   | x, lambda_0)$ with $lambda_0 in [-1, 1]$ be the Greens's function solution
   to $partial_t rho = A^*_x rho$ with the intial condition $rho_0 (lambda | x,
   lambda_0) = delta(lambda - lambda_0)$ and let the diffusion coefficient
-  satisfies $0 < C_1 (x) <= tilde(d)(t,x,lambda)<= C_2 (x)$. Then for any $t in (0, T]$,
-  the Greens's function satifies
+  satisfy
+  $
+    0 < C_1 (x) <= tilde(d)(t,x,lambda)<= C_2 (x).
+  $Then for any $t in (0, T]$, the Greens's function satifies
 
   $
     R_("L")/sqrt(t) exp[-(C'_(1)(lambda -lambda_0)^2 )/ t]
     <= rho(t, lambda | x, lambda_0)
-    <= R_("U") / sqrt(t) exp[-(C'_(1)(lambda - lambda_0)^2 )/ t],
+    <= R_("U") / sqrt(t) exp[-(C'_(2)(lambda - lambda_0)^2 )/ t],
   $
 
-  where $R_L$, $R_U$, $C'_(1)$ and $C'_(1)$ constants that depends on $x$, upper
+  where $R_"L"$, $R_"U"$, $C'_(1)$ and $C'_(2)$ constants that depends on $x$, upper
   and lower bounds for the diffusion coefficient which are dependnet on $x$ but
   uniform in $lambda$ and $T$.
 
@@ -1224,7 +1226,7 @@ in @lem-coeff-tilde-bounds give rise to ellipticity condition for the Fokker-Pla
     $
   ]
 
-]<lem-lam-smooth-denst>
+]<thm-lam-smooth-denst>
 
 #proof[
 
@@ -1267,7 +1269,11 @@ in @lem-coeff-tilde-bounds give rise to ellipticity condition for the Fokker-Pla
 ]
 
 
-
+#corollary[
+  #todo[
+    add a small statement about how for $t >0$ $P_t in L 2$
+  ]
+]<cor-l2-of-pt>
 
 
 #lemma(title: [Invariant density of the switching variable])[
@@ -1337,7 +1343,7 @@ in @lem-coeff-tilde-bounds give rise to ellipticity condition for the Fokker-Pla
 
 #lemma(title: [Bounds on the Invariant Measure])[
 
-  For all $x in cal(D)_epsilon$ fixed  and $||tilde(a)(t, x, lambda)|| <= tilde(C)_1 (x)$  and $||tilde(b)(t, x, lambda)|| >= tilde(C)_1 (x) > 0$, set $tilde(C)_(12)(x) = (tilde(C)_1 (x)) / (tilde(C)_2 (x))$
+  For all $x in cal(D)_epsilon$ fixed  and $||tilde(a)(t, x, lambda)|| <= tilde(C)_1 (x)$  and $||tilde(b)(t, x, lambda)|| >= tilde(C)_1 (x) > 0$, set $tilde(C)_(12)(x) = tilde(C)_1 (x) \/ tilde(C)_2 (x)$
 
 
   $
@@ -1366,6 +1372,28 @@ in @lem-coeff-tilde-bounds give rise to ellipticity condition for the Fokker-Pla
    <= (alpha ee^(2 alpha (1 + 4 |lambda|)))/ sinh(alpha/2)
 
   $
+]
+
+#corollary[
+
+  It is useful to have the following uniform lower bound for invariant density
+
+  $
+    (tilde(C)_12 (x) exp[-tilde(C)_12 (x)(1 + 4 |lambda|)]) /
+    sinh(tilde(C)_12 (x)) &>= 1/2 tilde(C)_12 (x) ee^(-tilde(C)_(12)(x) (2 + 4|lambda|)) \
+      &>=1/2 C(1 + ||x||) ee^(-tilde(C)_(12)(x) (2 + 4|lambda|)), \
+      &=C_P (x)
+  $
+  where it is uesful to define
+  $
+    C_P (x) eqdef 1 / 2 C ee^(-6C) (1 + ||x||) ee^(-6 C ||x||)
+  $
+
+  $
+    C_P (x) eq.def 1 / 2 C ee^(-6C) (1 + ||x||) ee^(-6 C ||x||)
+  $
+
+  
 ]
 
 
@@ -1405,7 +1433,7 @@ Before we proceed it is usefull to introduce a defnition for the $L^2$ space tha
       &<= sup_(x in Omega) |f(omega)| (integral_(Omega)  dif mu(omega))^(1/2), \
       &<= sqrt(mu(Omega))sup_(x in Omega) |f(omega)|.
   $
-]
+]<cor-l2-to-sup>
 
 Since we have a probability density we will use the notation $inprod(., .,
 L^2_(P_t))$ and $l2norm(., L^2_(P_t), ,)$ where $P_t in dom(cal(A)^*_x)$. 
@@ -1668,9 +1696,13 @@ where $kappa = (C_1 C_2) \/ 2$.
   the invariant density, i.e $(cal(A)^*_x P_ss)(lambda) = 0$ which is uniformly
   bounded from below by $P_ss (lambda) >= C_1 > 0$ and let the diffusion
   coefficient satisfy $|tilde(d)(t, x, lambda)| >= C_2 > 0$ defined in
-  @eq-d-tilde-def, be uniformaly bounded from below. Then for any $t, t_0 in [0,
-  T]$ such that $0 < t_0 <= t$, and for any measurable $A subset [-1, 1]$, there
+  @eq-d-tilde-def, be uniformaly bounded from below. Then for any $t_0 > 0$ and $t in [0,
+  T]$ such that $ t_0 <= t$, and for any measurable $A subset [-1, 1]$, there
   exisits $kappa(x)>0$ and $C(x) > 0$ such that
+
+  #todo[
+    fix statement
+  ]
 
   $
     lr(| integral_A [P_(t) (lambda | x) dif lambda - P_(ss)(lambda | x)]dif lambda |) <= C(x) ee^(-kappa(x) (t - t_0)).
@@ -1708,17 +1740,18 @@ where $kappa = (C_1 C_2) \/ 2$.
 
   We know from @lem-inv-meas-bound that $0 < C_P (x) <= P_ss (lambda | x)$, hence
   $
-    l2norm(zeta_0, L^2_(P_ss), 2,) &= integral^(1)_(-1) {
+    l2norm(zeta_(t_0), L^2_(P_ss), 2,) &= integral^(1)_(-1) {
     [P_(t_0) (lambda | x) - P_ss (lambda)]^2 / (P^2_(ss)(lambda |x))
     P_ss (lambda | x)} dif lambda, \
       &<= 2/(C_(P)(x)) integral^(1)_(-1)
       [P^2_(t_0) (lambda | x) + P^2_ss (lambda | x)] dif lambda \
-      &<= 2/(C_(P)(x)),\
+      &<= 4/(C_(P)(x)),\
   $
 
-  where we have implicitly used that fact that $l2norm(P_(t_0), L^2_(P_ss), ,) <
-  oo$ for any $t_0 > 0$ which is guaranteed by @lem-lam-smooth-denst. Finally,
-  defining $C(x) = sqrt(2 \/ C_(P)(x))$ yields the relation in the lemma.]
+  where we have implicitly used that fact that $l2norm(P_(t_0), L^2_(P_ss), ,)<
+  oo$ for any $t_0 > 0$ and for any initial distribution of $lambda$ which is
+  guaranteed by @thm-lam-smooth-denst. Finally, defining $C(x) = 2  \/ sqrt(
+  C_(P)(x))$ yields desired result.]
 
 
  ignore   below
@@ -1742,12 +1775,13 @@ where $kappa = (C_1 C_2) \/ 2$.
       &= lr(|integral_(-1)^(1) f(lambda) zeta_t (lambda) P_ss (lambda) dif lambda|) ,\
       &= lr(|inprod(f,  zeta_t,L^2_(P_ss))|) ,\
       &<= l2norm(f, L^2_(P_ss),  ,) l2norm(zeta_t, L^2_(P_ss),  ,) ,\
-      &<=  l2norm(f, L^2_(P_ss),  ,) l2norm(zeta_0, L^2_(P_ss),  ,) ee^(-kappa t), \
-      &<=  sup_(lambda in [-1, 1]) | f(lambda) | l2norm(P_(t) (lambda) - P_(ss) (lambda), L^2_(P_ss),  ,) ee^(-kappa t).
+      &<=  sup_(lambda in [-1, 1]) | f(lambda) |  l2norm(zeta_(t_0), L^2_(P_ss),  ,) ee^(-kappa (t - t_0)), \
+      &<=  C(x) ee^(-kappa (t - t_0)) sup_(lambda in [-1, 1]) | f(lambda) |  , 
   $
 
-  The final supremum bound is of course only meaningful when we have bounded $f$
-  on the interval $lambda in [-1, 1]$.
+  where we have used @cor-l2-to-sup. Obviously, the final supremum bound is of
+  course only meaningful when we have bounded $f$ on the interval $lambda in
+  [-1, 1]$.
 ]<cor-exp-mixing-obs>
 
 
@@ -1763,7 +1797,7 @@ $delta$ such that $epsilon << delta << 1$ where the following are satisfied:
 - mixing bounds on the expectations of observables
 
 = Averaging Principle
-We are now ready to introduce the averaging principle for the slow dynamics
+We are now ready to introduce the averaging principle for the fast switching variable dynamics
 
 #definition(title: [The Reduced SDE])[
 
@@ -1825,11 +1859,12 @@ Unsurprisingly, without any hidden term in the dynamics we require only the mean
     PP[sup_(s in [0, t]) | x_s - y_s| > gamma ] <= C/gamma^2 R(epsilon, delta) t
   $
 
-   
 
 
   #todo[
-    finish typing out the statment
+    finish the statement and add
+    - the initial condition $lambda_0 in [-1, 1] => P_(0)(lambda giv x_0) = delta(lambda - lambda_0)$
+    
   ]
 ]
 
@@ -1932,19 +1967,25 @@ Unsurprisingly, without any hidden term in the dynamics we require only the mean
     J^((2))_(a, k)(s) &= integral_(-1)^(1) a(s, x_(k delta), lambda)  [P_s (lambda | x_(k delta)) - P_ss (lambda | x_(k delta))] dif lambda
   $
 
-  where $P_s (lambda | x_(k delta)) = ee^(s cal(A)^*_(x_(k delta))) Q(lambda |
-  x_(k delta) )$ with $Q(lambda | x_(k delta))$ is the normalised probability
-  density of $lambda$ at the start of the interval $[k delta, (k+1) delta]$ .
-  Defining $zeta_s (lambda) eqdef [P_s (lambda | x_(k delta)) - P_ss (lambda |
-  x_(k delta))] \/ P_ss (lambda | x_(k delta))$, similar to the proof of
-  @thm-exp-mixing, we then have
+  where $P_s (lambda | x_(k delta)) = ee^(s cal(A)^*_(x_(k delta))) P_0(lambda
+  giv x_(k delta) )$ with $P_0(lambda | x_(k delta))$ begin, formally, the
+  normalised probability density of $lambda$ at the start of the interval $[k
+  delta, (k+1) delta]$. Recall that for $k = 0$ we have $P_0 (lambda giv x_(0))
+  = delta(lambda - lambda_0)$ but for all $k > 0$ the initial probability
+  density $P_0 (lambda giv x_(k delta))$ corresponds to some conditional
+  probability density at $t = k delta > 0$ that by @thm-lam-smooth-denst, is in
+  $L^2_(P_ss)$. Defining $zeta_s (lambda) eqdef [P_s (lambda | x_(k delta)) - P_ss (lambda |
+  x_(k delta))] \/ P_ss (lambda | x_(k delta))$, for $k > 0$ we have
 
   $
     J^((2))_(a, k)(s) &= inprod(a(s, x_(k delta), dot), zeta_s  , L^2_(P_ss)) \
-      &<= l2norm(a(s, x_(k delta), dot), L^2_(P_ss), 2) l2norm(zeta_s, L^2_(P_ss), 2) \
-      &<= l2norm(a(s, x_(k delta), dot), L^2_(P_ss), 2) l2norm(zeta_(k delta), L^2_(P_ss), 2) \
+      &<= l2norm(a(s, x_(k delta), dot), L^2_(P_ss), ,) l2norm(zeta_s, L^2_(P_ss), ,) \
+      &<= sup_(lambda) |a(s, x_(k delta),lambda)| l2norm(zeta_(0), L^2_(P_ss), ,) \
       &<= (C_a Q(x_(k delta)))/2 (1 + ||x_(k delta)||) ,
   $
+  where in the third line we have used @cor-l2-to-sup
+
+  
   
   where $zeta_s = [P_s (lambda | x_(k delta)) - P_ss (lambda | x_(k delta))] \/ P_ss (lambda | x_(k delta))$ (from @thm-exp-mixing) and with $Q(x_(k delta)) \/ 2 >= l2norm(zeta_(k delta), L^2_(P_ss),  ,)$. Then we have
   $
@@ -1954,6 +1995,13 @@ Unsurprisingly, without any hidden term in the dynamics we require only the mean
 
 
 ]
+
+#remark[
+#todo[
+  I need a justification for why it is ok to decompose the lamda dynamics at
+    each $x$ - it is because on this interval $x$ is fixed but $lambda$ is
+    allowd to change. Threfore at each interval we are allowd to fix $x$
+    according to the error from @thm-slow-var. ] ]
 
 
 
