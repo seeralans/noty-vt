@@ -1230,6 +1230,11 @@ in @lem-coeff-tilde-bounds give rise to ellipticity condition for the Fokker-Pla
 
 #proof[
 
+  #todo[
+    - i need to show that the A is also bounded
+      - which is fine since I know the that d is bounded and dif d is also bounded
+
+  ]
   The proof is a direct consequence from Aronson, Theorem 1 in @aronson1967. Let
   us work directly with the Fokker-Planck equation, using the definition of
   $A^*_x$ in @lem-fwd-gen we have
@@ -1274,6 +1279,26 @@ in @lem-coeff-tilde-bounds give rise to ellipticity condition for the Fokker-Pla
     add a small statement about how for $t >0$ $P_t in L 2$
   ]
 ]<cor-l2-of-pt>
+
+#lemma(title: [Doeblin Constant])[
+
+  Let $x in cal(D)_epsilon $ be fixxed and let $rho_(epsilon)(lambda | x, mu)$
+  denote the Green's function from @lem-instant-smooth evaluated at time $epsilon$
+  Then there exists a constant $eta(x) > 0$ such that
+
+  $
+    rho_(epsilon)(lambda giv x, mu) >= eta(x) quad forall lambda, mu in [-1, 1],
+  $
+  with
+  $
+    eta(x) >= (c_0) / (1 + ||x||^2p),
+  $
+  where $c_0 > 0$  and $p > 0$ are constants independent of $x$.
+]
+
+#proof[
+  
+]
 
 
 #lemma(title: [Invariant density of the switching variable])[
@@ -1936,7 +1961,7 @@ Unsurprisingly, without any hidden term in the dynamics we require only the mean
   delta$ and then recasting the integrals as, for example,
 
   $
-    integral_(0)^(t) ||I_a (s)|| dif s = sum_(k = 0)^(N-1) integral_(k delta)^((k+1)delta) ||I_a (s)|| dif s.
+    integral_(0)^(t) ||I_a (s)||^2 dif s = sum_(k = 0)^(N-1) integral_(k delta)^((k+1)delta) ||I_a (s)||^2 dif s.
   $
 
   We then recast the integrand as
@@ -1947,9 +1972,13 @@ Unsurprisingly, without any hidden term in the dynamics we require only the mean
     + underbrace(a(s, x_(k delta), lambda_s)
     - macron(a)(s, x_(k delta)), eqdef J^((2))_(a, k) (s))
     + underbrace(macron(a)(s, x_(k delta))
-    - macron(a)(s, x_s), eqdef J^((2))_(a, k) (s))
+    - macron(a)(s, x_s), eqdef J^((2))_(a, k) (s)),
   $
-  Clearly,
+
+  where $J^((1))_(a, k) (a)$ and $J^((3))_(a, k) (a)$ are the errors associated
+  from freezing $x$ to its value at the start of the inteval in the drift and
+  averged drift fields respectively, while $J^((2))_(a, k) (a)$ is the mixxing error. Clearly,
+
   $
     ||I_a||^2 <= 3 (||J^((1))_(a, k)||^2 + ||J^((2))_(a, k)||^2 + ||J^((3))_(a, k)||^2)
   $
