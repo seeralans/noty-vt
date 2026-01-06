@@ -106,7 +106,7 @@
 }
 
 
-#let l2norm(f, mu, p) = {
+#let lpnorm(f, mu, p) = {
   [$|#f|^(#p)_(#mu)$]
 }
 
@@ -1364,9 +1364,90 @@ in @lem-coeff-tilde-bounds give rise to ellipticity condition for the Fokker-Pla
   
 ]
 
+#definition(title: [Transition operator of the PDF])[ 
+
+  #todo[
+    finish
+  ]
+
+  Let $cal(T)_s$ be an operator whoes action on  ...
+  $
+    P_(t + s) (lambda giv x) = (cal(T)_s P_t)(x) eqdef integral_(-1)^(1) rho_s (lambda | x, mu) P_(t) (mu giv x) dif mu
+  $
+ ]
+
+#lemma(title: [Total variation bound])[
 
 
-#lemma(title: [Bounds on the Invariant Measure])[
+]
+#proof[
+
+  We have that 
+  $
+    (cal(T)_s P_(ss))(lambda giv x) = P_(ss)(lambda giv x)
+  $
+
+  $
+    (cal(T)_r P_())(lambda giv x)
+  $
+
+  $
+    rho_(s)(lambda giv x, mu) = eta(x) + r_(s)(lambda, mu)
+  $<eq-green-decomp>
+
+  $
+    integral_(-1)^(1)  r_(s) (lambda, mu) dif lambda = 1 - 2 eta(x)
+  $
+
+  Let $P$ and $Q$ be probability densities on $[-1, 1]$, then 
+
+  $
+    (cal(T)_s P)(lambda) - (cal(T)_s Q)(lambda) = 
+    integral_(-1)^(1)  rho_(s)(lambda, mu) (P(mu) - Q(mu))dif mu 
+  $
+
+  substrituting in the demposition  @eq-green-decomp we have
+
+  $
+    (cal(T)_s P)(lambda) - (cal(T)_s Q)(lambda) &= 
+    eta(x) integral_(-1)^(1)   (P(mu) - Q(mu))dif mu 
+     integral_(-1)^(1)  r_(s)(lambda, mu) (P(mu) - Q(mu))dif mu  \
+      &= integral_(-1)^(1)  r_(s)(lambda, mu) (P(mu) - Q(mu))dif mu 
+  $
+
+  
+
+  $
+    lr(|(cal(T)_s P)(lambda) - (cal(T)_s Q)(lambda)|) &= 
+     lr(|integral_(-1)^(1)  r_(s)(lambda, mu) (P(mu) - Q(mu))dif mu|)\
+      &<= integral_(-1)^(1)  r_(s)(lambda, mu) lr(|P(mu) - Q(mu)|)dif mu
+  $
+
+  $
+    integral_(-1)^(-1) lr(|(cal(T)_s P)(lambda) - (cal(T)_s Q)(lambda)|)dif lambda
+      &<= integral_(-1)^(1)  lr(|P(mu) - Q(mu)|) lr((integral_(-1)^(1)  r_(s)(lambda, mu)  dif lambda)) dif mu\
+      &<= [1 - 2 eta(x)] integral_(-1)^(1)  lr(|P(mu) - Q(mu)|) dif mu
+  $
+
+  hence
+
+  $
+    lpnorm((cal(T)_s P)(lambda) - (cal(T)_s Q)(lambda), L^1, ,) 
+      &<= [1 - 2 eta(x)] lpnorm(P(mu) - Q(mu), L^1, ,)
+  $
+  for continuous functions with compact support on $Omega$  the total variation 
+
+  $
+    lpnorm(f(x), "TV", ,) eqdef 1/2 integral_(Omega) |f(x)| dif x
+  $
+  
+  $
+    P_(s + k delta)(lambda giv x_(k delta)) = integral_(-1)^(1) rho_s (lambda giv x_(k delta) mu)  P_(k delta)(mu giv x_(k delta)) dif mu
+  $
+
+]
+
+#lemma(title: [Bounds on the invariant measure])[
 
   For all $x in cal(D)_epsilon$ fixed  and $||tilde(a)(t, x, lambda)|| <= tilde(C)_1 (x)$  and $||tilde(b)(t, x, lambda)|| >= tilde(C)_1 (x) > 0$, set $tilde(C)_(12)(x) = tilde(C)_1 (x) \/ tilde(C)_2 (x)$
 
@@ -1441,7 +1522,7 @@ Before we proceed it is usefull to introduce a defnition for the $L^2$ space tha
   which induces the $L^2$-norm
   
   $
-    l2norm(f, L^2_(mu), ,) eqdef chevron.l f \, f chevron.r_(L^2_(mu))^(1/2)  =
+    lpnorm(f, L^2_(mu), ,) eqdef chevron.l f \, f chevron.r_(L^2_(mu))^(1/2)  =
     (integral_(Omega) f^2(omega) dif mu(omega))^(1/2).
   $<eq-l2-norm-def>
 ]
@@ -1452,7 +1533,7 @@ Before we proceed it is usefull to introduce a defnition for the $L^2$ space tha
   argument
 
   $
-    l2norm(f, L^2_(mu), ,)
+    lpnorm(f, L^2_(mu), ,)
     = (integral_(Omega) f^2(omega) dif mu(omega))^(1/2) 
       &= (integral_(Omega) |f(omega)|^2 dif mu(omega))^(1/2), \
       &<= sup_(x in Omega) |f(omega)| (integral_(Omega)  dif mu(omega))^(1/2), \
@@ -1461,7 +1542,7 @@ Before we proceed it is usefull to introduce a defnition for the $L^2$ space tha
 ]<cor-l2-to-sup>
 
 Since we have a probability density we will use the notation $inprod(., .,
-L^2_(P_t))$ and $l2norm(., L^2_(P_t), ,)$ where $P_t in dom(cal(A)^*_x)$. 
+L^2_(P_t))$ and $lpnorm(., L^2_(P_t), ,)$ where $P_t in dom(cal(A)^*_x)$. 
 
 #lemma(title: [Symmetry of $cal(A)_x$])[
 
@@ -1640,7 +1721,7 @@ where $kappa = (C_1 C_2) \/ 2$.
   $ we have the inequality
 
   $
-    l2norm(f, L^2_(P_ss), 2) <= 1/kappa inprod(-cal(A)_x f, f, L^(2)_(P_ss)) 
+    lpnorm(f, L^2_(P_ss), 2) <= 1/kappa inprod(-cal(A)_x f, f, L^(2)_(P_ss)) 
   $
 ]<lem-zero-mean-bound>
 
@@ -1692,7 +1773,7 @@ where $kappa = (C_1 C_2) \/ 2$.
   $ we have the inequality
 
   $
-    l2norm(g, L^2_(P_ss),2)<= 1/kappa inprod(-cal(A)_x g, g, L^(2)_(P_ss)) 
+    lpnorm(g, L^2_(P_ss),2)<= 1/kappa inprod(-cal(A)_x g, g, L^(2)_(P_ss)) 
   $
 
 ]<lem-zero-mean-bound-l2>
@@ -1748,24 +1829,24 @@ where $kappa = (C_1 C_2) \/ 2$.
       &<= (integral_(-1)^1 zeta^2_t (lambda) P_ss (lambda) dif lambda )^(1\/2)
           (integral_(-1)^1  P_ss (lambda) dif lambda)^(1\/2), \ 
       &<= (integral_(-1)^1 zeta^2_t (lambda) P_ss (lambda) dif lambda )^(1\/2), \
-      &= l2norm(zeta_t, L^2_(P_ss),  ,).
+      &= lpnorm(zeta_t, L^2_(P_ss),  ,).
   $
-  Then it only remains to bound $l2norm(zeta_t, L^2_(P_ss),  ,)$
+  Then it only remains to bound $lpnorm(zeta_t, L^2_(P_ss),  ,)$
   $
-    dif /(dif t) l2norm(zeta_t, L^2_(P_ss), 2 ,) &= 2 integral_(-1)^1  zeta_t (lambda) partial_t zeta_t (lambda) P_ss (lambda) dif lambda, \ 
+    dif /(dif t) lpnorm(zeta_t, L^2_(P_ss), 2 ,) &= 2 integral_(-1)^1  zeta_t (lambda) partial_t zeta_t (lambda) P_ss (lambda) dif lambda, \ 
       &= -2 inprod(-cal(A)_x zeta_t,  zeta_t, L^2_(P_ss)), \
-      &<= -2kappa l2norm(zeta_t, L^2_(P_ss),  2,), quad #text[(by @lem-zero-mean-bound-l2)].
+      &<= -2kappa lpnorm(zeta_t, L^2_(P_ss),  2,), quad #text[(by @lem-zero-mean-bound-l2)].
   $ 
 
   Then by Gronwall's inequality we have 
 
   $
-    l2norm(zeta_t, L^2_(P_ss),  ,) <= l2norm(zeta_(t_0), L^2_(P_ss),  ,) ee^(- kappa (t - t_0)).
+    lpnorm(zeta_t, L^2_(P_ss),  ,) <= lpnorm(zeta_(t_0), L^2_(P_ss),  ,) ee^(- kappa (t - t_0)).
   $
 
   We know from @lem-inv-meas-bound that $0 < C_P (x) <= P_ss (lambda | x)$, hence
   $
-    l2norm(zeta_(t_0), L^2_(P_ss), 2,) &= integral^(1)_(-1) {
+    lpnorm(zeta_(t_0), L^2_(P_ss), 2,) &= integral^(1)_(-1) {
     [P_(t_0) (lambda | x) - P_ss (lambda)]^2 / (P^2_(ss)(lambda |x))
     P_ss (lambda | x)} dif lambda, \
       &<= 2/(C_(P)(x)) integral^(1)_(-1)
@@ -1773,7 +1854,7 @@ where $kappa = (C_1 C_2) \/ 2$.
       &<= 4/(C_(P)(x)),\
   $
 
-  where we have implicitly used that fact that $l2norm(P_(t_0), L^2_(P_ss), ,)<
+  where we have implicitly used that fact that $lpnorm(P_(t_0), L^2_(P_ss), ,)<
   oo$ for any $t_0 > 0$ and for any initial distribution of $lambda$ which is
   guaranteed by @thm-lam-smooth-denst. Finally, defining $C(x) = 2  \/ sqrt(
   C_(P)(x))$ yields desired result.]
@@ -1781,7 +1862,7 @@ where $kappa = (C_1 C_2) \/ 2$.
 
  ignore   below
   $
-    l2norm(zeta_0, L^2_(P_ss), 2,) &= integral^(1)_(-1) {
+    lpnorm(zeta_0, L^2_(P_ss), 2,) &= integral^(1)_(-1) {
     [P_(t_0) (lambda | x) - P_ss (lambda)]^2 / (P^2_(ss)(lambda |x))
     P_ss (lambda | x) }dif lambda,  \
       &<= integral^(1)_(-1) {[(P_(t_0) (lambda | x)) /(P_ss (lambda | x))  - 1]^2 P_ss (lambda | x)} dif lambda \
@@ -1799,8 +1880,11 @@ where $kappa = (C_1 C_2) \/ 2$.
     lr(|EE[f(lambda_t)] - integral^(1)_(-1) f(lambda)  P_ss (lambda) dif lambda |) 
       &= lr(|integral_(-1)^(1) f(lambda) zeta_t (lambda) P_ss (lambda) dif lambda|) ,\
       &= lr(|inprod(f,  zeta_t,L^2_(P_ss))|) ,\
-      &<= l2norm(f, L^2_(P_ss),  ,) l2norm(zeta_t, L^2_(P_ss),  ,) ,\
-      &<=  sup_(lambda in [-1, 1]) | f(lambda) |  l2norm(zeta_(t_0), L^2_(P_ss),  ,) ee^(-kappa (t - t_0)), \
+      &<= lpnorm(f, L^2_(P_ss),  ,) lpnorm(zeta_t, L^2_(P_ss),  ,) ,\
+      &<=  lpnorm(f, L^2_(P_ss),  ,) lpnorm(zeta_0, L^2_(P_ss),  ,) ee^(-kappa t), \
+      &<=  sup_(lambda in [-1, 1]) | f(lambda) | lpnorm(P_(t) (lambda) - P_(ss) (lambda), L^2_(P_ss),  ,) ee^(-kappa t).
+      &<= lpnorm(f, L^2_(P_ss),  ,) lpnorm(zeta_t, L^2_(P_ss),  ,) ,\
+      &<=  sup_(lambda in [-1, 1]) | f(lambda) |  lpnorm(zeta_(t_0), L^2_(P_ss),  ,) ee^(-kappa (t - t_0)), \
       &<=  C(x) ee^(-kappa (t - t_0)) sup_(lambda in [-1, 1]) | f(lambda) |  , 
   $
 
@@ -2008,15 +2092,17 @@ Unsurprisingly, without any hidden term in the dynamics we require only the mean
 
   $
     J^((2))_(a, k)(s) &= inprod(a(s, x_(k delta), dot), zeta_s  , L^2_(P_ss)) \
-      &<= l2norm(a(s, x_(k delta), dot), L^2_(P_ss), ,) l2norm(zeta_s, L^2_(P_ss), ,) \
-      &<= sup_(lambda) |a(s, x_(k delta),lambda)| l2norm(zeta_(0), L^2_(P_ss), ,) ee^(-kappa(x_(k delta))()) \
+      &<= lpnorm(a(s, x_(k delta), dot), L^2_(P_ss), 2) lpnorm(zeta_s, L^2_(P_ss), 2) \
+      &<= lpnorm(a(s, x_(k delta), dot), L^2_(P_ss), 2) lpnorm(zeta_(k delta), L^2_(P_ss), 2) \
+      &<= lpnorm(a(s, x_(k delta), dot), L^2_(P_ss), ,) lpnorm(zeta_s, L^2_(P_ss), ,) \
+      &<= sup_(lambda) |a(s, x_(k delta),lambda)| lpnorm(zeta_(0), L^2_(P_ss), ,) ee^(-kappa(x_(k delta))()) \
       &<= (C_a Q(x_(k delta)))/2 (1 + ||x_(k delta)||) ,
   $
   where in the third line we have used @cor-l2-to-sup
 
   
   
-  where $zeta_s = [P_s (lambda | x_(k delta)) - P_ss (lambda | x_(k delta))] \/ P_ss (lambda | x_(k delta))$ (from @thm-exp-mixing) and with $Q(x_(k delta)) \/ 2 >= l2norm(zeta_(k delta), L^2_(P_ss),  ,)$. Then we have
+  where $zeta_s = [P_s (lambda | x_(k delta)) - P_ss (lambda | x_(k delta))] \/ P_ss (lambda | x_(k delta))$ (from @thm-exp-mixing) and with $Q(x_(k delta)) \/ 2 >= lpnorm(zeta_(k delta), L^2_(P_ss),  ,)$. Then we have
   $
     EE[ ||J^((2))_(a, k)(s)||^2] <= EE[Q^2(x_(k delta)) (1 + || x_(k delta)||^2)]
   $
