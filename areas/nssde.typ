@@ -936,7 +936,7 @@ From the backward generator it is then possible to obtain the forward generator
 using the $L^2$-adjoint relation
 
 $
-  integral_-^1 P_t (lambda | x) (cal(A)_x f_t ) (lambda) dif lambda = integral_-^1 (A^(*)_x P_t)(lambda |x )  f_t (lambda) dif lambda , quad forall  f_t in dom(cal(A)_x)
+  integral_-^1 P_t (lambda | x) (cal(A)_x f_t ) (lambda) dif lambda = integral_-^1 (cal(A)^(*)_x P_t)(lambda |x )  f_t (lambda) dif lambda , quad forall  f_t in dom(cal(A)_x)
 $<eq-adjoint-def>
 
 where $t = [t', t + delta] subset [0, T]$, and $P_t (lambda | x)$ is the
@@ -1191,119 +1191,7 @@ Notice that our transversality condition from @def-ns-gen-sde, and subsequently 
 in @lem-coeff-tilde-bounds give rise to ellipticity condition for the Fokker-Planck equation.
 
 
-
-#todo[
-  maybe introduce the notion of the green's function before here?
-]
-
-#theorem(title: [Instantaneous smoothing of the switching variable density])[
-
-
-  Let $x in cal(D)_(epsilon)$ fixed, and let $lambda_t$ ​ evolve according to the
-  SDE with forward generator $A^*_x$ given by @lem-fwd-gen, let $rho (t, lambda
-  | x, lambda_0)$ with $lambda_0 in [-1, 1]$ be the Greens's function solution
-  to $partial_t rho = A^*_x rho$ with the intial condition $rho_0 (lambda | x,
-  lambda_0) = delta(lambda - lambda_0)$ and let the diffusion coefficient
-  satisfy
-  $
-    0 < C_1 (x) <= tilde(d)(t,x,lambda)<= C_2 (x).
-  $Then for any $t in (0, T]$, the Greens's function satifies
-
-  $
-    R_("L")/sqrt(t) exp[-(C'_(1)(lambda -lambda_0)^2 )/ t]
-    <= rho(t, lambda | x, lambda_0)
-    <= R_("U") / sqrt(t) exp[-(C'_(2)(lambda - lambda_0)^2 )/ t],
-  $
-
-  where $R_"L"$, $R_"U"$, $C'_(1)$ and $C'_(2)$ constants that depends on $x$, upper
-  and lower bounds for the diffusion coefficient which are dependnet on $x$ but
-  uniform in $lambda$ and $T$.
-
-  #todo[
-    - maybe we can just use Nash's bound cited in @aronson1967 6.
-    $
-      rho_t (lambda | x, lambda_0) <= K / sqrt(t)
-    $
-  ]
-
-]<thm-lam-smooth-denst>
-
-#proof[
-
-  #todo[
-    - i need to show that the A is also bounded
-      - which is fine since I know the that d is bounded and dif d is also bounded
-
-  ]
-  The proof is a direct consequence from Aronson, Theorem 1 in @aronson1967. Let
-  us work directly with the Fokker-Planck equation, using the definition of
-  $A^*_x$ in @lem-fwd-gen we have
-
-  $
-    partial_t rho(t, lambda giv x, lambda_0)
-    = -1/epsilon partial_lambda [tilde(a)(t, x, lambda) rho(t, lambda giv x)] + 1/(2 epsilon) partial^2_(lambda lambda) [tilde(d)(t, x, lambda) rho(t, lambda giv x, lambda_0 )],
-  $
-
-  where $tilde(a)$ and $tilde(d)$ are defined in @eq-a-tilde-def and
-  @eq-d-tilde-def respectively. Recasting in the divergence form we have
-  $
-    partial_t rho(t, lambda giv x, lambda_0)  = partial_(lambda)
-    [A(t, x, lambda) rho(t, lambda giv x, lambda_0)
-    + B(t, x, lambda) partial_(lambda)rho(t, lambda giv x, lambda_0) ],
-  $
-
-  where
-
-  $
-    A(t, x, lambda) = 1/epsilon [1/2 partial_lambda tilde(d)(t, x, lambda) - tilde(a)(t, x, lambda)], quad
-    B(t, x, lambda) = 1/(2 epsilon) tilde(d)(t, x, lambda).
-  $
-
-  In order to apply Aronson's result we must show that there exists a constant
-  $nu >= 1$ such that the inequality
-  $
-    1/nu <= ||B(t, x, lambda)|| <= nu,
-  $<eq-aronson-cond>
-
-  is satisfied. Since we know that $tilde(d)(t, x, lambda) <= 2 C^2 (1 +
-  ||x||^2)$ and $tilde(d)(t, x, lambda) >= tilde(M)^2 > 0$ by by the linear
-  growth bound and the transversality condition in @lem-coeff-tilde-bounds, we
-  can satisfy @eq-aronson-cond by defining $ nu(x) eqdef max[2 epsilon\/
-  tilde(M)^2, 2 C^2 (1 + ||x||^2), 1]. $ 
-  
-]
-
-
-#corollary[
-  #todo[
-    add a small statement about how for $t >0$ $P_t in L 2$
-  ]
-]<cor-l2-of-pt>
-
-#lemma(title: [Doeblin Constant])[
-
-  Let $x in cal(D)_epsilon $ be fixxed and let $rho_(epsilon)(lambda | x, mu)$
-  denote the Green's function from @lem-instant-smooth evaluated at time $epsilon$
-  Then there exists a constant $eta(x) > 0$ such that
-
-  $
-    rho_(epsilon)(lambda giv x, mu) >= eta(x) quad forall lambda, mu in [-1, 1],
-  $
-  with
-  $
-    eta(x) >= (c_0) / (1 + ||x||^2p),
-  $
-  where $c_0 > 0$  and $p > 0$ are constants independent of $x$.
-]
-
-#proof[
-  
-]
-
-
 #lemma(title: [Invariant density of the switching variable])[
-
-  
   #todo[
     convert this into an non autonomous,  The statement should say something like fixing the coefficients $tilde(a)$ and $tilde(b)$. 
   ]
@@ -1364,25 +1252,119 @@ in @lem-coeff-tilde-bounds give rise to ellipticity condition for the Fokker-Pla
   
 ]
 
-#definition(title: [Transition operator of the PDF])[ 
 
+#corollary[
+  #todo[
+    add a small statement about how for $t >0$ $P_t in L 2$
+  ]
+]<cor-l2-of-pt>
+
+
+
+
+#todo[
+  maybe introduce the notion of the green's function before here?
+]
+
+#theorem(title: [Instantaneous smoothing of the switching variable density])[
+
+  Let $x in cal(D)_(epsilon)$ fixed, and let $lambda_t$ ​ evolve according to the
+  SDE with forward generator $cal(A)^*_x$ given by @lem-fwd-gen, let $rho (t, lambda
+  | x, lambda_0)$ with $lambda_0 in [-1, 1]$ be the Greens's function solution
+  to $partial_t rho = cal(A)^*_x rho$ with the intial condition $rho_0 (lambda | x,
+  lambda_0) = delta(lambda - lambda_0)$ and let the diffusion coefficient
+  satisfy
+  $
+    0 < C_1 (x) <= tilde(d)(t,x,lambda)<= C_2 (x).
+  $Then for any $t in (0, T]$, the Greens's function satifies
+
+  $
+    R_("L")/sqrt(t) exp[-(C'_(1)(lambda -lambda_0)^2 )/ t]
+    <= rho(t, lambda | x, lambda_0)
+    <= R_("U") / sqrt(t) exp[-(C'_(2)(lambda - lambda_0)^2 )/ t],
+  $
+
+  where $R_"L"$, $R_"U"$, $C'_(1)$ and $C'_(2)$ constants that depends on $x$, upper
+  and lower bounds for the diffusion coefficient which are dependnet on $x$ but
+  uniform in $lambda$ and $T$.
+
+  #todo[
+    - maybe we can just use Nash's bound cited in @aronson1967 6.
+    $
+      rho_t (lambda | x, lambda_0) <= K / sqrt(t)
+    $
+  ]
+
+]<thm-lam-smooth-denst>
+
+#proof[
+
+  #todo[
+    - i need to show that the A is also bounded
+      - which is fine since I know the that d is bounded and dif d is also bounded
+
+  ]
+  The proof is a direct consequence from Aronson, Theorem 1 in @aronson1967. Let
+  us work directly with the Fokker-Planck equation, using the definition of
+  $cal(A)^*_x$ in @lem-fwd-gen we have
+
+  $
+    partial_t rho(t, lambda giv x, lambda_0)
+    = -1/epsilon partial_lambda [tilde(a)(t, x, lambda) rho(t, lambda giv x)] + 1/(2 epsilon) partial^2_(lambda lambda) [tilde(d)(t, x, lambda) rho(t, lambda giv x, lambda_0 )],
+  $
+
+  where $tilde(a)$ and $tilde(d)$ are defined in @eq-a-tilde-def and
+  @eq-d-tilde-def respectively. Recasting in the divergence form we have
+  $
+    partial_t rho(t, lambda giv x, lambda_0)  = partial_(lambda)
+    [A(t, x, lambda) rho(t, lambda giv x, lambda_0)
+    + B(t, x, lambda) partial_(lambda)rho(t, lambda giv x, lambda_0) ],
+  $
+
+  where
+
+  $
+    A(t, x, lambda) = 1/epsilon [1/2 partial_lambda tilde(d)(t, x, lambda) - tilde(a)(t, x, lambda)], quad
+    B(t, x, lambda) = 1/(2 epsilon) tilde(d)(t, x, lambda).
+  $
+
+  In order to apply Aronson's result we must show that there exists a constant
+  $nu >= 1$ such that the inequality
+  $
+    1/nu <= ||B(t, x, lambda)|| <= nu,
+  $<eq-aronson-cond>
+
+  is satisfied. Since we know that $tilde(d)(t, x, lambda) <= 2 C^2 (1 +
+  ||x||^2)$ and $tilde(d)(t, x, lambda) >= tilde(M)^2 > 0$ by by the linear
+  growth bound and the transversality condition in @lem-coeff-tilde-bounds, we
+  can satisfy @eq-aronson-cond by defining $ nu(x) eqdef max[2 epsilon\/
+  tilde(M)^2, 2 C^2 (1 + ||x||^2), 1]. $ 
+  
+]
+
+
+#lemma(title: [Doeblin Constant])[
   #todo[
     finish
   ]
 
-  Let $cal(T)_s$ be an operator whoes action on  ...
+  Let $x in cal(D)_epsilon $ be fixxed and let $rho_(epsilon)(lambda | x, mu)$
+  denote the Green's function from @lem-instant-smooth evaluated at time $epsilon$
+  Then there exists a constant $eta(x) > 0$ such that
+
   $
-    P_(t + s) (lambda giv x) = (cal(T)_s P_t)(x) eqdef integral_(-1)^(1) rho_s (lambda | x, mu) P_(t) (mu giv x) dif mu
+    rho_(epsilon)(lambda giv x, mu) >= eta(x) quad forall lambda, mu in [-1, 1],
   $
- ]
+  with
+  $
+    eta(x) >= (c_0) / (1 + ||x||^2p),
+  $
+  where $c_0 > 0$  and $p > 0$ are constants independent of $x$.
+]<lem-doeblin>
 
-#lemma(title: [Total variation bound])[
-
-
-]
 #proof[
 
-  We have that 
+  We have that
   $
     (cal(T)_s P_(ss))(lambda giv x) = P_(ss)(lambda giv x)
   $
@@ -1399,53 +1381,179 @@ in @lem-coeff-tilde-bounds give rise to ellipticity condition for the Fokker-Pla
     integral_(-1)^(1)  r_(s) (lambda, mu) dif lambda = 1 - 2 eta(x)
   $
 
-  Let $P$ and $Q$ be probability densities on $[-1, 1]$, then 
-
-  $
-    (cal(T)_s P)(lambda) - (cal(T)_s Q)(lambda) = 
-    integral_(-1)^(1)  rho_(s)(lambda, mu) (P(mu) - Q(mu))dif mu 
-  $
-
-  substrituting in the demposition  @eq-green-decomp we have
-
-  $
-    (cal(T)_s P)(lambda) - (cal(T)_s Q)(lambda) &= 
-    eta(x) integral_(-1)^(1)   (P(mu) - Q(mu))dif mu 
-     integral_(-1)^(1)  r_(s)(lambda, mu) (P(mu) - Q(mu))dif mu  \
-      &= integral_(-1)^(1)  r_(s)(lambda, mu) (P(mu) - Q(mu))dif mu 
-  $
-
   
-
-  $
-    lr(|(cal(T)_s P)(lambda) - (cal(T)_s Q)(lambda)|) &= 
-     lr(|integral_(-1)^(1)  r_(s)(lambda, mu) (P(mu) - Q(mu))dif mu|)\
-      &<= integral_(-1)^(1)  r_(s)(lambda, mu) lr(|P(mu) - Q(mu)|)dif mu
-  $
-
-  $
-    integral_(-1)^(-1) lr(|(cal(T)_s P)(lambda) - (cal(T)_s Q)(lambda)|)dif lambda
-      &<= integral_(-1)^(1)  lr(|P(mu) - Q(mu)|) lr((integral_(-1)^(1)  r_(s)(lambda, mu)  dif lambda)) dif mu\
-      &<= [1 - 2 eta(x)] integral_(-1)^(1)  lr(|P(mu) - Q(mu)|) dif mu
-  $
-
-  hence
-
-  $
-    lpnorm((cal(T)_s P)(lambda) - (cal(T)_s Q)(lambda), L^1, ,) 
-      &<= [1 - 2 eta(x)] lpnorm(P(mu) - Q(mu), L^1, ,)
-  $
-  for continuous functions with compact support on $Omega$  the total variation 
-
-  $
-    lpnorm(f(x), "TV", ,) eqdef 1/2 integral_(Omega) |f(x)| dif x
-  $
-  
-  $
-    P_(s + k delta)(lambda giv x_(k delta)) = integral_(-1)^(1) rho_s (lambda giv x_(k delta) mu)  P_(k delta)(mu giv x_(k delta)) dif mu
-  $
-
 ]
+
+
+#definition(title: [Transition operator of the PDF])[ 
+
+  #todo[
+    finish
+  ]
+
+  Let $cal(T)_s$ be an operator whoes action on  ...
+  $
+    P_(t + s) (lambda giv x) = (cal(T)_s P_t)(x) eqdef integral_(-1)^(1) rho_s (lambda | x, mu) P_(t) (mu giv x) dif mu
+  $
+ ]<def-trans-op>
+
+#lemma(title: [Total variation bound])[
+
+  Let $x in cal(D)_(epsilon)$ be fixed, and let $lambda_t$ ​ evolve according to
+  the SDE with forward generator $A^*_x$ given by @lem-fwd-gen, let $P_t (lambda
+  giv x), Q_t (lambda giv x) in dom(cal(A)^*_x)$ with some normalised initial
+  condition. Let $cal(T)_t$ be the transition operator defined in @def-trans-op,
+  and let $t,s>0$. Then the inequality
+
+  $
+    lpnorm(P_(s + t)(lambda giv x) - Q_(s + t)(lambda giv x), "TV", ,) 
+      &<= [1 - 2 eta(x)] lpnorm(P_(t)(lambda giv x) - Q_(t)(lambda giv x), "TV", ,),
+  $<eq-tv-bound>
+  is ssatisfied where $eta(x)$ is the constant given in @lem-doeblin.
+
+]<lem-tv-bound>
+#proof[
+
+  Using the definition of the transtion operator from @def-trans-op we obtain 
+  $
+    (cal(T)_s P_t)(lambda) - (cal(T)_s Q_t)(lambda) = 
+    integral_(-1)^(1)  rho_(s)(lambda giv x, mu) (P_t (mu) - Q_t (mu))dif mu,
+  $<eq-tv-bound-setup>
+  where $rho_(s)(lambda giv x, mu)$ is the Green's function for the forward
+  equation, and where we have drop the conditional dependence on $x$ in the
+  notation for clarity. Substituting in the decomposition given in
+  @eq-green-decomp into @eq-tv-bound-setup yeilds
+
+  $
+    (cal(T)_s P_t)(lambda) - (cal(T)_s Q_t)(lambda) &= 
+    eta(x) integral_(-1)^(1)   (P_(t)(mu) - Q_(t)(mu))dif mu 
+    integral_(-1)^(1)  r_(s)(lambda, mu) (P_(t)(mu) - Q_(t)(mu))dif mu,  \
+      &= integral_(-1)^(1)  r_(s)(lambda, mu) (P_(t)(mu) - Q_(t)(mu))dif mu .
+  $
+
+  Taking the absolute value on both sides allows to obtain the inequality
+  $
+    lr(|(cal(T)_s P_(t))(lambda) - (cal(T)_s Q_(t))(lambda)|) &= 
+    lr(|integral_(-1)^(1)  r_(s)(lambda, mu) (P_(t)(mu) - Q_(t)(mu))dif mu|)\
+      &<= integral_(-1)^(1)  r_(s)(lambda, mu) lr(|P_(t)(mu) - Q_(t)(mu)|)dif mu.
+  $
+
+  Finally, integrating both sides w.r.t $lambda$ allows to eliminate $r_s (lambda, mu)$ to give
+  $
+    integral_(-1)^(-1) lr(|(cal(T)_s P_(t))(lambda) - (cal(T)_s Q_(t))(lambda)|)dif lambda
+      &<= integral_(-1)^(1)  lr(|P_(t)(mu) - Q_(t)(mu)|) lr((integral_(-1)^(1)  r_(s)(lambda, mu)  dif lambda)) dif mu,\
+      &<= [1 - 2 eta(x)] integral_(-1)^(1)  lr(|P_(t)(mu) - Q_(t)(mu)|) dif mu,
+  $
+  or in the norm-notation
+  $
+    lpnorm((cal(T)_s P_(t))(lambda) - (cal(T)_s Q_(t))(lambda), L^1, ,) 
+      &<= [1 - 2 eta(x)] lpnorm(P_(t)(mu) - Q_(t)(mu), L^1, ,).
+  $<eq-l1-norm-tp>
+
+  To write @eq-l1-norm-tp in terms of the total variation we employ the fact
+  that that $P_t$ and $Q_t$ are absolutely continuous with respect to the
+  Lebesgue measure, hence
+  $
+    lpnorm(P_(t) (lambda) - Q_(t) (lambda), "TV", ,)
+      // &eqdef sup_(omega in cal(B)([-1, 1]))|P_(t) (lambda) - Q_(t) (lambda)|,\
+      &= 1/2 integral_(omega) |P_(t) (lambda) - Q_(t) (lambda)| dif lambda.\
+  $<eq-tv-def>
+]
+
+
+#theorem(title: [Exponential mixing of the switching variable])[
+
+  Let $x in cal(D)_epsilon$ be fixed, let $P_t in dom(cal(A))^*_x$ represent the
+  occupation probability density of $lambda$ conditioned on $x$, let $P_ss$ be
+  the invariant density, i.e $(cal(A)^*_x P_ss)(lambda) = 0$
+
+
+  which is uniformly
+  bounded from below by $P_ss (lambda) >= C_1 > 0$ and let the diffusion
+  coefficient satisfy $|tilde(d)(t, x, lambda)| >= C_2 > 0$ defined in
+  @eq-d-tilde-def, be uniformaly bounded from below. Then for any $t_0 > 0$ and $t in [0,
+  T]$ such that $ t_0 <= t$, and for any measurable $A subset [-1, 1]$, there
+  exisits $kappa(x)>0$ and $C(x) > 0$ such that
+
+  #todo[
+    fix statement
+  ]
+
+
+  $
+    lr(| integral_A [P_(t) (lambda | x) dif lambda - P_(ss)(lambda | x)]dif lambda |) <= C(x) ee^(-kappa(x) (t - t_0)).
+  $
+
+  $
+
+    lpnorm(P_t (lambda giv x) - P_(ss)(lambda giv x), L^1, ,) <= C(x) ee^(-kappa(x) (t - t_0))
+  $
+  
+]<thm-exp-mixing-doe>
+
+#proof[
+
+  Let $tau > 0$ such that $tau << t$ and let $m eqdef floor(t\/tau)$, then using
+  the fact that $cal(T)_(tau) P_(ss )(lambda)$ and @lem-tv-bound we obtain
+  $
+    lpnorm(P_(m tau)(lambda) -  P_(ss)(lambda), "TV", ,) <=
+    (1 - 2eta(x))lpnorm(P_((m-1)tau)(lambda) -  P_(ss)(lambda), "TV", ,) ,
+  $<eq-tv-bound-0>
+  and using the same lemma repeatedly yeilds
+  $
+    lpnorm(P_(m tau)(lambda) -  P_(ss)(lambda), "TV", ,) &<=
+    (1 - eta(x))^m lpnorm(P_(0)(lambda) -  P_(ss)(lambda), "TV", ,), \
+      &<= (1 - 2eta(x))^m,
+  $<eq-tv-bound-1>
+
+  where in the last step we have employed @lem-tv-upper-bound. We can rewrite
+  the right hand side in @eq-tv-bound-1 using exponentials to obtain
+  $
+    (1 - eta(x))^m &= e^(m ln[1 - eta(x)])
+    <= ee^(-2eta(x) floor(t\/tau))
+    <= ee^(-2eta(x) (t\/tau - 1))
+    = C_1(x) ee^(-kappa(x) t),
+  $<eq-tv-bound-2>
+  where $C_1(x) eqdef ee^(2eta(x))$ and $kappa(x) eqdef 2eta(x) \/ tau$. With
+  $eta(x) in (0, 1\/2]$, we take $C_1(x) <= ee(1) = C$ to get the final bound.
+]
+
+#lemma(title: [Upperbound on TV])[
+
+  For any probability densities $P$, $Q$ on a compact set $Omega subset.eq RR^d$, 
+  $
+    lpnorm(P -Q, "TV", ,)  <= 1
+  $
+]<lem-tv-upper-bound>
+
+#proof[
+
+  We define $Omega^+ = {omega in Omega | P(omega) >= Q(omega) }$, and $Omega^- =
+  {omega in Omega | P(omega) < Q(omega) }$ then 
+  $
+    integral_(Omega)|P(omega) - Q(omega)| dif omega = 
+    integral_(Omega^+)[P(omega) - Q(omega)] dif omega
+    +
+    integral_(Omega^-)[Q(omega) - P(omega)] dif omega.
+  $<eq-ubound-tv>
+  By exploiting the normalisation of the densities we have that 
+  $
+   integral_(Omega^+)[P(omega) - Q(omega)] dif omega = 
+    integral_(Omega^-)[Q(omega) - P(omega)] dif omega,
+  $<eq-const-diff>
+  and calling this common quantity $C$, we observe that  
+  $
+    C eqdef integral_(Omega^+)[P(omega) - Q(omega)] dif omega
+    <= integral_(Omega^+)[P(omega)] dif omega
+    <= integral_(Omega)[P(omega)] dif omega <= 1.
+  $
+  Then from the defintion of the the total variation we have
+  $
+    lpnorm(P -Q, "TV", ,)  = 1/2
+    integral_(Omega)|P(omega) - Q(omega)| dif omega = C <= 1.
+  $
+]
+
 
 #lemma(title: [Bounds on the invariant measure])[
 
