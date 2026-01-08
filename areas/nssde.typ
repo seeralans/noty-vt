@@ -22,7 +22,6 @@
   print: false,
 )
 
-
 #show: equate.with(breakable: true, sub-numbering: false)
 #set math.equation(numbering: "(1.1)")
 #set heading(numbering: "1.1")
@@ -323,10 +322,7 @@ $<eq-b-def>
 which are smooth in $lambda$, as well as $x$ and $t$ as they inherit the
 smoothness conditions given in @def-ns-gen-sde. The switching variable obviously
 depends on the state and we will regularise the definition given in @eq-lam-def
-as
-$
-  lambda = Lambda_(epsilon)[sigma(x)]
-$
+as $ lambda = Lambda_(epsilon)[sigma(x)] $
 
 where 
 $
@@ -540,11 +536,14 @@ as a measure given in @eq-big-lam-sec-deriv, it then follows from
   $
   By letting $lambda_t = Lambda_epsilon (z_t = sigma(x_t))$, and using  @lem-z-sde we obtain 
   $
-    lambda_t &= lambda_0 + integral_0^t 1/epsilon bb(1)_((-epsilon, epsilon])[sigma(x_s)] tilde(a)(x_s, lambda_s) dif t
+    lambda_t &= mu + integral_0^t 1/epsilon bb(1)_((-epsilon, epsilon])[sigma(x_s)] tilde(a)(x_s, lambda_s) dif t
     + 1/sqrt(epsilon) integral_0^t bb(1)_((-epsilon, epsilon])[sigma(x)] tilde(b)(x_s, lambda_s) dif W_s \
       &+ 1/epsilon [ L_t^(z)(-epsilon) -  L_t^(z)(epsilon)].
 $<eq-lam-sde-meyer-ito-full>
 ]
+
+#todo[add summary text here]
+
 
 The dynamics of the full system are then represented by the coupled SDE 
 
@@ -563,7 +562,105 @@ where $a(t, x, lambda)$ and $b(t, x, lambda)$ are defined, respectively, in
 lambda)$ are given defined in @eq-a-tilde-def and @eq-b-tilde-def respectively.
 The coupled system is a slow-fast stochastic system, and our goal is to obtain
 controlled approximation for the dynamics of the slow process by closing the
-dynamics of the switching variable $lambda_t$.
+dynamics of the switching variable $lambda_t$. Before we study that let us recapitulate the various coefficients that we discussed: $a^pm (t, x)$
+and $b^pm (t, x)$ are the drift and noise coefficients for the SDE on either
+side of the discontinuity from @def-ns-gen-sde; $a(t, x, lambda)$ and $b(t, x,
+lambda)$ are the convex combination of the drift and nosie coefficients defined
+in @eq-a-def and @eq-b-def respectively; $tilde(a)(t, x, lambda)$ and
+$tilde(b)(t, x, lambda)$ are the convex combination of the drift and nosie
+coefficients projected onto the (unscaled) normal of the discontiuity set and
+are defined in @eq-a-tilde-def and @eq-b-tilde-def respectively; lastly it is
+useful to define the projected diffusion coefficient
+$
+  tilde(d)(t, x, lambda) eqdef tilde(b)(t, x, lambda) tilde(b)(t, x, lambda)^tns
+  = partial_x sigma(x)^tns b(t, x, lambda) b(t, x, lambda)^tns partial_x sigma(x).
+$<eq-d-tilde-def>
+
+
+Despite the switching variable being random, because it is bounded, $lambda_t in
+[-1, 1]$, all of these coefficients inherit the conditions of $a$ and $b$ as
+laid out in @def-ns-gen-sde. We summarise these in the next lemma as they will
+then be used in the later results.
+
+
+
+
+#lemma(title: [Bounds on the coefficients])[
+
+  Let $x in cal(D)_epsilon$ and $lambda in [-1, 1]$. Suppose the coefficients
+  $a^pm$ and $b^pm$ satisfy assumptions (A1)–(A4) of @def-ns-gen-sde, and let
+  $a(t, x, lambda)$ and $b(t, x, lambda)$ be the convex combinations defined in
+  @eq-a-def and @eq-b-def, and let $tilde(b)(t, x, lambda)$ and $tilde(d)(x,
+  lambda)$ be projected coefficents defined in @eq-b-tilde-def and
+  @eq-d-tilde-def. Then there exist constants $C, K, tilde(M) > 0$,
+  independent of $lambda$, such that the following bounds hold.
+
+  1. Linear growth.  
+  $
+    ||a(t, x, lambda)|| + ||b(t, x, lambda)|| <= C (1 + ||x||).
+  $<eq-ab-lin-growth-bound>
+
+  2. Lipschitz continuity. For any $x, y in RR^d$ and any $t, s in [0, T]$,
+  $
+    ||a(t, x, lambda) - a(s, y, lambda)||
+    + ||b(t, x, lambda) - b(s, y, lambda)|| <= K_x ||x - y|| + K_T |t - s|.
+  $<eq-ab-lip-bound>
+
+  3. Transversality. For any $x$ in $cal(D)_(epsilon)$ and $lambda in [-1, 1]$
+     $
+       || tilde(b)(t, x, lambda) || >= tilde(M) > 0, quad || tilde(d)(t, x, lambda) || >= tilde(M)^2 >  0.
+     $<eq-ab-trans-bound>
+
+]<lem-coeff-tilde-bounds>
+
+#proof[
+
+  1. Linear growth. Using the defintion of combined coefficients $a$  and the triangle
+     inequality we obtain
+
+    $
+        ||a(t, x, lambda)|| 
+        &<= 1/2 (1 + lambda)  ||a_+ (t, x)||  + 1/2 (1 - lambda)  ||a_- (t, x)|| , \
+        &<= 1/2  [(1 + lambda) C_+ + (1 - lambda) C_- ]  (1 + |x|),  \
+          &<= (C_+ + C_- )(1 + ||x||) .  
+    $
+     Carrying out the same steps for $b$ and combining thme gives bound for $b$
+     is carried in the same manner gives the linear growth bound in the lemma
+     where $C = C_+ + C_-$
+
+  2. Lipschitz continuity. For any $x, y in RR^d$ and any $t, s in [0, T]$ we
+     have by the triangle inequality $
+
+    ||a(t, x, lambda) - a(s, y, lambda)|| &<= 1/2 (1 + lambda) ||a^+(t, x) - a^+(s, y)|| + 1/2 (1 - lambda) ||a^-(t, x) - a^-(s, y)||, \
+      &<= 1/2 ||x - y|| [(1 + lambda) K^+_x  + (1 - lambda)K^+_x ], \ &+ 1/2 |t - s| [(1 + lambda) K^+_T  + (1 - lambda)K^+_T ] \
+      &<=  ||x - y|| ( K^+_x  + K^-_x ) + |t - s| ( K^+_T  + K^-_T ). $
+
+     Again carrying out the same procedure for $b$ and comining them gives the
+     condition in the lemma where $K_T = K^+_T + K^+_T $ and $K_x = K^+_x + K^-_x$.
+
+  3. Transversality. From the defintion of $tilde(b)(t, x, lambda)$ we have $
+    || tilde(b)(t, x, lambda) || &= ||partial_x sigma(x)^tns b(t, x, lambda)|| ,\
+      &= lr(||1/2 partial_x sigma(x)^tns [(1 + lambda)b^+ (t, x) + (1 - lambda)b^- (t, x)]||) ,\ 
+      &>= 1/2 [(1 + lambda) M^+ + (1 - lambda)M^-] ,\ 
+      &>= min(M^+, M^-). $
+    Setting $tilde(M) = min(M^+, M^-)$ gives the bound in the lemma while taking
+     the square gives the bound on the projected diffusion coefficent.
+
+]
+
+The linear growth conditions also <lem-coeff-tilde-bounds>
+
+mply finite polynomial moments
+which we summerise in the following lemma.
+
+#lemma(title: [Bounds on polynomial moments])[
+
+  Let $x_t$ evolve according to @eq-x-lam-sde-pair, 
+]
+
+
+
+
 
 = The intermediate timescale
 
@@ -779,6 +876,7 @@ fixed while the fast variable has sufficient time to equilibrate.
 
 We now fix $x in cal(D)_epsilon$ and consider the dynamics of the $lambda$ on
 the interval $[t, t + delta]$.
+
 
 #lemma(title: [Backward generator of the switching variable])[
 
@@ -1095,6 +1193,13 @@ our case however, it is conditional on $x_t = x in cal(D)_(epsilon)$.
 ]<rem-db-lam>
 
 
+#remark[
+  Notice that our transversality condition from @def-ns-gen-sde, and subsequently
+  the in @lem-coeff-tilde-bounds will give rise to ellipticity condition for the
+  Fokker-Planck equation.
+]
+
+
 == Bounds on the density of the switching variables
 
 #todo[
@@ -1104,91 +1209,6 @@ our case however, it is conditional on $x_t = x in cal(D)_(epsilon)$.
 
 ]
 
-
-Let us recapitulate the various coefficients that we discussed: $a^pm (t, x)$
-and $b^pm (t, x)$ are the drift and noise coefficients for the SDE on either
-side of the discontinuity from @def-ns-gen-sde; $a(t, x, lambda)$ and $b(t, x,
-lambda)$ are the convex combination of the drift and nosie coefficients defined
-in @eq-a-def and @eq-b-def respectively; $tilde(a)(t, x, lambda)$ and
-$tilde(b)(t, x, lambda)$ are the convex combination of the drift and nosie
-coefficients projected onto the (unscaled) normal of the discontiuity set and
-are defined in @eq-a-tilde-def and @eq-b-tilde-def respectively; lastly it is
-useful to define the projected diffusion coefficient
-$
-  tilde(d)(t, x, lambda) eqdef tilde(b)(t, x, lambda) tilde(b)(t, x, lambda)^tns
-  = partial_x sigma(x)^tns b(t, x, lambda) b(t, x, lambda)^tns partial_x sigma(x).
-$<eq-d-tilde-def>
-
-All of these coefficients inherit the conditions of $a$ and $b$ as laid out in
-@def-ns-gen-sde. We summarise these in the next lemma as they will then be used
-in the later results.
-
-#lemma(title: [Bounds on the coefficients])[
-
-  Let $x in cal(D)_epsilon$ and $lambda in [-1, 1]$. Suppose the coefficients
-  $a^pm$ and $b^pm$ satisfy assumptions (A1)–(A4) of @def-ns-gen-sde, and let
-  $a(t, x, lambda)$ and $b(t, x, lambda)$ be the convex combinations defined in
-  @eq-a-def and @eq-b-def, and let $tilde(b)(t, x, lambda)$ and $tilde(d)(x,
-  lambda)$ be projected coefficents defined in @eq-b-tilde-def and
-  @eq-d-tilde-def. Then there exist constants $C, K, tilde(M) > 0$,
-  independent of $lambda$, such that the following bounds hold.
-
-  1. Linear growth.  
-  $
-    ||a(t, x, lambda)|| + ||b(t, x, lambda)|| <= C (1 + ||x||).
-  $<eq-ab-lin-growth-bound>
-
-  2. Lipschitz continuity. For any $x, y in RR^d$ and any $t, s in [0, T]$,
-  $
-    ||a(t, x, lambda) - a(s, y, lambda)||
-    + ||b(t, x, lambda) - b(s, y, lambda)|| <= K_x ||x - y|| + K_T |t - s|.
-  $<eq-ab-lip-bound>
-
-  3. Transversality. For any $x$ in $cal(D)_(epsilon)$ and $lambda in [-1, 1]$
-     $
-       || tilde(b)(t, x, lambda) || >= tilde(M) > 0, quad || tilde(d)(t, x, lambda) || >= tilde(M)^2 >  0.
-     $<eq-ab-trans-bound>
-
-]<lem-coeff-tilde-bounds>
-
-#proof[
-
-  1. Linear growth. Using the defintion of combined coefficients $a$  and the triangle
-     inequality we obtain
-
-    $
-        ||a(t, x, lambda)|| 
-        &<= 1/2 (1 + lambda)  ||a_+ (t, x)||  + 1/2 (1 - lambda)  ||a_- (t, x)|| , \
-        &<= 1/2  [(1 + lambda) C_+ + (1 - lambda) C_- ]  (1 + |x|),  \
-          &<= (C_+ + C_- )(1 + ||x||) .  
-    $
-     Carrying out the same steps for $b$ and combining thme gives bound for $b$
-     is carried in the same manner gives the linear growth bound in the lemma
-     where $C = C_+ + C_-$
-
-  2. Lipschitz continuity. For any $x, y in RR^d$ and any $t, s in [0, T]$ we
-     have by the triangle inequality $
-
-    ||a(t, x, lambda) - a(s, y, lambda)|| &<= 1/2 (1 + lambda) ||a^+(t, x) - a^+(s, y)|| + 1/2 (1 - lambda) ||a^-(t, x) - a^-(s, y)||, \
-      &<= 1/2 ||x - y|| [(1 + lambda) K^+_x  + (1 - lambda)K^+_x ], \ &+ 1/2 |t - s| [(1 + lambda) K^+_T  + (1 - lambda)K^+_T ] \
-      &<=  ||x - y|| ( K^+_x  + K^-_x ) + |t - s| ( K^+_T  + K^-_T ). $
-
-     Again carrying out the same procedure for $b$ and comining them gives the
-     condition in the lemma where $K_T = K^+_T + K^+_T $ and $K_x = K^+_x + K^-_x$.
-
-  3. Transversality. From the defintion of $tilde(b)(t, x, lambda)$ we have $
-    || tilde(b)(t, x, lambda) || &= ||partial_x sigma(x)^tns b(t, x, lambda)|| ,\
-      &= lr(||1/2 partial_x sigma(x)^tns [(1 + lambda)b^+ (t, x) + (1 - lambda)b^- (t, x)]||) ,\ 
-      &>= 1/2 [(1 + lambda) M^+ + (1 - lambda)M^-] ,\ 
-      &>= min(M^+, M^-). $
-    Setting $tilde(M) = min(M^+, M^-)$ gives the bound in the lemma while taking
-     the square gives the bound on the projected diffusion coefficent.
-
-]
-
-
-Notice that our transversality condition from @def-ns-gen-sde, and subsequently the 
-in @lem-coeff-tilde-bounds give rise to ellipticity condition for the Fokker-Planck equation.
 
 
 #lemma(title: [Invariant density of the switching variable])[
@@ -1269,19 +1289,19 @@ in @lem-coeff-tilde-bounds give rise to ellipticity condition for the Fokker-Pla
 #theorem(title: [Instantaneous smoothing of the switching variable density])[
 
   Let $x in cal(D)_(epsilon)$ fixed, and let $lambda_t$ ​ evolve according to the
-  SDE with forward generator $cal(A)^*_x$ given by @lem-fwd-gen, let $rho (t, lambda
-  | x, lambda_0)$ with $lambda_0 in [-1, 1]$ be the Greens's function solution
-  to $partial_t rho = cal(A)^*_x rho$ with the intial condition $rho_0 (lambda | x,
-  lambda_0) = delta(lambda - lambda_0)$ and let the diffusion coefficient
-  satisfy
+  SDE with forward generator $cal(A)^*_x$ given by @lem-fwd-gen, let $rho (t,
+  lambda | x, mu)$ with $mu in [-1, 1]$ be the Greens's function solution to
+  $partial_t rho = cal(A)^*_x rho$ with the localised intial condition and let
+  the diffusion coefficient satisfy
+
   $
     0 < C_1 (x) <= tilde(d)(t,x,lambda)<= C_2 (x).
   $Then for any $t in (0, T]$, the Greens's function satifies
 
   $
-    R_("L")/sqrt(t) exp[-(C'_(1)(lambda -lambda_0)^2 )/ t]
-    <= rho(t, lambda | x, lambda_0)
-    <= R_("U") / sqrt(t) exp[-(C'_(2)(lambda - lambda_0)^2 )/ t],
+    (R_("L")(x))/sqrt(t) exp[-(C'_(1)(x)(lambda -mu)^2 )/ t]
+    <= rho(t, lambda | x, mu)
+    <= (R_("U")(x))/ sqrt(t) exp[-(C'_(2)(x)(lambda - mu)^2 )/ t],
   $
 
   where $R_"L"$, $R_"U"$, $C'_(1)$ and $C'_(2)$ constants that depends on $x$, upper
@@ -1291,7 +1311,7 @@ in @lem-coeff-tilde-bounds give rise to ellipticity condition for the Fokker-Pla
   #todo[
     - maybe we can just use Nash's bound cited in @aronson1967 6.
     $
-      rho_t (lambda | x, lambda_0) <= K / sqrt(t)
+      rho_t (lambda | x, mu) <= K / sqrt(t)
     $
   ]
 
@@ -1309,16 +1329,16 @@ in @lem-coeff-tilde-bounds give rise to ellipticity condition for the Fokker-Pla
   $cal(A)^*_x$ in @lem-fwd-gen we have
 
   $
-    partial_t rho(t, lambda giv x, lambda_0)
-    = -1/epsilon partial_lambda [tilde(a)(t, x, lambda) rho(t, lambda giv x)] + 1/(2 epsilon) partial^2_(lambda lambda) [tilde(d)(t, x, lambda) rho(t, lambda giv x, lambda_0 )],
+    partial_t rho(t, lambda giv x, mu)
+    = -1/epsilon partial_lambda [tilde(a)(t, x, lambda) rho(t, lambda giv x)] + 1/(2 epsilon) partial^2_(lambda lambda) [tilde(d)(t, x, lambda) rho(t, lambda giv x, mu )],
   $
 
   where $tilde(a)$ and $tilde(d)$ are defined in @eq-a-tilde-def and
   @eq-d-tilde-def respectively. Recasting in the divergence form we have
   $
-    partial_t rho(t, lambda giv x, lambda_0)  = partial_(lambda)
-    [A(t, x, lambda) rho(t, lambda giv x, lambda_0)
-    + B(t, x, lambda) partial_(lambda)rho(t, lambda giv x, lambda_0) ],
+    partial_t rho(t, lambda giv x, mu)  = partial_(lambda)
+    [A(t, x, lambda) rho(t, lambda giv x, mu)
+    + B(t, x, lambda) partial_(lambda)rho(t, lambda giv x, mu) ],
   $
 
   where
@@ -1349,72 +1369,77 @@ in @lem-coeff-tilde-bounds give rise to ellipticity condition for the Fokker-Pla
   ]
 
   Let $x in cal(D)_epsilon $ be fixxed and let $rho_(epsilon)(lambda | x, mu)$
-  denote the Green's function from @lem-instant-smooth evaluated at time $epsilon$
-  Then there exists a constant $eta(x) > 0$ such that
-
+  denote the Green's function from @thm-lam-smooth-denst evaluated at time $t in [0, T]$.
+  Then there exists a positif function $eta_(t)(x) >= 0$ such that
   $
-    rho_(epsilon)(lambda giv x, mu) >= eta(x) quad forall lambda, mu in [-1, 1],
+    rho_(t)(lambda giv x, mu) >= eta_(t)(x) quad forall lambda, mu in [-1, 1],
   $
-  with
-  $
-    eta(x) >= (c_0) / (1 + ||x||^2p),
-  $
-  where $c_0 > 0$  and $p > 0$ are constants independent of $x$.
 ]<lem-doeblin>
 
 #proof[
 
-  We have that
+  From @thm-lam-smooth-denst, we have 
   $
-    (cal(T)_s P_(ss))(lambda giv x) = P_(ss)(lambda giv x)
+    rho_(t)(lambda | x, mu)
+      &>= (R_("L")(x))/sqrt(t) exp[-(C'_(1)(x)(lambda -mu)^2 )/ t],\
   $
-
+  from which we can define
   $
-    (cal(T)_r P_())(lambda giv x)
-  $
-
-  $
-    rho_(s)(lambda giv x, mu) = eta(x) + r_(s)(lambda, mu)
-  $<eq-green-decomp>
-
-  $
-    integral_(-1)^(1)  r_(s) (lambda, mu) dif lambda = 1 - 2 eta(x)
-  $
-
+    eta_(t)(x) &eqdef inf_(lambda, mu) (R_("L")(x))/sqrt(t) exp[-(C'_(1)(x)(lambda -mu)^2 )/ t], \
+      &= (R_("L")(x))/sqrt(t) exp[-(4 C'_(1)(x) )/ t].\
+  $<eq-eta-def>
   
 ]
 
+#corollary[
 
-#definition(title: [Transition operator of the PDF])[ 
-
-  #todo[
-    finish
-  ]
-
-  Let $cal(T)_s$ be an operator whoes action on  ...
+  Due to the assistance of $eta_(t)(x)$ one can always decompose the Green's function into 
   $
-    P_(t + s) (lambda giv x) = (cal(T)_s P_t)(x) eqdef integral_(-1)^(1) rho_s (lambda | x, mu) P_(t) (mu giv x) dif mu
+    rho_(t)(lambda giv x, mu) = eta_(t)(x) + r_(t)(lambda giv x, mu),
+  $<eq-green-decomp>
+
+  where $r_(t)(lambda giv x, mu) >= 0$ is the contribution to the kernel the
+  spends on the initial condition $mu$ and the state $lambda$. Notice that we have
   $
- ]<def-trans-op>
+    integral_(-1)^(1) r_(t)(lambda giv x, mu) dif lambda = 1 - 2 eta_(t) (x),
+  $
+  due to the normalisation of the Green's function over $lambda$, which inturn implies that $eta_(t)(x) in [0, 1\/2]$.
+]<cor-lem-doeblin-res>
+
+
+A useful object that we weill employ in our upcomoing proofs is the called the
+transition operator. We will defnote it iwth $cal(T)_t$ and its action on action
+on action on on a probability density $P_s in dom(cal(A)^*_x)$ is defined via
+  $
+    (cal(T)_t P_s)(x) eqdef integral_(-1)^(1) rho_t (lambda | x, mu) P_(s)(mu giv x) dif mu, 
+  $<eq-def-trans-op>
+from which 
+  $
+    P_(t + s) (lambda) = (cal(T)_s P_t)(x) ,
+  $
+
+follows. Note that by definition of the invarint density we must have
+$P_(ss)(lambda) = cal(T)_s P_(ss) (lambda)$.
+
 
 #lemma(title: [Total variation bound])[
 
   Let $x in cal(D)_(epsilon)$ be fixed, and let $lambda_t$ ​ evolve according to
   the SDE with forward generator $A^*_x$ given by @lem-fwd-gen, let $P_t (lambda
   giv x), Q_t (lambda giv x) in dom(cal(A)^*_x)$ with some normalised initial
-  condition. Let $cal(T)_t$ be the transition operator defined in @def-trans-op,
+  condition. Let $cal(T)_t$ be the transition operator defined in @eq-def-trans-op,
   and let $t,s>0$. Then the inequality
 
   $
     lpnorm(P_(s + t)(lambda giv x) - Q_(s + t)(lambda giv x), "TV", ,) 
-      &<= [1 - 2 eta(x)] lpnorm(P_(t)(lambda giv x) - Q_(t)(lambda giv x), "TV", ,),
+      &<= [1 - 2 eta_(s)(x)] lpnorm(P_(t)(lambda giv x) - Q_(t)(lambda giv x), "TV", ,),
   $<eq-tv-bound>
   is ssatisfied where $eta(x)$ is the constant given in @lem-doeblin.
 
 ]<lem-tv-bound>
 #proof[
 
-  Using the definition of the transtion operator from @def-trans-op we obtain 
+  Using the definition of the transtion operator from @eq-def-trans-op we obtain 
   $
     (cal(T)_s P_t)(lambda) - (cal(T)_s Q_t)(lambda) = 
     integral_(-1)^(1)  rho_(s)(lambda giv x, mu) (P_t (mu) - Q_t (mu))dif mu,
@@ -1438,16 +1463,16 @@ in @lem-coeff-tilde-bounds give rise to ellipticity condition for the Fokker-Pla
       &<= integral_(-1)^(1)  r_(s)(lambda, mu) lr(|P_(t)(mu) - Q_(t)(mu)|)dif mu.
   $
 
-  Finally, integrating both sides w.r.t $lambda$ allows to eliminate $r_s (lambda, mu)$ to give
+  Finally, integrating both sides w.r.t $lambda$ allows to eliminate $r_s (lambda, mu)$ using @cor-lem-doeblin-res yeilding
   $
     integral_(-1)^(-1) lr(|(cal(T)_s P_(t))(lambda) - (cal(T)_s Q_(t))(lambda)|)dif lambda
       &<= integral_(-1)^(1)  lr(|P_(t)(mu) - Q_(t)(mu)|) lr((integral_(-1)^(1)  r_(s)(lambda, mu)  dif lambda)) dif mu,\
-      &<= [1 - 2 eta(x)] integral_(-1)^(1)  lr(|P_(t)(mu) - Q_(t)(mu)|) dif mu,
+      &<= [1 - 2 eta_(s)(x)] integral_(-1)^(1)  lr(|P_(t)(mu) - Q_(t)(mu)|) dif mu,
   $
   or in the norm-notation
   $
     lpnorm((cal(T)_s P_(t))(lambda) - (cal(T)_s Q_(t))(lambda), L^1, ,) 
-      &<= [1 - 2 eta(x)] lpnorm(P_(t)(mu) - Q_(t)(mu), L^1, ,).
+      &<= [1 - 2 eta_(s)(x)] lpnorm(P_(t)(mu) - Q_(t)(mu), L^1, ,).
   $<eq-l1-norm-tp>
 
   To write @eq-l1-norm-tp in terms of the total variation we employ the fact
@@ -1459,65 +1484,6 @@ in @lem-coeff-tilde-bounds give rise to ellipticity condition for the Fokker-Pla
       &= 1/2 integral_(omega) |P_(t) (lambda) - Q_(t) (lambda)| dif lambda.\
   $<eq-tv-def>
 ]
-
-
-#theorem(title: [Exponential mixing of the switching variable])[
-
-  Let $x in cal(D)_epsilon$ be fixed, let $P_t in dom(cal(A))^*_x$ represent the
-  occupation probability density of $lambda$ conditioned on $x$, let $P_ss$ be
-  the invariant density, i.e $(cal(A)^*_x P_ss)(lambda) = 0$
-
-
-  which is uniformly
-  bounded from below by $P_ss (lambda) >= C_1 > 0$ and let the diffusion
-  coefficient satisfy $|tilde(d)(t, x, lambda)| >= C_2 > 0$ defined in
-  @eq-d-tilde-def, be uniformaly bounded from below. Then for any $t_0 > 0$ and $t in [0,
-  T]$ such that $ t_0 <= t$, and for any measurable $A subset [-1, 1]$, there
-  exisits $kappa(x)>0$ and $C(x) > 0$ such that
-
-  #todo[
-    fix statement
-  ]
-
-
-  $
-    lr(| integral_A [P_(t) (lambda | x) dif lambda - P_(ss)(lambda | x)]dif lambda |) <= C(x) ee^(-kappa(x) (t - t_0)).
-  $
-
-  $
-
-    lpnorm(P_t (lambda giv x) - P_(ss)(lambda giv x), L^1, ,) <= C(x) ee^(-kappa(x) (t - t_0))
-  $
-  
-]<thm-exp-mixing-doe>
-
-#proof[
-
-  Let $tau > 0$ such that $tau << t$ and let $m eqdef floor(t\/tau)$, then using
-  the fact that $cal(T)_(tau) P_(ss )(lambda)$ and @lem-tv-bound we obtain
-  $
-    lpnorm(P_(m tau)(lambda) -  P_(ss)(lambda), "TV", ,) <=
-    (1 - 2eta(x))lpnorm(P_((m-1)tau)(lambda) -  P_(ss)(lambda), "TV", ,) ,
-  $<eq-tv-bound-0>
-  and using the same lemma repeatedly yeilds
-  $
-    lpnorm(P_(m tau)(lambda) -  P_(ss)(lambda), "TV", ,) &<=
-    (1 - eta(x))^m lpnorm(P_(0)(lambda) -  P_(ss)(lambda), "TV", ,), \
-      &<= (1 - 2eta(x))^m,
-  $<eq-tv-bound-1>
-
-  where in the last step we have employed @lem-tv-upper-bound. We can rewrite
-  the right hand side in @eq-tv-bound-1 using exponentials to obtain
-  $
-    (1 - eta(x))^m &= e^(m ln[1 - eta(x)])
-    <= ee^(-2eta(x) floor(t\/tau))
-    <= ee^(-2eta(x) (t\/tau - 1))
-    = C_1(x) ee^(-kappa(x) t),
-  $<eq-tv-bound-2>
-  where $C_1(x) eqdef ee^(2eta(x))$ and $kappa(x) eqdef 2eta(x) \/ tau$. With
-  $eta(x) in (0, 1\/2]$, we take $C_1(x) <= ee(1) = C$ to get the final bound.
-]
-
 #lemma(title: [Upperbound on TV])[
 
   For any probability densities $P$, $Q$ on a compact set $Omega subset.eq RR^d$, 
@@ -1554,6 +1520,83 @@ in @lem-coeff-tilde-bounds give rise to ellipticity condition for the Fokker-Pla
   $
 ]
 
+
+#theorem(title: [Exponential mixing of the switching variable])[
+
+  Let $x in cal(D)_epsilon$ be fixed, let $P_t in dom(cal(A))^*_x$ represent the
+  occupation probability density of $lambda$ conditioned on $x$, let $P_ss$ be
+  the invariant density, i.e $(cal(A)^*_x P_ss)(lambda) = 0$
+
+
+  which is uniformly
+  bounded from below by $P_ss (lambda) >= C_1 > 0$ and let the diffusion
+  coefficient satisfy $|tilde(d)(t, x, lambda)| >= C_2 > 0$ defined in
+  @eq-d-tilde-def, be uniformaly bounded from below. Then for any $t_0 > 0$ and $t in [0,
+  T]$ such that $ t_0 <= t$, and for any measurable $A subset [-1, 1]$, there
+  exisits $kappa_(tau)(x)>0$ and $C(x) > 0$ such that
+
+  #todo[
+    fix statement
+  ]
+
+
+  $
+    lr(| integral_A [P_(t) (lambda | x) dif lambda - P_(ss)(lambda | x)]dif lambda |) <= C(x) ee^(-kappa_(tau)(x) (t - t_0)).
+  $
+
+  $
+
+    lpnorm(P_t (lambda giv x) - P_(ss)(lambda giv x), L^1, ,) <= C(x) ee^(-kappa_(tau)(x) (t - t_0))
+  $
+  
+]<thm-exp-mixing-doe>
+
+#proof[
+
+  Let $tau > 0$ such that $tau << t$ and let $m eqdef floor(t\/tau)$, then using
+  the fact that $cal(T)_(tau) P_(ss )(lambda)$ and @lem-tv-bound we obtain
+  $
+    lpnorm(P_(m tau)(lambda) -  P_(ss)(lambda), "TV", ,) <=
+    (1 - 2eta_(tau)(x))lpnorm(P_((m-1)tau)(lambda) -  P_(ss)(lambda), "TV", ,) ,
+  $<eq-tv-bound-0>
+  and using the same lemma repeatedly, that is utilising the semigrouip property,  yeilds
+  $
+    lpnorm(P_(m tau)(lambda) -  P_(ss)(lambda), "TV", ,) &<=
+    (1 - eta_(tau)(x))^m lpnorm(P_(0)(lambda) -  P_(ss)(lambda), "TV", ,), \
+      &<= (1 - 2eta_(tau)(x))^m,
+  $<eq-tv-bound-1>
+
+  where in the last step we have employed @lem-tv-upper-bound. We can rewrite
+  the right hand side in @eq-tv-bound-1 using exponentials to obtain
+  $
+    (1 - eta_(tau)(x))^m &= e^(m ln[1 - eta(x)])
+    <= ee^(-2eta(x) floor(t\/tau))
+    <= ee^(-2eta(x) (t\/tau - 1))
+    = C_1(x) ee^(-kappa_(tau)(x) t),
+  $<eq-tv-bound-2>
+  where $C_1(x) eqdef ee^(2eta_(tau)(x))$ and $kappa_(tau)(x) eqdef 2eta_(tau)(x) \/ tau$. With
+  $eta_(tau)(x) in (0, 1\/2]$, we take $C_1(x) <= ee(1) = C$ to get the final bound.
+]
+
+
+#corollary(title: [Bound on expectations])[
+
+  The bound on the differences between probability measures obtained in
+  @thm-exp-mixing-doe affords us a further bound, namely on the differences in
+  expectations. As before with $0 < tau < t$ 
+
+  $
+    lr(|EE[f(lambda_t)] - integral^(1)_(-1) f(lambda)  P_ss (lambda) dif lambda |) 
+      &<= integral_(-1)^(1) lr(|f(lambda) [P_(t)(lambda) - P_(ss)(lambda)]|) dif lambda ,\
+      &<= lpnorm(f(lambda), L^oo, ,) lpnorm(P_(t)(lambda) - P_(ss)(lambda), L^1, ,) ,\
+      &<= 2 C ee^(-kappa_(tau)(x) t) lpnorm(f(lambda), L^oo, ,) .\
+  $
+
+  where we have used Hoelder's inequality to obtain the penultimate bound .
+  Obviously, the final supremum bound is of course only meaningful when we have
+  bounded $f$ on the interval $lambda in [-1, 1]$.
+
+]<cor-exp-mixing-obs-doe>
 
 #lemma(title: [Bounds on the invariant measure])[
 
@@ -1612,7 +1655,326 @@ in @lem-coeff-tilde-bounds give rise to ellipticity condition for the Fokker-Pla
 
 
 
-= Norm tings
+
+In summary we have estabilshed the existance of an intermediate timescale
+$delta$ such that $epsilon << delta << 1$ where the following are satisfied:
+- bounds on the coefficents, 
+- justification of the transversality condition
+- $EE[sup_s |x_(t+s) - x_t|^2] -> 0 $ as $epsilon -> 0$, that is the slow
+  varible remains fixed.
+
+- Exponentila mixing via Poincare inequality where the poincare constant is
+  obtained from the lower bounds on the invariant measure and $tilde(d)$ bounds
+- mixing bounds on the expectations of observables
+
+= Averaging Principle
+We are now ready to introduce the averaging principle for the fast switching variable dynamics
+
+#definition(title: [The Reduced SDE])[
+
+  Let $x_t in cal(D)_epsilon$ be a solution of the piecewise-smooth SDE given
+  in @def-ns-gen-sde, and let $lambda in [-1, 1]$ be the switching variable
+  parametrising the convex interpolation
+
+  $
+    a(t, x, lambda) &= 1/2(1 + lambda) a^+(t, x) + 1/2(1 - lambda) a^-(t, x), \
+    b(t, x, lambda) &= 1/2(1 + lambda) b^+(t, x) + 1/2(1 - lambda) b^-(t, x),
+  $
+
+  between the piecewise-smooth coefficients $a^pm$ and $b^pm$. Let
+  $P_(ss)(lambda | x)$ denote the stationary distribution of the
+  switching variable conditional on $x$, satisfying $cal(A)_x^* P_(ss)
+  = 0$ with zero-flux boundary conditions (see @lem-fwd-gen). The reduced SDE is
+
+  $
+    dif y_t = [macron(a)(t, y_t) + alpha epsilon macron(c)(t, y_t)] dif t + sqrt(epsilon)" "macron(b)(t, y_t) dif W_t,
+  $<eq-reduced-sde>
+
+  where the averaged coefficients are
+
+  $
+    macron(a)(t, x) &= integral_(-1)^(1) a(t, x, lambda) P_(ss)(lambda | x) dif lambda, \
+    macron(b)(t, x) &= integral_(-1)^(1) b(t, x, lambda) P_(ss)(lambda | x) dif lambda, \
+    macron(c)(t, x) &= integral_(-1)^(1) c(t, x, lambda) P_(ss)(lambda | x) dif lambda,
+  $
+
+  and
+
+  $
+    c(t, x, lambda) = sum_j J_x [b_j (t, x, lambda)] b_j (t, x, lambda)
+  $
+
+  is the Itō correction arising from the $alpha$-interpretation of the
+  stochastic integral, with $b_j (t, x, lambda)$ denoting the $j$-th column of
+  $b(t, x, lambda)$ and $J_x (dot)$ the Jacobian with respect to $x$.
+
+]<def-reduced-sde>
+
+
+
+Unsurprisingly, without any hidden term in the dynamics we require only the mean from the distribution $P_ss (lambda)$, 
+
+#lemma(title: [Bounds on average Coefficients])[
+  #todo[
+    THis is almost a repetition as @lem-coeff-tilde-bounds
+  ]
+  
+]<lem-avg-coeff-bounds>
+
+
+  Note that $lambda_t$ evolves acording to its own SDE given by @eq-lam-sde, but
+  for our purposes of bounding we do not have to explicitly take it into account
+  here in the proof.
+
+
+#theorem(title: [Error estimates for the averaged SDE ])[
+
+  Let $x_t$ evolve according to the, let $t in [0, T]$ for some $T>0$, and intiaila condition $x_0 = y_0 in RR^d$
+  $
+    PP[sup_(s in [0, t]) | x_s - y_s| > gamma ] <= C/gamma^2 R(epsilon, delta) t
+  $
+
+
+
+  #todo[
+    finish the statement and add
+    - the initial condition $mu in [-1, 1] => P_(0)(lambda giv x_0) = delta(lambda - mu)$
+    
+  ]
+]
+
+#proof[
+  We know from Markov's inequality that 
+  $
+    PP[sup_(s in [0, t]) | x_s - y_s| > gamma ] <= 1/gamma^2 EE[sup_(s in [0, t]) |x_s - y_s|^2],
+  $
+
+  Let us define $xi_t eqdef x_t - y_t$, which gives us the initial condition $x_0 = 0$
+
+  then substrituting in the definition for the  
+  $
+    xi_t = integral^t_0 a(s, x_s, lambda_s)  - macron(a)(s, y_s) dif s
+    + sqrt(epsilon) integral^t_0 b(s, x_s, y_s) - macron(b)(s, y_s) dif W_s,
+  $
+
+  Let us define the following integrands
+
+  $
+    I_a (s) &eqdef a(s, x_s, lambda_s) - macron(a)(s, x_s), \
+    I I_a (s) &eqdef macron(a)(s, x_s) - macron(a)(s, y_s) ,
+  $
+  similarly for the noise coefficient we have
+  $
+    I_b (s) &eqdef b(s, x_s, lambda_s) - macron(b)(s, x_s), \
+    I I_b (s) &eqdef macron(b)(s, x_s) - macron(b)(s, y_s) ,
+  $
+
+  Then consider 
+
+  $
+    ||xi_t||^2 &<= 2 lr(||integral^t_0   I_a (s) + I I_a (s) dif s||)^2
+              + 2 epsilon lr(||integral^t_0   I_b (s) + I I_b (s) dif W_s||)^2, \
+    &<= 2 t integral^t_0   ||I_a (s) + I I_a (s)||^2 dif s
+              + 2 epsilon lr(||integral^t_0   I_b (s) + I I_b (s) dif W_s||)^2 \
+  $
+
+  where in the first instance we have used the inequality $|a + b|^2 <= 2 (|a|^2
+  + |b|^2)$, and in the second case we have used Cauchy-Schwarz. Taking the
+  expectation allows us to use Ito isometry on teh stochastic integral, 
+
+  $
+    EE[ ||xi_t||^2] <= 2 t EE[ integral^t_0   ||I_a (s) + I I_a (s)||^2 dif s]
+    + 2 epsilon EE[integral^t_0   ||I_b (s) + I I_b (s)||^2 dif s],
+  $
+  and using Cauchy-Schwarz again on the intergrand gives
+
+  $
+    EE[||xi_t||^2] <= 2 t EE[ integral^t_0   ||I_a (s)||^2 + ||I I_a (s)||^2 dif s]
+    + 2epsilon EE[integral^t_0   ||I_b (s)||^2 + ||I I_b (s)||^2 dif s].
+  $
+
+  From @lem-avg-coeff-bounds we know that $I I_a (s)$ and $I I_b (s)$ can be
+  bounded as it is is just an application of Lipshitz, 
+
+  $
+    2t || I I_a (s) ||^2 + 2epsilon || I I_b (s) ||^2 &= 2t||macron(a)(s, x_s) - macron(a)(s, y_s) ||^2
+    + 2epsilon||macron(b)(s, x_s) - macron(b)(s, y_s) ||^2 \
+      &<=  2 macron(K)^2 ||xi_(s)||^2(t + epsilon).
+  $ 
+
+  For the other two integrals we consider first the parition of $[0, t]$ into
+  the windows $[k delta, (k+1) delta]$ with $k = 0, 1, ... N-1$ where $N = t\/
+  delta$ and then recasting the integrals as, for example,
+
+  $
+    integral_(0)^(t) ||I_a (s)||^2 dif s = sum_(k = 0)^(N-1) integral_(k delta)^((k+1)delta) ||I_(a, k) (s)||^2 dif s,
+  $
+  where $I_(a,k)(s) eqdef I_(a)(s)bb(1)_([k delta, (k+1)delta))$. We then recast the integrand as
+
+  $
+    I_(a,k)(s) = underbrace(a(s, x_s, lambda_s)
+    - a(s, x_(k delta), lambda_s), eqdef J^((1))_(a, k) (s))
+    + underbrace(a(s, x_(k delta), lambda_s)
+    - macron(a)(s, x_(k delta)), eqdef J^((2))_(a, k) (s))
+    + underbrace(macron(a)(s, x_(k delta))
+    - macron(a)(s, x_s), eqdef J^((2))_(a, k) (s)),
+  $
+
+  where $J^((1))_(a, k) (s)$ and $J^((3))_(a, k) (s)$ are the errors associated
+  from freezing $x$ to its value at the start of the inteval in the drift and
+  averged drift fields respectively, while $J^((2))_(a, k) (a)$ is the mixxing error. Clearly,
+
+  $
+    ||I_(a,k)(s)||^2 <= 3 (||J^((1))_(a, k)(s)||^2 + ||J^((2))_(a, k)(s)||^2 + ||J^((3))_(a, k)(s)||^2)
+  $
+
+ Employing the Lipshitz conditions in @def-ns-gen-sde, and @lem-avg-coeff-bounds
+  as well as @thm-slow-var we obtain
+
+  $
+    EE[ ||J^((1))_(a, k)(s)||^2] &<= K^2 EE[ ||x_s - x_(k delta)||^2] &&<=  K^2 C (delta^2 + epsilon delta),  \
+    EE[ ||J^((3))_(a, k)(s)||^2] &<= macron(K)^2 EE[ ||x_s - x_(k delta)||^2] &&<= macron(K)^2 C (delta^2 + epsilon delta).
+  $
+
+  Using these uniform bounds we can integrate over time to yeild
+  $
+    sum_(k=0)^(N -1) integral_(k delta)^((k+1) delta) EE[ ||J^((1))_(a, k)(s)||^2] dif s &<= K^2C (delta - epsilon delta) t, \
+    sum_(k=0)^(N -1) integral_(k delta)^((k+1) delta) EE[ ||J^((3))_(a, k)(s)||^2] dif s &<= macron(K)^2C (delta - epsilon delta) t
+  $
+
+  We now turn to the mixxing error contribution, we first rewrite $J^((2))_(a, k)(s)$ as
+  $
+    J^((2))_(a, k)(s) &= integral_(-1)^(1) a(s, x_(k delta), lambda)  [P_s (lambda | x_(k delta)) - P_ss (lambda | x_(k delta))] dif lambda
+  $
+
+  where $P_s (lambda | x_(k delta)) = ee^(s cal(A)^*_(x_(k delta))) P_0(lambda
+  giv x_(k delta) )$ with $P_0(lambda | x_(k delta))$ being formally, the
+  normalised probability density of $lambda$ at the start of the interval $[k
+  delta, (k+1) delta]$. Recall that for $k = 0$ we have $P_0 (lambda giv x_(0))
+  = delta(lambda - lambda_0)$ but for all $k > 0$ the initial probability
+  density $P_0 (lambda giv x_(k delta))$ corresponds to some conditional
+  probability density at $t = k delta > 0$ that by @thm-lam-smooth-denst, is in
+  $L^2_(P_ss)$.
+
+  With $J^((2))_(a, k, i)(s)$ denoting the $i^"th"$ component of the vector, we have for $k>0$
+  $
+    ||J^((2))_(a, k)(s)||^2 = sum_i |J^((2))_(a, k, i)(s)|^2 &= sum_i
+    lr(|integral_(-1)^(1) a_(i)(s, x_(k delta), lambda)
+    [P_s (lambda | x_(k delta)) - P_ss (lambda | x_(k delta))] dif lambda|)^2 \
+      &<= 
+      [sum_i  lpnorm(a_(i)(s, x_(k delta), lambda), L^oo, 2)]
+      lpnorm(P_s (lambda | x_(k delta)) - P_ss (lambda | x_(k delta)), L^1, 2) ,\
+      &= sup_(lambda) ||a(s, x_(k delta), lambda)||^2
+      lpnorm(P_s (lambda | x_(k delta)) - P_ss (lambda | x_(k delta)), L^1, 2) ,\
+      &= 4 sup_(lambda) ||a(s, x_(k delta), lambda)||^2
+      lpnorm(P_s (lambda | x_(k delta)) - P_ss (lambda | x_(k delta)), "TV", 2) ,\
+      &<= C_0 (1 + ||x||^2)
+      lpnorm(P_s (lambda | x_(k delta)) - P_ss (lambda | x_(k delta)), "TV", 2) ,\
+  $
+
+  where we have exploited the linear growth condition in @def-ns-gen-sde, and
+  where $C_0 eqdef 8 (C_++ C_-)^2$. Employing @thm-exp-mixing-doe with $tau =
+  epsilon$ on the total variation term yeilds the bound
+
+  $
+    lpnorm(P_s (lambda | x_(k delta)) - P_ss (lambda | x_(k delta)), "TV", 2)
+    <=
+    ee ee^(-2 eta_(epsilon)(x_(k delta)) s \/ epsilon). 
+  $
+
+  For the $k=0$ term we have a Dirac distriubtion but the total variation is
+  still bounded from above by one via @lem-tv-upper-bound.
+
+  $
+    sum_(k=0) ^(N-1) integral_(k delta)^((k+1) delta) EE[||J^((2))_(a, k)(s)||^2]
+      &<= EE[C_0 (1 + ||x||^2)] (delta  + ee sum_(k=1) ^(N-1)
+      integral_(0)^(delta) ee^(-2 eta_(epsilon)(x_(k delta)) s \/ epsilon) dif s),\
+      &<= EE[C_0 (1 + ||x||^2)] (delta  + ee epsilon sum_(k=1) ^(N-1)
+      (1 - ee^(-2 eta_(epsilon)(x_(k delta)) delta \/ epsilon))/(2 eta_(epsilon) (x_(k delta)))
+     ),\
+      &<= EE[C_0 (1 + ||x||^2)] (delta  + ee epsilon sum_(k=1) ^(N-1)
+      (1)/(2 eta_(epsilon) (x_(k delta)))).
+  $
+
+  Let $
+
+  $
+
+
+  
+  Defining $zeta_s (lambda) eqdef [P_s (lambda | x_(k delta)) - P_ss (lambda |
+  x_(k delta))] \/ P_ss (lambda | x_(k delta))$, for $k > 0$ we have
+
+  $
+    J^((2))_(a, k)(s) &= inprod(a(s, x_(k delta), dot), zeta_s  , L^2_(P_ss)) \
+      &<= lpnorm(a(s, x_(k delta), dot), L^2_(P_ss), 2) lpnorm(zeta_s, L^2_(P_ss), 2) \
+      &<= lpnorm(a(s, x_(k delta), dot), L^2_(P_ss), 2) lpnorm(zeta_(k delta), L^2_(P_ss), 2) \
+      &<= lpnorm(a(s, x_(k delta), dot), L^2_(P_ss), ,) lpnorm(zeta_s, L^2_(P_ss), ,) \
+      &<= sup_(lambda) |a(s, x_(k delta),lambda)| lpnorm(zeta_(0), L^2_(P_ss), ,) ee^(-kappa(x_(k delta))()) \
+      &<= (C_a Q(x_(k delta)))/2 (1 + ||x_(k delta)||) ,
+  $
+  where in the third line we have used @cor-l2-to-sup
+
+  
+  
+  where $zeta_s = [P_s (lambda | x_(k delta)) - P_ss (lambda | x_(k delta))] \/ P_ss (lambda | x_(k delta))$ (from @thm-exp-mixing) and with $Q(x_(k delta)) \/ 2 >= lpnorm(zeta_(k delta), L^2_(P_ss),  ,)$. Then we have
+  $
+    EE[ ||J^((2))_(a, k)(s)||^2] <= EE[Q^2(x_(k delta)) (1 + || x_(k delta)||^2)]
+  $
+  
+
+
+]
+
+#remark[
+#todo[
+  I need a justification for why it is ok to decompose the lamda dynamics at
+    each $x$ - it is because on this interval $x$ is fixed but $lambda$ is
+    allowd to change. Threfore at each interval we are allowd to fix $x$
+    according to the error from @thm-slow-var. ] ]
+
+
+
+
+= Needs Testing
+#lemma(title: [Concentration of $P_(ss)$ at tangency])[
+
+  Let $x in cal(D)_epsilon$ and suppose the transversality condition (A4) holds.
+  Define
+
+  $
+    nu^pm (x) = partial_x sigma(x)^tns a^pm (x),
+  $
+
+  the normal components of the drift at $x$. Then:
+
+  + If $nu^+ (x) < 0$ and $nu^- (x) > 0$ (sliding region), $P_(ss)(lambda | x)$
+    has support on $(-1, 1)$ with a density bounded away from zero.
+
+  + If $nu^+ (x) -> 0$ with $nu^- (x) > 0$ fixed, then $P_(ss)(lambda | x) ->
+    delta_(lambda = 1)$ weakly.
+
+  + If $nu^- (x) -> 0$ with $nu^+ (x) < 0$ fixed, then $P_(ss)(lambda | x) ->
+    delta_(lambda = -1)$ weakly.
+
+  + If $nu^+ (x) > 0$ or $nu^- (x) < 0$ (crossing region), the process exits
+    $cal(D)_epsilon$ in finite time and no stationary distribution exists.
+
+  In cases (ii) and (iii), the averaged coefficients satisfy
+
+  $
+    macron(a)(x) -> a^pm (x), quad macron(b)(x) -> b^pm (x),
+  $
+
+  recovering the smooth dynamics on the corresponding side of $cal(D)$.
+
+]<lem-tangency-concentration>
+
+- whether we obtain the limits $P_ss -> delta(lambda pm 1)$ at the tangency points, in reverse time an forward time and backward w.r.t entry and exit points,  
+  - Ovs i only needs to check one of the cases, then by time reversal symmetry the other will also hold. 
+
+
+= Poincaré Bounding (usless)
 
 
 Before we proceed it is usefull to introduce a defnition for the $L^2$ space that we will be working in, but first let us consider the general defintion of an $L^2$ inner product and norms on real functions.
@@ -2001,271 +2363,6 @@ where $kappa = (C_1 C_2) \/ 2$.
   [-1, 1]$.
 ]<cor-exp-mixing-obs>
 
-
-In summary we have estabilshed the existance of an intermediate timescale
-$delta$ such that $epsilon << delta << 1$ where the following are satisfied:
-- bounds on the coefficents, 
-- justification of the transversality condition
-- $EE[sup_s |x_(t+s) - x_t|^2] -> 0 $ as $epsilon -> 0$, that is the slow
-  varible remains fixed.
-
-- Exponentila mixing via Poincare inequality where the poincare constant is
-  obtained from the lower bounds on the invariant measure and $tilde(d)$ bounds
-- mixing bounds on the expectations of observables
-
-= Averaging Principle
-We are now ready to introduce the averaging principle for the fast switching variable dynamics
-
-#definition(title: [The Reduced SDE])[
-
-  Let $x_t in cal(D)_epsilon$ be a solution of the piecewise-smooth SDE given
-  in @def-ns-gen-sde, and let $lambda in [-1, 1]$ be the switching variable
-  parametrising the convex interpolation
-
-  $
-    a(t, x, lambda) &= 1/2(1 + lambda) a^+(t, x) + 1/2(1 - lambda) a^-(t, x), \
-    b(t, x, lambda) &= 1/2(1 + lambda) b^+(t, x) + 1/2(1 - lambda) b^-(t, x),
-  $
-
-  between the piecewise-smooth coefficients $a^pm$ and $b^pm$. Let
-  $P_(ss)(lambda | x)$ denote the stationary distribution of the
-  switching variable conditional on $x$, satisfying $cal(A)_x^* P_(ss)
-  = 0$ with zero-flux boundary conditions (see @lem-fwd-gen). The reduced SDE is
-
-  $
-    dif y_t = [macron(a)(t, y_t) + alpha epsilon macron(c)(t, y_t)] dif t + sqrt(epsilon)" "macron(b)(t, y_t) dif W_t,
-  $<eq-reduced-sde>
-
-  where the averaged coefficients are
-
-  $
-    macron(a)(t, x) &= integral_(-1)^(1) a(t, x, lambda) P_(ss)(lambda | x) dif lambda, \
-    macron(b)(t, x) &= integral_(-1)^(1) b(t, x, lambda) P_(ss)(lambda | x) dif lambda, \
-    macron(c)(t, x) &= integral_(-1)^(1) c(t, x, lambda) P_(ss)(lambda | x) dif lambda,
-  $
-
-  and
-
-  $
-    c(t, x, lambda) = sum_j J_x [b_j (t, x, lambda)] b_j (t, x, lambda)
-  $
-
-  is the Itō correction arising from the $alpha$-interpretation of the
-  stochastic integral, with $b_j (t, x, lambda)$ denoting the $j$-th column of
-  $b(t, x, lambda)$ and $J_x (dot)$ the Jacobian with respect to $x$.
-
-]<def-reduced-sde>
-
-
-
-Unsurprisingly, without any hidden term in the dynamics we require only the mean from the distribution $P_ss (lambda)$, 
-
-#lemma(title: [Bounds on average Coefficients])[
-  #todo[
-    THis is almost a repetition as @lem-coeff-tilde-bounds
-  ]
-  
-]<lem-avg-coeff-bounds>
-
-
-
-#theorem(title: [Error estimates for the averaged SDE ])[
-
-  Let $x_t$ evolve according to the, let $t in [0, T]$ for some $T>0$, and intiaila condition $x_0 = y_0 in RR^d$
-  $
-    PP[sup_(s in [0, t]) | x_s - y_s| > gamma ] <= C/gamma^2 R(epsilon, delta) t
-  $
-
-
-
-  #todo[
-    finish the statement and add
-    - the initial condition $lambda_0 in [-1, 1] => P_(0)(lambda giv x_0) = delta(lambda - lambda_0)$
-    
-  ]
-]
-
-#proof[
-  We know from Markov's inequality that 
-  $
-    PP[sup_(s in [0, t]) | x_s - y_s| > gamma ] <= 1/gamma^2 EE[sup_(s in [0, t]) |x_s - y_s|^2],
-  $
-
-  Let us define $xi_t eqdef x_t - y_t$, which gives us the initial condition $x_0 = 0$
-
-  then substrituting in the definition for the  
-  $
-    xi_t = integral^t_0 a(s, x_s, lambda_s)  - macron(a)(s, y_s) dif s
-    + sqrt(epsilon) integral^t_0 b(s, x_s, y_s) - macron(b)(s, y_s) dif W_s,
-  $
-
-  Note that $lambda_t$ evolves acording to its own SDE given by @eq-lam-sde, but
-  for our purposes of bounding we do not have to explicitly take it into account
-  here in the proof.
-
-  Let us define the following integrands
-
-  $
-    I_a (s) &eqdef a(s, x_s, lambda_s) - macron(a)(s, x_s), \
-    I I_a (s) &eqdef macron(a)(s, x_s) - macron(a)(s, y_s) ,
-  $
-  similarly for the noise coefficient we have
-  $
-    I_b (s) &eqdef b(s, x_s, lambda_s) - macron(b)(s, x_s), \
-    I I_b (s) &eqdef macron(b)(s, x_s) - macron(b)(s, y_s) ,
-  $
-
-  Then consider 
-
-  $
-    ||xi_t||^2 &<= 2 lr(||integral^t_0   I_a (s) + I I_a (s) dif s||)^2
-              + 2 epsilon lr(||integral^t_0   I_b (s) + I I_b (s) dif W_s||)^2, \
-    &<= 2 t integral^t_0   ||I_a (s) + I I_a (s)||^2 dif s
-              + 2 epsilon lr(||integral^t_0   I_b (s) + I I_b (s) dif W_s||)^2 \
-  $
-
-  where in the first instance we have used the inequality $|a + b|^2 <= 2 (|a|^2
-  + |b|^2)$, and in the second case we have used Cauchy-Schwarz. Taking the
-  expectation allows us to use Ito isometry on teh stochastic integral, 
-
-  $
-    EE[ ||xi_t||^2] <= 2 t EE[ integral^t_0   ||I_a (s) + I I_a (s)||^2 dif s]
-    + 2 epsilon EE[integral^t_0   ||I_b (s) + I I_b (s)||^2 dif s],
-  $
-  and using Cauchy-Schwarz again on the intergrand gives
-
-  $
-    EE[||xi_t||^2] <= 2 t EE[ integral^t_0   ||I_a (s)||^2 + ||I I_a (s)||^2 dif s]
-    + 2epsilon EE[integral^t_0   ||I_b (s)||^2 + ||I I_b (s)||^2 dif s].
-  $
-
-  From @lem-avg-coeff-bounds we know that $I I_a (s)$ and $I I_b (s)$ can be
-  bounded as it is is just an application of Lipshitz, 
-
-  $
-    2t || I I_a (s) ||^2 + 2epsilon || I I_b (s) ||^2 &= 2t||macron(a)(s, x_s) - macron(a)(s, y_s) ||^2
-    + 2epsilon||macron(b)(s, x_s) - macron(b)(s, y_s) ||^2 \
-      &<=  2 macron(K)^2 ||xi_(s)||^2(t + epsilon).
-  $ 
-
-  For the other two integrals we consider first the parition of $[0, t]$ into
-  the windows $[k delta, (k+1) delta]$ with $k = 0, 1, ... N-1$ where $N = t\/
-  delta$ and then recasting the integrals as, for example,
-
-  $
-    integral_(0)^(t) ||I_a (s)||^2 dif s = sum_(k = 0)^(N-1) integral_(k delta)^((k+1)delta) ||I_a (s)||^2 dif s.
-  $
-
-  We then recast the integrand as
-
-  $
-    I_a (s) = underbrace(a(s, x_s, lambda_s)
-    - a(s, x_(k delta), lambda_s), eqdef J^((1))_(a, k) (s))
-    + underbrace(a(s, x_(k delta), lambda_s)
-    - macron(a)(s, x_(k delta)), eqdef J^((2))_(a, k) (s))
-    + underbrace(macron(a)(s, x_(k delta))
-    - macron(a)(s, x_s), eqdef J^((2))_(a, k) (s)),
-  $
-
-  where $J^((1))_(a, k) (a)$ and $J^((3))_(a, k) (a)$ are the errors associated
-  from freezing $x$ to its value at the start of the inteval in the drift and
-  averged drift fields respectively, while $J^((2))_(a, k) (a)$ is the mixxing error. Clearly,
-
-  $
-    ||I_a||^2 <= 3 (||J^((1))_(a, k)||^2 + ||J^((2))_(a, k)||^2 + ||J^((3))_(a, k)||^2)
-  $
-
- Employing the Lipshitz conditions in @def-ns-gen-sde, and @lem-avg-coeff-bounds
-  as well as @thm-slow-var we obtain
-
-  $
-    EE[ ||J^((1))_(a, k)||^2] &<= K^2 EE[ ||x_s - x_(k delta)||^2] &&<=  K^2 C (delta^2 + epsilon delta),  \
-    EE[ ||J^((3))_(a, k)||^2] &<= macron(K)^2 EE[ ||x_s - x_(k delta)||^2] &&<= macron(K)^2 C (delta^2 + epsilon delta).
-  $
-
-  We rewrite $J^((2))_(a, k)(s)$ as
-  $
-    J^((2))_(a, k)(s) &= integral_(-1)^(1) a(s, x_(k delta), lambda)  [P_s (lambda | x_(k delta)) - P_ss (lambda | x_(k delta))] dif lambda
-  $
-
-  where $P_s (lambda | x_(k delta)) = ee^(s cal(A)^*_(x_(k delta))) P_0(lambda
-  giv x_(k delta) )$ with $P_0(lambda | x_(k delta))$ begin, formally, the
-  normalised probability density of $lambda$ at the start of the interval $[k
-  delta, (k+1) delta]$. Recall that for $k = 0$ we have $P_0 (lambda giv x_(0))
-  = delta(lambda - lambda_0)$ but for all $k > 0$ the initial probability
-  density $P_0 (lambda giv x_(k delta))$ corresponds to some conditional
-  probability density at $t = k delta > 0$ that by @thm-lam-smooth-denst, is in
-  $L^2_(P_ss)$. Defining $zeta_s (lambda) eqdef [P_s (lambda | x_(k delta)) - P_ss (lambda |
-  x_(k delta))] \/ P_ss (lambda | x_(k delta))$, for $k > 0$ we have
-
-  $
-    J^((2))_(a, k)(s) &= inprod(a(s, x_(k delta), dot), zeta_s  , L^2_(P_ss)) \
-      &<= lpnorm(a(s, x_(k delta), dot), L^2_(P_ss), 2) lpnorm(zeta_s, L^2_(P_ss), 2) \
-      &<= lpnorm(a(s, x_(k delta), dot), L^2_(P_ss), 2) lpnorm(zeta_(k delta), L^2_(P_ss), 2) \
-      &<= lpnorm(a(s, x_(k delta), dot), L^2_(P_ss), ,) lpnorm(zeta_s, L^2_(P_ss), ,) \
-      &<= sup_(lambda) |a(s, x_(k delta),lambda)| lpnorm(zeta_(0), L^2_(P_ss), ,) ee^(-kappa(x_(k delta))()) \
-      &<= (C_a Q(x_(k delta)))/2 (1 + ||x_(k delta)||) ,
-  $
-  where in the third line we have used @cor-l2-to-sup
-
-  
-  
-  where $zeta_s = [P_s (lambda | x_(k delta)) - P_ss (lambda | x_(k delta))] \/ P_ss (lambda | x_(k delta))$ (from @thm-exp-mixing) and with $Q(x_(k delta)) \/ 2 >= lpnorm(zeta_(k delta), L^2_(P_ss),  ,)$. Then we have
-  $
-    EE[ ||J^((2))_(a, k)(s)||^2] <= EE[Q^2(x_(k delta)) (1 + || x_(k delta)||^2)]
-  $
-  
-
-
-]
-
-#remark[
-#todo[
-  I need a justification for why it is ok to decompose the lamda dynamics at
-    each $x$ - it is because on this interval $x$ is fixed but $lambda$ is
-    allowd to change. Threfore at each interval we are allowd to fix $x$
-    according to the error from @thm-slow-var. ] ]
-
-
-
-
-#pagebreak()
-= Needs Testing
-// #lemma(title: [Concentration of $P_(ss)$ at tangency])[
-// 
-//   Let $x in cal(D)_epsilon$ and suppose the transversality condition (A4) holds.
-//   Define
-// 
-//   $
-//     nu^pm (x) = partial_x sigma(x)^tns a^pm (x),
-//   $
-// 
-//   the normal components of the drift at $x$. Then:
-// 
-//   + If $nu^+ (x) < 0$ and $nu^- (x) > 0$ (sliding region), $P_(ss)(lambda | x)$
-//     has support on $(-1, 1)$ with a density bounded away from zero.
-// 
-//   + If $nu^+ (x) -> 0$ with $nu^- (x) > 0$ fixed, then $P_(ss)(lambda | x) ->
-//     delta_(lambda = 1)$ weakly.
-// 
-//   + If $nu^- (x) -> 0$ with $nu^+ (x) < 0$ fixed, then $P_(ss)(lambda | x) ->
-//     delta_(lambda = -1)$ weakly.
-// 
-//   + If $nu^+ (x) > 0$ or $nu^- (x) < 0$ (crossing region), the process exits
-//     $cal(D)_epsilon$ in finite time and no stationary distribution exists.
-// 
-//   In cases (ii) and (iii), the averaged coefficients satisfy
-// 
-//   $
-//     macron(a)(x) -> a^pm (x), quad macron(b)(x) -> b^pm (x),
-//   $
-// 
-//   recovering the smooth dynamics on the corresponding side of $cal(D)$.
-// 
-// ]<lem-tangency-concentration>
-
-- whether we obtain the limits $P_ss -> delta(lambda pm 1)$ at the tangency points, in reverse time an forward time and backward w.r.t entry and exit points,  
-  - Ovs i only needs to check one of the cases, then by time reversal symmetry the other will also hold. 
 #pagebreak()
 
 #bibliography("fixlib.bib")   
