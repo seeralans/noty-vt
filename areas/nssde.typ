@@ -19,7 +19,7 @@
   // customize `highlight` color
   hl: theme-color.muted.yellow,
   // is the document printable?
-  print: false,
+  print: true,
 )
 
 #show: equate.with(breakable: true, sub-numbering: false)
@@ -368,7 +368,6 @@ the "visits" of the proccess on a given value $z$ for times up to $t$. It is
 given via Tanaka's formula which we summarise in the folowing defintion.
 
 #definition(title: [Local time of a semi-martingale: Tanaka's Formula])[ 
-
   Let $x_t$ be a semi-martingale in $RR^d$, and let $L^(x)_t(z)$ be the local
   time of the process at level
 
@@ -398,7 +397,6 @@ called the genearlised Itō's formula. We restate it here without the proof whic
 can be found in Theorem 70, Chapter IV of @protter2012book.
 
 #theorem(title: [Meyer-Itō])[ 
-
   Let $f: RR^d mapsto RR$ be the difference of two convex functions, $f^('-)$
   denote its left derivative, $mu_(f'')$ be signed measure of the second
   derivative of $f$ in the generalised function (distribution) sense, and let
@@ -438,7 +436,6 @@ function as a difference of convex function which is easily done as the followin
 ]<lem-big-lam-dif-conv>
 
 #proof[
-
   Let 
   $
     psi_(+, epsilon)(u) eqdef cases(-1 quad &u &<= -epsilon\,, u \/ epsilon   quad  &u &> -epsilon\,)
@@ -467,7 +464,6 @@ $<eq-big-lam-sec-deriv>
 where $delta(u)$ is the Dirac-delta distribution. In order to apply Meyer-Itō we
 also need the dynamics of scalar observable $sigma(x_t)$ which we state in the following lemma.
 #lemma(title: [SDE for $z_t = sigma(x_t)$])[
-
   Let $lambda in [-1, 1]$, $sigma in C^2(RR^d, RR)$, $x_t$ be an Itō process
   according to @eq-ito-sde, supplemented by the conditions in @def-ns-gen-sde,
   then the random variable $z_t = sigma(x_t)$ evolves according to the SDE
@@ -486,7 +482,6 @@ also need the dynamics of scalar observable $sigma(x_t)$ which we state in the f
   $<eq-b-tilde-def>
 ]<lem-z-sde>
 #proof[
-
   This is trivial application of Itō's lemma. Since $sigma(x_t)$ is smooth, apply Itō's lemma to obtain  
   $
     dif z_t = partial_x sigma(x_t)^(tns)  dif x_t + dif x_t^(tns)  partial^2_(x x) sigma(x) dif x^tns, 
@@ -523,9 +518,7 @@ an SDE.
 
 ]
 
-#proof[
-
-  Since $Lambda_epsilon (u)$ is a difference of convex functions, whose left
+#proof[Since $Lambda_epsilon (u)$ is a difference of convex functions, whose left
 derivative is given in @eq-big-lam-left-deriv and signed second derivative given
 as a measure given in @eq-big-lam-sec-deriv, it then follows from
 @thm-ito-meyer, that for a generic random variable $z_t$ we have
@@ -586,7 +579,6 @@ then be used in the later results.
 
 
 #lemma(title: [Bounds on the coefficients])[
-
   Let $x in cal(D)_epsilon$ and $lambda in [-1, 1]$. Suppose the coefficients
   $a^pm$ and $b^pm$ satisfy assumptions (A1)–(A4) of @def-ns-gen-sde, and let
   $a(t, x, lambda)$ and $b(t, x, lambda)$ be the convex combinations defined in
@@ -648,14 +640,32 @@ then be used in the later results.
 
 ]
 
-The linear growth conditions also <lem-coeff-tilde-bounds>
+The linear growth conditions also @lem-coeff-tilde-bounds
 
 mply finite polynomial moments
 which we summerise in the following lemma.
 
-#lemma(title: [Bounds on polynomial moments])[
+#lemma(title: [Bounds on polynomial moments])[ Let $x_t$ evolve according to
+  @eq-x-lam-sde-pair, let $x_0 in RR^d$ be some initial condition, let $t in [0,
+  T]$, and $k>= 2$, then there exists a constant $C_(k, T) > 0$ such that
 
-  Let $x_t$ evolve according to @eq-x-lam-sde-pair, 
+  $
+    EE[ ||x_t||^k] <= C_(k, T) (1 + ||x_0||^k), quad forall k>=2.
+  $
+]<lem-poly-mom-bound>
+
+#proof[ First we show that the lemma is true $k=2$. We set $f(x)= ||x||^2 = sum_i
+(x^(i)_t)^2$, then by Ito's lemma we have
+
+  $
+    dif y_t = 2 x_t dot a(t, x_t) dif t + 2 x_t dot a(t, x_t, lambda_t) dif t + 2x_t dot b(t, x_t, lambda_t) dif W_t 
+     + 
+  $
+
+  #todo[
+    finish this lemma!
+  ]
+
 ]
 
 
@@ -685,7 +695,6 @@ Before we attempt to rescale time we must first clarify the $epsilon$-order of
 local time terms in @eq-lam-sde.
 
 #lemma(title: [Scaling of local time terms])[
-
   Let $z_t$ be a stochastic processes defined in @eq-z-sde with quadratic variation $dif chevron.l z
   chevron.r_t = epsilon tilde(b)(x_t, lambda_t) tilde(b)(x_t, lambda_t)^(tns)
   dif t$. Then
@@ -696,8 +705,7 @@ local time terms in @eq-lam-sde.
   where $P^((z))(a, t)$ denotes the density of $z_t$ at level $a$.
 ]<lem-local-time-scaling-x>
 
-#proof[
-  Taking the expectation of @eq-local-time-def,
+#proof[Taking the expectation of @eq-local-time-def,
 
 $
   EE[L^z_t (a)] &= EE[ lim_(delta arrow.b 0) 1/(2delta) integral_0^t bb(1)_((a - delta, a + delta)) (z_s) dif chevron.l  z chevron.r_s], \
@@ -731,8 +739,7 @@ time rescaling can balance all contributions to the $lambda$-dynamics.
   No choice of $beta > 0$ brings all three contributions to the same order as $epsilon -> 0$.
 ]<lem-scaling-incompatibility>
 
-#proof[
-  The rescaling gives $dif t = epsilon^beta dif tau$ and $dif W_t = epsilon^(beta/2) dif W_tau$. The drift term in @eq-lam-sde carries a factor $epsilon^(-1)$ from the layer dynamics, yielding order $epsilon^(beta-1)$. The martingale term similarly yields order $epsilon^((beta-1)/2)$. By @lem-local-time-scaling, the local time contribution is $cal(O)(epsilon)$ in original time, hence $cal(O)(epsilon^(beta+1))$ after rescaling.
+#proof[The rescaling gives $dif t = epsilon^beta dif tau$ and $dif W_t = epsilon^(beta/2) dif W_tau$. The drift term in @eq-lam-sde carries a factor $epsilon^(-1)$ from the layer dynamics, yielding order $epsilon^(beta-1)$. The martingale term similarly yields order $epsilon^((beta-1)/2)$. By @lem-local-time-scaling, the local time contribution is $cal(O)(epsilon)$ in original time, hence $cal(O)(epsilon^(beta+1))$ after rescaling.
 
   The naive choice $beta = 1$ places drift and martingale at $cal(O)(1)$, but the local time term becomes $cal(O)(epsilon^2)$ and vanishes in the limit. Balancing drift and local time requires $beta - 1 = beta + 1$, which has no solution. Balancing martingale and local time requires $(beta-1)/2 = beta + 1$, giving $beta = -3$, which violates $beta > 0$.
 ]
@@ -807,9 +814,7 @@ variable $x_t$ on this time scale
   for some $C,gamma>0$.
 ]<thm-slow-var>
 
-#proof[
-
-  We start by bounding the squared deviation in the $delta$ time window,
+#proof[We start by bounding the squared deviation in the $delta$ time window,
   $
     EE[ |x_(t+s) - x_t|^2]
       &= EE[ lr(|integral_t^(t+s) a(x_tau, lambda_(tau)) dif tau 
@@ -879,7 +884,6 @@ the interval $[t, t + delta]$.
 
 
 #lemma(title: [Backward generator of the switching variable])[
-
   Let $delta > 0$ satisfying @eq-delta-ordering, let $t in [t', t' + delta] subset
   [0, T]$ for some $t' in [0, T-delta]$. Let $x_t = x in cal(D)_epsilon$ be
   fixed (see @thm-slow-var). Then the backward generator $cal(A)_x$ of
@@ -905,9 +909,7 @@ the interval $[t, t + delta]$.
 ]<lem-bwd-gen>
 
 
-#proof[
-
-  With $x_t = x$ fixed on the interval $t in [t' , t' + delta] subset [0, T]$
+#proof[With $x_t = x$ fixed on the interval $t in [t' , t' + delta] subset [0, T]$
   for some $t' in [0, T]$ and $delta>0$, (see @thm-slow-var). Let $f in C^2([-1, 1])$ and set an initial conditoin
   $lambda_(t') = lambda in [-1, 1]$. Applying Itō's lemma to $f(lambda_t)$ to
   yield
@@ -1043,7 +1045,6 @@ forwards we will drop the $x$ notation in favour of $P(lambda, t)$. The forward
 generator is sumarised in the following lemma.
 
 #lemma(title: [Forward generator of the switching variable])[
-
   Let $delta > 0$ satisfying @eq-delta-ordering, let $t in [t', t' + delta] subset
   [0, T]$ for some $t' in [0, T-delta]$. Let $x_t = x in cal(D)_epsilon$ be
   fixed (see @thm-slow-var). Then the forward generator $cal(A)^*_x$ of
@@ -1078,9 +1079,7 @@ P_t (lambda) { partial_x sigma(x_t)^tns a(t, x, lambda)
 ]<lem-fwd-gen>
 
 
-#proof[
-
-  Let $P_t (lambda)$ denote the occupation density of the switching variable
+#proof[Let $P_t (lambda)$ denote the occupation density of the switching variable
   $lambda_t in [-1, 1]$, conditioned on a frozen value of $x_t = x in
   cal(D)_(epsilon)$. Inserting the backward generator from @lem-bwd-gen into 
   @eq-adjoint-def we obtain 
@@ -1239,7 +1238,6 @@ our case however, it is conditional on $x_t = x in cal(D)_(epsilon)$.
 ]
 
 #proof[
-
   The proof is a direct trivial calulation. We have
   $
     (cal(A)^* P_ss)(lambda)
@@ -1287,10 +1285,9 @@ our case however, it is conditional on $x_t = x in cal(D)_(epsilon)$.
 ]
 
 #theorem(title: [Instantaneous smoothing of the switching variable density])[
-
   Let $x in cal(D)_(epsilon)$ fixed, and let $lambda_t$ ​ evolve according to the
-  SDE with forward generator $cal(A)^*_x$ given by @lem-fwd-gen, let $rho (t,
-  lambda | x, mu)$ with $mu in [-1, 1]$ be the Greens's function solution to
+  SDE with forward generator $cal(A)^*_x$ given by @lem-fwd-gen, let $rho_(x)(t,
+  lambda giv mu)$ with $mu in [-1, 1]$ be the Greens's function solution to
   $partial_t rho = cal(A)^*_x rho$ with the localised intial condition and let
   the diffusion coefficient satisfy
 
@@ -1300,7 +1297,7 @@ our case however, it is conditional on $x_t = x in cal(D)_(epsilon)$.
 
   $
     (R_("L")(x))/sqrt(t) exp[-(C'_(1)(x)(lambda -mu)^2 )/ t]
-    <= rho(t, lambda | x, mu)
+    <= rho_x(t, lambda giv  mu)
     <= (R_("U")(x))/ sqrt(t) exp[-(C'_(2)(x)(lambda - mu)^2 )/ t],
   $
 
@@ -1324,7 +1321,7 @@ our case however, it is conditional on $x_t = x in cal(D)_(epsilon)$.
       - which is fine since I know the that d is bounded and dif d is also bounded
 
   ]
-  The proof is a direct consequence from Aronson, Theorem 1 in @aronson1967. Let
+  The proof is a direct consequence from Aronson, Theorem 7 in @aronson1968 (see also @aronson1967). Let
   us work directly with the Fokker-Planck equation, using the definition of
   $cal(A)^*_x$ in @lem-fwd-gen we have
 
@@ -1377,7 +1374,6 @@ our case however, it is conditional on $x_t = x in cal(D)_(epsilon)$.
 ]<lem-doeblin>
 
 #proof[
-
   From @thm-lam-smooth-denst, we have 
   $
     rho_(t)(lambda | x, mu)
@@ -1391,9 +1387,7 @@ our case however, it is conditional on $x_t = x in cal(D)_(epsilon)$.
   
 ]
 
-#corollary[
-
-  Due to the assistance of $eta_(t)(x)$ one can always decompose the Green's function into 
+#corollary[Due to the existance of $eta_(t)(x)$ one can always decompose the Green's function into 
   $
     rho_(t)(lambda giv x, mu) = eta_(t)(x) + r_(t)(lambda giv x, mu),
   $<eq-green-decomp>
@@ -1405,6 +1399,18 @@ our case however, it is conditional on $x_t = x in cal(D)_(epsilon)$.
   $
   due to the normalisation of the Green's function over $lambda$, which inturn implies that $eta_(t)(x) in [0, 1\/2]$.
 ]<cor-lem-doeblin-res>
+
+
+#corollary[Since $eta_(t)(x)$, when it exists it must be finite, and since we can always
+  globally bound $||x_t||$ on the interval $[0, T]$, there must exist uniform lower
+  bound on the interval $t in (0, T]$. We call this
+
+  $
+    C_(T, eta) eqdef inf_(t in [0, T]) eta_t (x_t).
+  $
+
+]<cor-lem-doeblin-min-eta-bound>
+
 
 
 A useful object that we weill employ in our upcomoing proofs is the called the
@@ -1423,7 +1429,6 @@ $P_(ss)(lambda) = cal(T)_s P_(ss) (lambda)$.
 
 
 #lemma(title: [Total variation bound])[
-
   Let $x in cal(D)_(epsilon)$ be fixed, and let $lambda_t$ ​ evolve according to
   the SDE with forward generator $A^*_x$ given by @lem-fwd-gen, let $P_t (lambda
   giv x), Q_t (lambda giv x) in dom(cal(A)^*_x)$ with some normalised initial
@@ -1438,7 +1443,6 @@ $P_(ss)(lambda) = cal(T)_s P_(ss) (lambda)$.
 
 ]<lem-tv-bound>
 #proof[
-
   Using the definition of the transtion operator from @eq-def-trans-op we obtain 
   $
     (cal(T)_s P_t)(lambda) - (cal(T)_s Q_t)(lambda) = 
@@ -1485,7 +1489,6 @@ $P_(ss)(lambda) = cal(T)_s P_(ss) (lambda)$.
   $<eq-tv-def>
 ]
 #lemma(title: [Upperbound on TV])[
-
   For any probability densities $P$, $Q$ on a compact set $Omega subset.eq RR^d$, 
   $
     lpnorm(P -Q, "TV", ,)  <= 1
@@ -1493,7 +1496,6 @@ $P_(ss)(lambda) = cal(T)_s P_(ss) (lambda)$.
 ]<lem-tv-upper-bound>
 
 #proof[
-
   We define $Omega^+ = {omega in Omega | P(omega) >= Q(omega) }$, and $Omega^- =
   {omega in Omega | P(omega) < Q(omega) }$ then 
   $
@@ -1521,9 +1523,7 @@ $P_(ss)(lambda) = cal(T)_s P_(ss) (lambda)$.
 ]
 
 
-#theorem(title: [Exponential mixing of the switching variable])[
-
-  Let $x in cal(D)_epsilon$ be fixed, let $P_t in dom(cal(A))^*_x$ represent the
+#theorem(title: [Exponential mixing of the switching variable])[Let $x in cal(D)_epsilon$ be fixed, let $P_t in dom(cal(A))^*_x$ represent the
   occupation probability density of $lambda$ conditioned on $x$, let $P_ss$ be
   the invariant density, i.e $(cal(A)^*_x P_ss)(lambda) = 0$
 
@@ -1552,7 +1552,6 @@ $P_(ss)(lambda) = cal(T)_s P_(ss) (lambda)$.
 ]<thm-exp-mixing-doe>
 
 #proof[
-
   Let $tau > 0$ such that $tau << t$ and let $m eqdef floor(t\/tau)$, then using
   the fact that $cal(T)_(tau) P_(ss )(lambda)$ and @lem-tv-bound we obtain
   $
@@ -1598,61 +1597,6 @@ $P_(ss)(lambda) = cal(T)_s P_(ss) (lambda)$.
 
 ]<cor-exp-mixing-obs-doe>
 
-#lemma(title: [Bounds on the invariant measure])[
-
-  For all $x in cal(D)_epsilon$ fixed  and $||tilde(a)(t, x, lambda)|| <= tilde(C)_1 (x)$  and $||tilde(b)(t, x, lambda)|| >= tilde(C)_1 (x) > 0$, set $tilde(C)_(12)(x) = tilde(C)_1 (x) \/ tilde(C)_2 (x)$
-
-
-  $
-    (tilde(C)_12 (x) exp[-tilde(C)_12 (x)(1 + 4 |lambda|)]) / sinh(tilde(C)_12 (x)) <= P_ss (lambda | x)
-   <= (tilde(C)_12 (x) exp[tilde(C)_12 (x)(1 + 4 |lambda|)]) / sinh(tilde(C)_12 (x)) 
-
-  $
-
-  #todo[
-    rewrite in a simpler form by introducing some auxiliary $G(x)$
-  ]
-]<lem-inv-meas-bound>
-
-
-
-#proof[
-
-  #todo[
-    proof in notebook add it in.
-  ]
-  
-
-  $
-    (alpha ee^(-2 alpha (1 + 4 |lambda|)))/ sinh(alpha/2)
-    <= P_ss (lambda)
-   <= (alpha ee^(2 alpha (1 + 4 |lambda|)))/ sinh(alpha/2)
-
-  $
-]
-
-#corollary[
-
-  It is useful to have the following uniform lower bound for invariant density
-
-  $
-    (tilde(C)_12 (x) exp[-tilde(C)_12 (x)(1 + 4 |lambda|)]) /
-    sinh(tilde(C)_12 (x)) &>= 1/2 tilde(C)_12 (x) ee^(-tilde(C)_(12)(x) (2 + 4|lambda|)) \
-      &>=1/2 C(1 + ||x||) ee^(-tilde(C)_(12)(x) (2 + 4|lambda|)), \
-      &=C_P (x)
-  $
-  where it is uesful to define
-  $
-    C_P (x) eqdef 1 / 2 C ee^(-6C) (1 + ||x||) ee^(-6 C ||x||)
-  $
-
-  $
-    C_P (x) eq.def 1 / 2 C ee^(-6C) (1 + ||x||) ee^(-6 C ||x||)
-  $
-
-  
-]
-
 
 
 
@@ -1670,9 +1614,7 @@ $delta$ such that $epsilon << delta << 1$ where the following are satisfied:
 = Averaging Principle
 We are now ready to introduce the averaging principle for the fast switching variable dynamics
 
-#definition(title: [The Reduced SDE])[
-
-  Let $x_t in cal(D)_epsilon$ be a solution of the piecewise-smooth SDE given
+#definition(title: [The Reduced SDE])[Let $x_t in cal(D)_epsilon$ be a solution of the piecewise-smooth SDE given
   in @def-ns-gen-sde, and let $lambda in [-1, 1]$ be the switching variable
   parametrising the convex interpolation
 
@@ -1727,9 +1669,9 @@ Unsurprisingly, without any hidden term in the dynamics we require only the mean
   here in the proof.
 
 
-#theorem(title: [Error estimates for the averaged SDE ])[
-
-  Let $x_t$ evolve according to the, let $t in [0, T]$ for some $T>0$, and intiaila condition $x_0 = y_0 in RR^d$
+#theorem(title: [Error estimates for the averaged SDE ])[ Let $x_t$ evolve
+ according to the, let $t in [0, T]$ for some $T>0$, and intiaila condition $x_0
+ = y_0 in RR^d$
   $
     PP[sup_(s in [0, t]) | x_s - y_s| > gamma ] <= C/gamma^2 R(epsilon, delta) t
   $
@@ -1779,8 +1721,9 @@ Unsurprisingly, without any hidden term in the dynamics we require only the mean
   $
 
   where in the first instance we have used the inequality $|a + b|^2 <= 2 (|a|^2
-  + |b|^2)$, and in the second case we have used Cauchy-Schwarz. Taking the
-  expectation allows us to use Ito isometry on teh stochastic integral, 
+  + |b|^2)$ (Cauchy-Schwarz), and in the second case we have also used
+  Cauchy-Schwarz. Taking the expectation allows us to use Ito isometry on teh
+  stochastic integral,
 
   $
     EE[ ||xi_t||^2] <= 2 t EE[ integral^t_0   ||I_a (s) + I I_a (s)||^2 dif s]
@@ -1883,24 +1826,31 @@ Unsurprisingly, without any hidden term in the dynamics we require only the mean
   $
 
   For the $k=0$ term we have a Dirac distriubtion but the total variation is
-  still bounded from above by one via @lem-tv-upper-bound.
+  still bounded from above by one via @lem-tv-upper-bound. Putting it together we obtain 
 
   $
     sum_(k=0) ^(N-1) integral_(k delta)^((k+1) delta) EE[||J^((2))_(a, k)(s)||^2]
-      &<= EE[C_0 (1 + ||x||^2)] (delta  + ee sum_(k=1) ^(N-1)
-      integral_(0)^(delta) ee^(-2 eta_(epsilon)(x_(k delta)) s \/ epsilon) dif s),\
-      &<= EE[C_0 (1 + ||x||^2)] (delta  + ee epsilon sum_(k=1) ^(N-1)
+      &<= EE[C_0 (1 + ||x||^2) (delta  + ee sum_(k=1) ^(N-1)
+      integral_(0)^(delta) ee^(-2 eta_(epsilon)(x_(k delta)) s \/ epsilon) dif s)],\
+      &<= EE[C_0 (1 + ||x||^2) (delta  + ee epsilon sum_(k=1) ^(N-1)
       (1 - ee^(-2 eta_(epsilon)(x_(k delta)) delta \/ epsilon))/(2 eta_(epsilon) (x_(k delta)))
-     ),\
-      &<= EE[C_0 (1 + ||x||^2)] (delta  + ee epsilon sum_(k=1) ^(N-1)
-      (1)/(2 eta_(epsilon) (x_(k delta)))).
+      )],\
+      &<= EE[C_0 (1 + ||x||^2) (delta  + ee epsilon sum_(k=1) ^(N-1)
+      (1)/(2 eta_(epsilon) (x_(k delta))))].
   $
 
-  Let $
+  This estimate can be made uniform the interval $t = [0, T]$ by inovking
+  @lem-poly-mom-bound and @cor-lem-doeblin-min-eta-bound to yeild
 
   $
+    sum_(k=0) ^(N-1) integral_(k delta)^((k+1) delta) EE[||J^((2))_(a, k)(s)||^2,]
+      &<= C_T [delta  + (ee epsilon (N - 1)) / (2 C_(T, eta))]  \
+      &<= C_T [delta  + (ee epsilon N ) / (2 C_(T, eta))], \
+      &<= M_T [delta  + (epsilon t ) / (delta)],
+  $
+  where $M_T eqdef max{C_T, C_T ee \/ (2 C_(T, eta)) }$.
 
-
+  
   
   Defining $zeta_s (lambda) eqdef [P_s (lambda | x_(k delta)) - P_ss (lambda |
   x_(k delta))] \/ P_ss (lambda | x_(k delta))$, for $k > 0$ we have
@@ -1937,38 +1887,38 @@ Unsurprisingly, without any hidden term in the dynamics we require only the mean
 
 
 = Needs Testing
-#lemma(title: [Concentration of $P_(ss)$ at tangency])[
-
-  Let $x in cal(D)_epsilon$ and suppose the transversality condition (A4) holds.
-  Define
-
-  $
-    nu^pm (x) = partial_x sigma(x)^tns a^pm (x),
-  $
-
-  the normal components of the drift at $x$. Then:
-
-  + If $nu^+ (x) < 0$ and $nu^- (x) > 0$ (sliding region), $P_(ss)(lambda | x)$
-    has support on $(-1, 1)$ with a density bounded away from zero.
-
-  + If $nu^+ (x) -> 0$ with $nu^- (x) > 0$ fixed, then $P_(ss)(lambda | x) ->
-    delta_(lambda = 1)$ weakly.
-
-  + If $nu^- (x) -> 0$ with $nu^+ (x) < 0$ fixed, then $P_(ss)(lambda | x) ->
-    delta_(lambda = -1)$ weakly.
-
-  + If $nu^+ (x) > 0$ or $nu^- (x) < 0$ (crossing region), the process exits
-    $cal(D)_epsilon$ in finite time and no stationary distribution exists.
-
-  In cases (ii) and (iii), the averaged coefficients satisfy
-
-  $
-    macron(a)(x) -> a^pm (x), quad macron(b)(x) -> b^pm (x),
-  $
-
-  recovering the smooth dynamics on the corresponding side of $cal(D)$.
-
-]<lem-tangency-concentration>
+// #lemma(title: [Concentration of $P_(ss)$ at tangency])[
+// 
+//   Let $x in cal(D)_epsilon$ and suppose the transversality condition (A4) holds.
+//   Define
+// 
+//   $
+//     nu^pm (x) = partial_x sigma(x)^tns a^pm (x),
+//   $
+// 
+//   the normal components of the drift at $x$. Then:
+// 
+//   + If $nu^+ (x) < 0$ and $nu^- (x) > 0$ (sliding region), $P_(ss)(lambda | x)$
+//     has support on $(-1, 1)$ with a density bounded away from zero.
+// 
+//   + If $nu^+ (x) -> 0$ with $nu^- (x) > 0$ fixed, then $P_(ss)(lambda | x) ->
+//     delta_(lambda = 1)$ weakly.
+// 
+//   + If $nu^- (x) -> 0$ with $nu^+ (x) < 0$ fixed, then $P_(ss)(lambda | x) ->
+//     delta_(lambda = -1)$ weakly.
+// 
+//   + If $nu^+ (x) > 0$ or $nu^- (x) < 0$ (crossing region), the process exits
+//     $cal(D)_epsilon$ in finite time and no stationary distribution exists.
+// 
+//   In cases (ii) and (iii), the averaged coefficients satisfy
+// 
+//   $
+//     macron(a)(x) -> a^pm (x), quad macron(b)(x) -> b^pm (x),
+//   $
+// 
+//   recovering the smooth dynamics on the corresponding side of $cal(D)$.
+// 
+// ]<lem-tangency-concentration>
 
 - whether we obtain the limits $P_ss -> delta(lambda pm 1)$ at the tangency points, in reverse time an forward time and backward w.r.t entry and exit points,  
   - Ovs i only needs to check one of the cases, then by time reversal symmetry the other will also hold. 
@@ -2015,7 +1965,6 @@ Since we have a probability density we will use the notation $inprod(., .,
 L^2_(P_t))$ and $lpnorm(., L^2_(P_t), ,)$ where $P_t in dom(cal(A)^*_x)$. 
 
 #lemma(title: [Symmetry of $cal(A)_x$])[
-
   Let $x in cal(D)_epsilon$ be fixed, $cal(A)_x$ be the backward generator
   given in @lem-bwd-gen, and $P_(ss)(lambda | x)$ satisfy $cal(A)^*_x
   P_(ss) = 0$ with $J_(ss)(pm 1) = 0$. Then $cal(A)_x$ is
@@ -2031,7 +1980,6 @@ L^2_(P_t))$ and $lpnorm(., L^2_(P_t), ,)$ where $P_t in dom(cal(A)^*_x)$.
 ]<lem-self-adjoint>
 
 #proof[
-
   We proceed by substituting @eq-bwd-gen into the left hand side of @eq-self-adjoint-def gives,
 
   $
@@ -2180,7 +2128,6 @@ where $kappa = (C_1 C_2) \/ 2$.
 
 
 #lemma(title: [Bounding zero-mean observables])[
-
   Let $cal(A)_x$ be the backward generator defined in @eq-bwd-gen in
   @lem-bwd-gen, $cal(A)^*_x$ be its adjoint defined in @eq-fwd-gen, let $P_ss
   (lambda)$ be the steady-state probability density such that $(cal(A)^*_x
@@ -2196,7 +2143,6 @@ where $kappa = (C_1 C_2) \/ 2$.
 ]<lem-zero-mean-bound>
 
 #proof[
-
   We need only show that 
   $
     inprod(-cal(A)_x f, f, L^(2)_(P_ss)) =  1/kappa
@@ -2220,7 +2166,6 @@ where $kappa = (C_1 C_2) \/ 2$.
 
 
 #lemma(title: [Dense sets in $L^2([-1, 1])$])[
-
   There exists a set $G subset dom(cal(A)_x)$ that are dense in $L^2$
   
 ]<lem-dense-l2>
@@ -2232,7 +2177,6 @@ where $kappa = (C_1 C_2) \/ 2$.
 ]
 
 #lemma(title: [zero mean observables in $L^2$])[
-
   Let $cal(A)_x$ be the backward generator defined in @eq-bwd-gen in
   @lem-bwd-gen, $cal(A)^*_x$ be its adjoint defined in @eq-fwd-gen, let $P_ss
   (lambda)$ be the steady-state probability density such that $(cal(A)^*_x
@@ -2249,7 +2193,6 @@ where $kappa = (C_1 C_2) \/ 2$.
 ]<lem-zero-mean-bound-l2>
 
 #proof[
-
   By @lem-dense-l2, there exisits a sequence smooth function in $f_n in dom(cal(A)_x)$  such that 
   $
     lim_(n -> 0) ||f_n - g||  = 0,
@@ -2285,8 +2228,7 @@ where $kappa = (C_1 C_2) \/ 2$.
   $
 ]<thm-exp-mixing>
 
-#proof()[
-
+#proof[
   To aid in the proof we define $xi_t (lambda) eqdef P_t (lambda) - P_ss
   (lambda)$, and $zeta_t (lambda) eqdef xi_t (lambda) \/ P_ss (lambda)$, where
   we have dropped the conditional argument in the noation. Clearly $zeta_t
@@ -2363,7 +2305,68 @@ where $kappa = (C_1 C_2) \/ 2$.
   [-1, 1]$.
 ]<cor-exp-mixing-obs>
 
+#lemma(title: [Bounds on the invariant measure])[
+  For all $x in cal(D)_epsilon$ fixed  and $||tilde(a)(t, x, lambda)|| <= tilde(C)_1 (x)$  and $||tilde(b)(t, x, lambda)|| >= tilde(C)_1 (x) > 0$, set $tilde(C)_(12)(x) = tilde(C)_1 (x) \/ tilde(C)_2 (x)$
+
+
+  $
+    (tilde(C)_12 (x) exp[-tilde(C)_12 (x)(1 + 4 |lambda|)]) / sinh(tilde(C)_12 (x)) <= P_ss (lambda | x)
+   <= (tilde(C)_12 (x) exp[tilde(C)_12 (x)(1 + 4 |lambda|)]) / sinh(tilde(C)_12 (x)) 
+
+  $
+
+  #todo[
+    rewrite in a simpler form by introducing some auxiliary $G(x)$
+  ]
+]<lem-inv-meas-bound>
+
+
+
+#proof[
+
+  #todo[
+    proof in notebook add it in.
+  ]
+  
+
+  $
+    (alpha ee^(-2 alpha (1 + 4 |lambda|)))/ sinh(alpha/2)
+    <= P_ss (lambda)
+   <= (alpha ee^(2 alpha (1 + 4 |lambda|)))/ sinh(alpha/2)
+
+  $
+]
+
+#corollary[
+
+  It is useful to have the following uniform lower bound for invariant density
+
+  $
+    (tilde(C)_12 (x) exp[-tilde(C)_12 (x)(1 + 4 |lambda|)]) /
+    sinh(tilde(C)_12 (x)) &>= 1/2 tilde(C)_12 (x) ee^(-tilde(C)_(12)(x) (2 + 4|lambda|)) \
+      &>=1/2 C(1 + ||x||) ee^(-tilde(C)_(12)(x) (2 + 4|lambda|)), \
+      &=C_P (x)
+  $
+  where it is uesful to define
+  $
+    C_P (x) eqdef 1 / 2 C ee^(-6C) (1 + ||x||) ee^(-6 C ||x||)
+  $
+
+  $
+    C_P (x) eq.def 1 / 2 C ee^(-6C) (1 + ||x||) ee^(-6 C ||x||)
+  $
+
+  
+]
+
+
+
 #pagebreak()
+
+uniqueness of steady-state solutions to the folkker planck
+
+steady states of fokker planck equations:1
+
 
 #bibliography("fixlib.bib")   
 
