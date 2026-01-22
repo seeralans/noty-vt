@@ -1,6 +1,5 @@
 #+TITLE: On the Gaussian envelopes of weak-noise stochastic differential equations.
 #+SLUG: gtwsde
-#+LATEX_CLASS: notes
 #+INCLUDE: "_macros.org"
 #+PROPERTY: header-args:jupyter-python :eval no :exports code :results none :session none
 #+LATEX_HEADER: \addbibresource{library.bib}

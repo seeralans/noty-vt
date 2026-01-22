@@ -220,8 +220,10 @@ coefficients. Extensions to piecewise-smooth systems include:
    is very simple it is piecewise constant with additive noise.
   - Useful to check if my results match theirs in the limit.
 
-- *Hill-Zanetell-Gemmer* @hilletal2022: Most probable paths via
-  with mollification (smearing the shit out of), additive noise only
+- *Hill-Zanetell-Gemmer* @hilletal2022: Most probable paths via with
+  mollification + $Gamma$-convergence, estimates are on the functional level,
+  additive noise only. 
+  - For some reason they did not cite @chiangsheu20002
 
 
 The gap: No existing work treats multiplicative noise with discontinuous
@@ -311,7 +313,7 @@ amplitude. The following definition formalises this setup.
  following conditions:
 
   1. (A1 - Smoothnes) The constituent coefficients are sufficiently smooth
-     $a^(pm) in C^2(RR^d; RR^d)$ and $b^(pm)in C^2(RR^d; RR^(d times m))$. #text(fill: red)[Why did I need it to be C2? (for the tubes?) $C^2 => "Lip"$]
+     $a^(pm) in C^2([0, T] times RR^d; RR^d)$ and $b^(pm)in C^2([0, T] times RR^d; RR^(d times m))$. #text(fill: red)[Why did I need it to be C2? (for the tubes?) $C^2 => "Lip"$]
 
   2. (A2 - Linear growth) We have $ ||a^(pm)(t, x)|| + ||b^(pm)(t, x)|| <= C^pm (1 +
   ||x||) $ for some $C>0$, where $||a^(pm)(dot, dot)||$ is the Euclidean norm and $
@@ -475,9 +477,11 @@ To see this, suppose we wish to replace @eq-ito-sde with an averaged counterpart
 The averaged drift takes the form
 $
   macron(a)_(alpha, epsilon)(t, x) &= integral_(-1)^(1) a_(alpha, epsilon)(t, x, lambda) P_(ss)(lambda | x) dif lambda \
-    &= 1/2(1 + macron(lambda)){a^+(t, x) + alpha epsilon c^+(t, x)} \
-    &+ 1/2(1 - macron(lambda)){a^-(t, x) + alpha epsilon c^-(t, x)} \
-    &+ alpha epsilon (1 - macron(lambda^2)) h(t, x),
+    &= 1/2(1 + macron(lambda))[a^+(t, x) + (alpha epsilon)/2 c^+(t, x)]
+    + (alpha, epsilon)/4 (macron(lambda) + macron(lambda^2)) c^+(t, x)\
+    &+ 1/2(1 - macron(lambda))[a^-(t, x) + (alpha epsilon)/2 c^-(t, x)]
+    + (alpha, epsilon)/4 (macron(lambda) + macron(lambda^2)) c^-(t, x)\
+    &+ (alpha epsilon)/4 (1 - macron(lambda^2)) h(t, x),
 $<eq-avg-drift-with-hidden>
 
 where $macron(lambda) = EE[lambda]$ and $macron(lambda^2) = EE[lambda^2]$ are
@@ -488,21 +492,22 @@ differential inclusion, we must know at least the second moment, i.e.
 $EE[lambda^2]$, if we wish to be faithful to the hidden dynamics.
 
 
-The magnitude of this contribution depends on the geometry of the problem. When
-the normal components of the drift $nu^pm (x) = partial_x sigma(x)^tns a^pm (t, x)$
-are both directed into the discontinuity set (sliding region), the stationary
-distribution $P_(ss)(lambda | x)$ has support on the full interval $(-1, 1)$
-with variance bounded away from zero. In this case the hidden drift makes a
-genuine $cal(O)(alpha epsilon)$ contribution to the averaged dynamics. When one
-of the normal components vanishes (tangency), the distribution concentrates
-near the corresponding boundary $lambda = pm 1$, and the hidden contribution
-vanishes as $(1 - macron(lambda^2)) -> 0$.
+// The magnitude of this contribution depends on the geometry of the problem. When
+// the normal components of the drift $nu^pm (x) = partial_x sigma(x)^tns a^pm (t, x)$
+// are both directed into the discontinuity set (sliding region), the stationary
+// distribution $P_(ss)(lambda | x)$ has support on the full interval $(-1, 1)$
+// with variance bounded away from zero. In this case the hidden drift makes a
+// genuine $cal(O)(alpha epsilon)$ contribution to the averaged dynamics. When one
+// of the normal components vanishes (tangency), the distribution concentrates
+// near the corresponding boundary $lambda = pm 1$, and the hidden contribution
+// vanishes as $(1 - macron(lambda^2)) -> 0$.
 
-This is a crucial distinction from existing work on piecewise-smooth SDEs with
-additive noise: when $b^+ = b^-$, the hidden drift $h(t, x)$ vanishes
-identically and the averaged dynamics depends only on $macron(lambda)$.
-Multiplicative noise with $b^+ != b^-$ generates hidden dynamics that persist in
-the weak-noise limit.
+This is a crucial distinction from existing work on piecewise-smooth SDEs which
+have been primarily interested in PWS drift fields and with smooth additive
+noise. In such a case one has $b^+ = b^-$, the hidden drift $h(t, x)$ vanishes
+identically and the averaged dynamics depends only on $macron(lambda)$. Whereas
+we not only consider the case $b^+ != b^-$ but also when the noise is
+multiplicative as is often the case in biological and chemical systems.
 
 
 = Main Result
@@ -529,30 +534,67 @@ the Gaussian fluctuations around them. In more formal terms, suppose $x_t$ solve
 The reduced system has sufficiently smooth coefficients as wells as inheriting
 the regularity conditions from @def-ns-gen-sde, it therefore satisfies a large
 deviation principle via Freidlin-Wentzell theory with rate function
+  $
+    I_T [phi] = cases(
+    1/2 integral_0^T ||[dot(phi)_t - macron(a)(t, phi_t)]^(tns)macron(d)(t, phi_t)^(-1)[dot(phi)_t - macron(a)(t, phi_t)]||^2 dif t quad & phi in "a.c. on " [0, T], 
+    +oo quad & "otherwise",
+    )
+  $
+  where $phi_0 = y_0$ and $
+    macron(d)(t, x) eqdef macron(b)(t, x) macron(b)(t, x)^(tns).
+  $
 
-$
-  I_T [phi] = 1/2 integral_0^T ||macron(b)(t, phi_t)^(-1)(dot(phi)_t - macron(a)_(alpha, epsilon)(t, phi_t))||^2 dif t,
-  quad phi in C^2([0, T], RR^d),
-$
+The $cal(O)(sqrt(epsilon))$ error bound on the paths of $x_t$ and $y_T$ is not
+sufficient to transfer the LDP from $y_t$ to $x_t$. However, it does ensure that
+the paths of $x_t$ lie in some neighbourhood around the typical paths of $y_t$
+obtained by the minimisation of $I_T$. The bound is also sufficient to transfer
+the Gaussian flucations around the typical, that is a Gaussian tube from $y_t$
+on to $x_t$.
 
-The $cal(O)(sqrt(epsilon))$ path approximation does not suffice to transfer the
-full large deviation principle from $y_t$ to $x_t$ as this would require
-exponential tightness of paths. However, it does ensure that, with probability
-tending to one, the paths of $x_t$ remain within any fixed neighbourhood of
-$y_t$. The typical paths of $x_t$ therefore coincide with the minimisers of
-$I_T$, and the Gaussian fluctuations around these paths are characterised by the
-linearisation of the averaged dynamics.
+The remainder of the manuscript is organised as follows. In @sec-dyn-lam we
+derive the dynamics of the switching variable via Meyer-Itô calculus. In
+@sec-delta-time we introduce the intermediate timescale and justify the
+separation between fast and slow dynamics. In @sec-est-on-del we establish
+probabilistic estimates for the switching variable, including exponential
+mixing. In @sec-avg-principle we prove the averaging principle for the
+piecewise-smooth SDE. Finally, in @sec-typical-paths we show that the typical
+paths of the original and averaged systems coincide.
 
-The averaged coefficients depend on in general the full distribution
-$P_(ss)(lambda | x)$, not merely its mean. When $alpha != 0$, the spurious drift
-contributes terms quadratic in $lambda$, and the averaged dynamics retains
-information about $EE[lambda^2]$. This is the mechanism by which hidden dynamics
-on the discontinuity set manifest in the weak-noise asymptotics.
+// Lastly, it is important to note that in general the averaged coefficients
+// depends on the full distribution $P^(ss)_(x)(lambda)$, not merely its mean, or
+// at the very least on $EE[lambda^(n)]$ w.r.t $P^(ss)_(x)(lambda)$ for some
+// positive integer $n$. In our case when $alpha != 0$, the spurious drift
+// contributes terms quadratic in $lambda$, and the averaged dynamics retains
+// information about $EE[lambda^2]$. In other cases one may have additional
+// contribution that are not manifest from the noise coefficient @jeffrey2018book.
+// This is the mechanism by which hidden dynamics on the discontinuity set manifest
+// in the weak-noise asymptotics.
+// 
+// 
+// Laslty, it is important to note that in general averaged coefficients depend on
+// the full distribution $P_(ss)(lambda | x)$, not merely its mean. When $alpha !=
+// 0$, the spurious drift contributes terms quadratic in $lambda$, and the averaged
+// dynamics retains information about $EE[lambda^2]$. In other cases, additional
+// hidden terms may arise from the noise coefficient @jeffrey2018book. In the
+// deterministic setting, hidden dynamics can stabilise or destabilise sliding
+// modes and create new equilibria on the discontinuity surface. In the stochastic
+// case, these effects enter through the moments of $P_(ss)(lambda | x)$: the
+// hidden drift $h(t, x)$ weighted by $(1 - EE[lambda^2])$ modifies the averaged
+// dynamics, shifting or altering the stability of the typical paths.
+
+// path approximation does not suffice to transfer the
+// full large deviation principle from $y_t$ to $x_t$ as this would require
+// exponential tightness of paths. However, it does ensure that, with probability
+// tending to one, the paths of $x_t$ remain within any fixed neighbourhood of
+// $y_t$. The typical paths of $x_t$ therefore coincide with the minimisers of
+// $I_T$, and the Gaussian fluctuations around these paths are characterised by the
+// linearisation of the averaged dynamics.
 
 
 
 
-= Dynamics of the switching variable  
+
+= Dynamics of the switching variable  <sec-dyn-lam>
 
 The switching variable depends on the state and we will regularise the
 definition given in @eq-lam-def as $ lambda = Lambda_(epsilon)[sigma(x)] $
@@ -944,7 +986,7 @@ By setting $f(x) = ||x||^2 = sum_i (x^((i)))^2$ and applying Itō's lemma to @eq
 The moment bound ensure that all coefficients remain sufficiently controlled on $[0, T]$,
 which we require for the intermediate timescale estimates.
 
-= The intermediate timescale
+= The intermediate timescale <sec-delta-time>
 
 From @eq-lam-sde, the switching variable evolves on timescale
 $cal(O)(1\/epsilon)$ while $x_t$ evolves on $cal(O)(1)$. The standard approach
@@ -1103,7 +1145,7 @@ of $alpha$ does not affect the limiting dynamics provided the relevant estimates
 hold uniformly.
 
 
-= Estimates for the dynamics on the intermediate timescale
+= Estimates for the dynamics on the intermediate timescale <sec-est-on-del>
 
 We proceed to establish the estimates that justify the timescale separation. On
 the intermediate timescale $delta$ satisfying @eq-delta-ordering, the dynamics
@@ -2012,7 +2054,7 @@ that equilibration occurs through exponential mixing for which the
 transversality was crucial. These estimates are essential to derive the
 averaging principle in the next section.
 
-= Averaging Principle
+= Averaging Principle <sec-avg-principle>
 
 We are now ready to introduce the averaging principle for the fast switching
 variable dynamics
@@ -2127,7 +2169,7 @@ from the distribution $P_ss (lambda)$,
     ||macron(a)_(alpha, epsilon)(t, x) - macron(a)_(alpha, epsilon)(s, y)|| <= macron(K) ||x - y|| + macron(K)_T |t - s|,
   $
 
-  with $macron(K) = K + C(1 + R) K_P$ and $macron(K)_T = K_T$, where $R$
+  with $macron(K) = K + C(1 + R_T) K_P$ and $macron(K)_T = K_T$, where $R_T$
   bounds $||x||$ and $||y||$ on the interval. The same argument applies to
   $macron(b)$, giving the Lipschitz bounds claimed in the lemma.
 ]
@@ -2390,7 +2432,7 @@ system with its averaged counterpart.
   which is the desired bound.
 ]
 
-= Typical paths and Gaussian fluctuations
+= Typical paths and Gaussian fluctuations <sec-typical-paths>
 
 The reduced SDE given in @def-reduced-sde is a weak-noise SDE for which we have
 an LDP via Freidlin-Wentzell theory (see Chap. 5, Sec. 3 of
@@ -2407,7 +2449,7 @@ proofs and discussions). We state the relevant results here.
     +oo quad & "otherwise",
     )
   $
-  where $ phi_0 = x_0$ and $
+  where $ phi_0 = y_0$ and $
     macron(d)(t, x) eqdef macron(b)(t, x) macron(b)(t, x)^(tns).
   $
 
@@ -2506,7 +2548,7 @@ covariance of $zeta_t$
   characterisation.
 ]
 
-
+#pagebreak()
 = Notes
 == Tasks
 - Fix the $alpha in [0, 1] -> alpha in {0, 1/2, 1}$ giving Itō, strato anti-ito 
