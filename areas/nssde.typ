@@ -11,7 +11,7 @@
 #import cosmos.simple: *
 
 // choose your preferred theme color
-#let theme-color = theme-colors.dark.hard
+#let theme-color = theme-colors.light.hard
 
 // apply colors to common typst components
 #show: gruvbox.with(
@@ -22,7 +22,7 @@
   // customize `highlight` color
   hl: theme-color.muted.yellow,
   // is the document printable?
-  print: false,
+  print: true,
 )
 
 #show: equate.with(breakable: true, sub-numbering: false)
@@ -43,6 +43,12 @@
     both: true,
   )
 ])
+
+
+#let remark(body) = [
+  *Remark.* #body
+]
+
 
 
 // #show outline.entry.where(
@@ -181,6 +187,8 @@
 #outline(depth: 2)
 
 #pagebreak()
+
+
 
 = Introduction
 
@@ -971,9 +979,9 @@ local time terms in @eq-lam-sde, which we do in the following lemma.
 
   $
     dif EE[L^z_t (a)] = epsilon P^((z))(a, t) tilde(b)^2(t, x_t, lambda_t) dif t,
-  $
+  $<eq-diff-ee-lt>
   where $P^((z))(a, t)$ denotes the density of $z_t$ at level $a$.
-]<lem-local-time-scaling-x>
+]<lem-local-time-scaling>
 
 #proof[Taking the expectation of @eq-local-time-def,
 
@@ -1177,9 +1185,9 @@ $
   delta(epsilon)/epsilon  = epsilon^(beta-1) limits(->) oo, quad #text[as] epsilon -> 0,
 $
 
-which shows that the $delta$-window is arbitrarily large on the fast
-$lambda$–timescale. Thus, in $delta$-interval, the slow variable may be regarded as
-fixed while the fast variable has sufficient time to equilibrate.
+for $beta in (0, 1)$, which shows that the $delta$-window is arbitrarily large
+on the fast $lambda$–timescale. Thus, in $delta$-interval, the slow variable may
+be regarded as fixed while the fast variable has sufficient time to equilibrate.
 
 
 Having now established the error associated with fixing the value of $x$ to its
@@ -1374,29 +1382,27 @@ following lemma.
 
   $
     J_t (lambda) &= 
-P_t (lambda) { partial_x sigma(x_t)^tns a(t, x, lambda)
+P_x (t, lambda) { partial_x sigma(x_t)^tns a(t, x, lambda)
     + epsilon/2 trc[b(t, x, lambda)^(tns) partial^2_(x x) sigma(x) b(t, x, lambda)] } \ 
-      &- 1/(2 ) partial_(lambda)[P_t (lambda)
+      &- 1/(2 ) partial_(lambda)[P_x (t, lambda)
       partial_x sigma(x_t)^tns  b(t, x, lambda) b(t, x, lambda)^tns partial_x sigma(x_t)],
   $
 
-  is the scaled probability current, i.e. $J_t (lambda) \/ epsilon$ would be the
-  probability current of the process.
-
+  is the scaled probability current.
 ]<lem-fwd-gen>
 
 
-#proof[Let $P_t (lambda)$ denote the occupation density of the switching variable
+#proof[Let $P_(x)(t, lambda)$ denote the occupation density of the switching variable
   $lambda_t in [-1, 1]$, conditioned on a frozen value of $x_t = x in
   cal(D)_(epsilon)$. Inserting the backward generator from @lem-bwd-gen into 
   @eq-adjoint-def we obtain 
 
 
   $
-    1/epsilon   integral_(-1)^1  P_t (lambda) 
+    1/epsilon   integral_(-1)^1  P_(x)(t, lambda) 
     partial_lambda
     f(lambda) tilde(a)_(alpha, epsilon)(t, x, lambda) + 1/(2 epsilon) integral_(-1)^(1)
-    P_t (lambda) partial^2_(lambda lambda)f(lambda)  tilde(b)(t, x, lambda) tilde(b)(t, x, lambda)^(tns) \
+    P_(x)(t, lambda) partial^2_(lambda lambda)f(lambda)  tilde(b)(t, x, lambda) tilde(b)(t, x, lambda)^(tns) \
  =  integral_(-1)^(1) f_t (lambda) (cal(A)^*_x P_t)(lambda) 
   $
 
@@ -1412,34 +1418,34 @@ P_t (lambda) { partial_x sigma(x_t)^tns a(t, x, lambda)
   Drift contribution. Integration by parts gives
   $
     1/epsilon integral_(-1)^1 partial_lambda f(lambda)
-      P_t (lambda) tilde(a)_(alpha, epsilon)(t, x, lambda) dif lambda
+      P_(x)(t, lambda) tilde(a)_(alpha, epsilon)(t, x, lambda) dif lambda
       &= lr(1/epsilon f(lambda)
-        P_t (lambda) tilde(a)_(alpha, epsilon)(t, x, lambda)|)_(-1)^1 \
+        P_(x)(t, lambda) tilde(a)_(alpha, epsilon)(t, x, lambda)|)_(-1)^1 \
       &- 1/epsilon integral_(-1)^1
         f(lambda)
         partial_lambda [
-          P_t (lambda) tilde(a)_(alpha, epsilon)(t, x, lambda)
+          P_(x)(t, lambda) tilde(a)_(alpha, epsilon)(t, x, lambda)
         ] dif lambda,
   $<eq-forward-drift>
 
   Diffusion contribution. Employing intrgration by parts twice yields
   $
     1/(2epsilon) integral_(-1)^1 partial^2_(lambda lambda) f(lambda)
-      P_t (lambda) tilde(b)
+      P_(x)(t, lambda) tilde(b)
       tilde(b)^(tns) dif lambda  &= 
        lr(1/(2epsilon)
         partial_lambda f(lambda)
         lr([
-          P_t (lambda) tilde(b) tilde(b)^(tns)
+          P_(x)(t, lambda) tilde(b) tilde(b)^(tns)
            ])
       - 1/(2epsilon) f(lambda)
         partial_lambda [
-          P_t (lambda) tilde(b) tilde(b)^(tns)
+          P_(x)(t, lambda) tilde(b) tilde(b)^(tns)
         ] |)_(-1)^1  \
       &+ 1/(2epsilon) integral_(-1)^1
         f(lambda) partial^2_(lambda lambda)
         [
-         P_t (lambda) tilde(b) tilde(b)^(tns)
+         P_(x)(t, lambda) tilde(b) tilde(b)^(tns)
         ] dif lambda,
   $<eq-forward-diffusion>
 
@@ -1451,23 +1457,21 @@ P_t (lambda) { partial_x sigma(x_t)^tns a(t, x, lambda)
   $lambda = pm 1$), giving the boundary condtion
 
   $
-    lr([
-      P_t (lambda) tilde(a)_(alpha, epsilon)(x_t, lambda)
-      - 1/2 partial_lambda (
-      P_t (lambda) tilde(b)(t, x, lambda) tilde(b)(t, x, lambda)^(tns)
-      )
-      ])_(-1)^1 = 0.
+    lr({  P_(x)(t, lambda) tilde(a)_(alpha, epsilon)(x_t, lambda)
+      - 1/2 partial_lambda [ P_(x)(t, lambda) tilde(b)(t, x, lambda) tilde(b)(t, x, lambda)^(tns)
+]
+ })_(-1)^1 = 0.
   $<eq-forward-zero-flux>
 
   Using #Cref(supplement: "Eqs.")[@eq-forward-drift @eq-forward-diffusion], and enforcing
   @eq-forward-zero-flux, we identify the forward operator as
   $
-    (cal(A)^*_x P_t)(lambda)
+    (cal(A)^*_x P_(x))(t, lambda)
       = - 1/epsilon partial_lambda [
-          P_t (lambda) tilde(a)_(alpha, epsilon)(t, x, lambda)
+        P_(x)(t, lambda) tilde(a)_(alpha, epsilon)(t, x, lambda)
         ]
         + 1/(2epsilon) partial^2_(lambda lambda) [
-          P_t (lambda) tilde(b)(t, x, lambda)
+          P_(x)(t, lambda) tilde(b)(t, x, lambda)
                        tilde(b)(t, x, lambda)^(tns)
         ].
   $<eq-forward-generator-final>
@@ -1482,9 +1486,7 @@ operator associated with the dynamics of the switching variable $lambda_t$, in
 our case, however, it is conditional on $x_t = x in cal(D)_(epsilon)$. 
 
 
-#remark[
-
-  Since $P_t (lambda)$ is the one dimensional occupation probability density
+#remark[Since $P_t (lambda)$ is the one dimensional occupation probability density
   with zero flux boundary conditions, and since $J_t (pm 1) = 0$ must always be
   satisfied, we have no current for all $lambda in [-1, 1]$ giving us the
   condtion
@@ -1500,8 +1502,7 @@ our case, however, it is conditional on $x_t = x in cal(D)_(epsilon)$.
 ]<rem-db-lam>
 
 
-#remark[
-  Notice that our transversality condition from @def-ns-gen-sde, and subsequently
+#remark[Notice that our transversality condition from @def-ns-gen-sde, and subsequently
   the in @lem-coeff-tilde-bounds will give rise to ellipticity condition for the
   Fokker-Planck equation.
 ]
@@ -1516,15 +1517,15 @@ $P_(x)(t, lambda)$.
 
 
 Since we allow for the fact that at $t=0$ we allow a Dirac-delta initial
-condition, i.e. $P_(x)(0, lambda) = delta(lambda - sigma(x_0))$ where $x_0$ is
+condition, i.e. $P_(x)(0, lambda) = delta(lambda - Lambda_(epsilon)(sigma(x_0)))$ where $x_0$ is
 the initial condition of $x_t$, we must show that despite such initial
 conditions, $P_(x)(t, lambda)$ becomes instantaneously smooth for any $t>0$. In
 our case the ellipticity of the generator, which is guarrenteed by the
 transversality condition in @def-ns-gen-sde, is key to show the instantaneous
-smoothing as we show via the following theorem.
+smoothing as we show via the following lemma.
 
 
-#theorem(title: [Instantaneous smoothing of the switching variable density])[
+#lemma(title: [Instantaneous smoothing of the switching variable density])[
   Let $x in cal(D)_(epsilon)$ fixed, and let $lambda_t$ ​ evolve according to the
   SDE with forward generator $cal(A)^*_x$ given by @lem-fwd-gen, let $rho_(x)(t,
   lambda giv mu)$ with $mu in [-1, 1]$ be the Greens's function solution to
@@ -1545,7 +1546,7 @@ smoothing as we show via the following theorem.
   and lower bounds for the diffusion coefficient which are dependnet on $x$ but
   uniform in $lambda$ and $T$.
 
-]<thm-lam-smooth-denst>
+]<lem-lam-smooth-denst>
 
 #proof[
 
@@ -1608,61 +1609,13 @@ smoothing as we show via the following theorem.
   $
     nu(x) eqdef max[2 epsilon\/ tilde(M)^2, 2 C^2 (1 + ||x||^2), 1].
   $
-  
+
 ]
 
-
-
-#lemma(title: [Doeblin Constant])[Let $x in cal(D)_epsilon $ be fixed, let $lambda_t$ evolve acccording to the forward generator $cal(A)^*_x$ given by @lem-fwd-gen and let $rho_(x)(t, lambda giv  mu)$
-  denote the Green's function from @thm-lam-smooth-denst evaluated at time $t in [0, T]$.
-  Then there exists a positif function $eta_(t)(x) > 0$ such that
-  $
-    rho_(x)(t, lambda giv  mu) >= eta_(t)(x) quad forall lambda, mu in [-1, 1],
-  $
-]<lem-doeblin>
-
-#proof[
-  From @thm-lam-smooth-denst, we have 
-  $
-    rho_(x)(t, lambda giv  mu)
-      &>= (R_("L")(x))/sqrt(t) exp[-(C'_(1)(x)(lambda -mu)^2 )/ t],\
-  $
-  from which we can define
-  $
-    eta_(t)(x) &eqdef inf_(lambda, mu) (R_("L")(x))/sqrt(t) exp[-(C'_(1)(x)(lambda -mu)^2 )/ t], \
-      &= (R_("L")(x))/sqrt(t) exp[-(4 C'_(1)(x) )/ t].\
-  $<eq-eta-def>
-  
-]
-
-#corollary[Due to the existance of $eta_(t)(x)$ one can always decompose the Green's function into 
-  $
-    rho_(x)(t, lambda giv  mu) = eta_(t)(x) + r_(t)(lambda giv x, mu),
-  $<eq-green-decomp>
-
-  where $r_(t)(lambda giv x, mu) >= 0$ is the contribution to the kernel the
-  spends on the initial condition $mu$ and the state $lambda$. Notice that we have
-  $
-    integral_(-1)^(1) r_(t)(lambda giv x, mu) dif lambda = 1 - 2 eta_(t) (x),
-  $
-  due to the normalisation of the Green's function over $lambda$, which inturn implies that $eta_(t)(x) in [0, 1\/2]$.
-]<cor-lem-doeblin-res>
-
-
-#corollary[Since $eta_(t)(x)$, when it exists it must be finite, and since we can always
-  globally bound $||x_t||$ on the interval $[0, T]$, there must exist uniform lower
-  bound on the interval $t in (0, T]$. We call this
-
-  $
-    C_(T, eta) eqdef inf_(t in [0, T]) eta_t (x_t).
-  $
-
-]<cor-lem-doeblin-min-eta-bound>
-
-#todo[
-  Reviewed to here. 
-]
-
+While @lem-lam-smooth-denst gives us estimates for the transient density, we
+also require the invariant density, that is quasi-stationary density obtained by
+fixing $x$ to be static whilst allowing $lambda$ to be dynamics. We can compute
+this invariant density explicitly.
 
 #lemma(title: [Invariant density of the switching variable])[
   Let $x in cal(D)_epsilon$ be fixed, and let $tilde(a)_(alpha, epsilon)(x, lambda)
@@ -1716,6 +1669,12 @@ smoothing as we show via the following theorem.
   invariant density gives @eq-p-inv-norm-const.
   
 ]
+
+The explicit formula for $P_(ss)(lambda | x)$ allows us to control its
+dependence on the frozen variable $x$, whis is not required to show exponential
+mixing but will be required later for averaging principle.
+
+
 
 // #lemma(title: [Lipschitz continuity of $P_(ss)$ on $x$])[
 //   Let $x, y in cal(D)_epsilon$ and let $P_(ss)(lambda | x)$ denote the invariant
@@ -1814,9 +1773,69 @@ smoothing as we show via the following theorem.
 
 #proof[
   #text(fill: red)[
-  Proof by obviousness
+    The proof is straightforward via MD simulations.
   ]
 ]
+
+With estimates for both the transient dynamics (@lem-lam-smooth-denst) and the
+invariant density (@lem-invariant-density), we now establish convergence to
+equilibrium. The strategy we will follow is standard. From
+@lem-lam-smooth-denst, we will extract a uniform lower bound on the Green's
+function (the Doeblin constant), use it to show contraction in total variation,
+and iterate to obtain exponential mixing, see notes on convergence of Markov
+processes in @hairer2021 for the procedure.
+
+#lemma(title: [Doeblin Constant])[Let $x in cal(D)_epsilon $ be fixed, let
+  $lambda_t$ evolve acccording to the forward generator $cal(A)^*_x$ given by
+  @lem-fwd-gen and let $rho_(x)(t, lambda giv mu)$ denote the Green's function
+  from @lem-lam-smooth-denst evaluated at time $t in [0, T]$. Then there exists
+  a positif function $eta_(t)(x) > 0$ such that $ rho_(x)(t, lambda giv mu) >=
+  eta_(t)(x) quad forall lambda, mu in [-1, 1], $ ]<lem-doeblin>
+
+#proof[
+  From @lem-lam-smooth-denst, we have 
+  $
+    rho_(x)(t, lambda giv  mu)
+      &>= (R_("L")(x))/sqrt(t) exp[-(C'_(1)(x)(lambda -mu)^2 )/ t],\
+  $
+  from which we can define
+  $
+    eta_(t)(x) &eqdef inf_(lambda, mu) (R_("L")(x))/sqrt(t) exp[-(C'_(1)(x)(lambda -mu)^2 )/ t], \
+      &= (R_("L")(x))/sqrt(t) exp[-(4 C'_(1)(x) )/ t].\
+  $<eq-eta-def>
+  
+]
+
+#corollary[Due to the existance of $eta_(t)(x)$ one can always decompose the Green's function into 
+  $
+    rho_(x)(t, lambda giv  mu) = eta_(t)(x) + r_(t)(lambda giv x, mu),
+  $<eq-green-decomp>
+
+  where $r_(t)(lambda giv x, mu) >= 0$ is the contribution to the kernel the
+  spends on the initial condition $mu$ and the state $lambda$. Notice that we have
+  $
+    integral_(-1)^(1) r_(t)(lambda giv x, mu) dif lambda = 1 - 2 eta_(t) (x),
+  $
+  due to the normalisation of the Green's function over $lambda$, which inturn implies that $eta_(t)(x) in [0, 1\/2]$.
+]<cor-lem-doeblin-res>
+
+
+#corollary[Since $eta_(t)(x)$, when it exists it must be finite, and since we can always
+  globally bound $||x_t||$ on the interval $[0, T]$, there must exist uniform lower
+  bound on the interval $t in (0, T]$. We call this
+
+  $
+    C_(T, eta) eqdef inf_(t in [0, T]) eta_t (x_t).
+  $
+
+]<cor-lem-doeblin-min-eta-bound>
+
+#todo[
+  Reviewed to here. 
+]
+
+
+
 
 
 A useful object that we weill employ in our upcomoing proofs is the called the
@@ -1890,8 +1909,8 @@ $P_(ss)(lambda) = cal(T)_s P_(ss) (lambda)$.
   Lebesgue measure, hence
   $
     lpnorm(P_(t) (lambda) - Q_(t) (lambda), "TV", ,)
-      // &eqdef sup_(omega in cal(B)([-1, 1]))|P_(t) (lambda) - Q_(t) (lambda)|,\
-      &= 1/2 integral_(omega) |P_(t) (lambda) - Q_(t) (lambda)| dif lambda.\
+       //&eqdef sup_(omega in cal(B)([-1, 1]))|P_(t) (lambda) - Q_(t) (lambda)|,\
+      &= 1/2 integral_(-1)^(1) |P_(t) (lambda) - Q_(t) (lambda)| dif lambda.\
   $<eq-tv-def>
 ]
 #lemma(title: [Upperbound on TV])[
@@ -2101,11 +2120,11 @@ from the distribution $P_ss (lambda)$,
 
   Combining both terms,
   $
-    ||macron(a)_(alpha, epsilon)(t, x) - macron(a)(s, y)|| <= [K + C(1 + ||y||) K_P] ||x - y|| + K_T |t - s|.
+    ||macron(a)_(alpha, epsilon)(t, x) - macron(a)_(alpha, epsilon)(s, y)|| <= [K + C(1 + ||y||) K_P] ||x - y|| + K_T |t - s|.
   $
   For $x, y$ in a bounded set (which holds on $[0, T]$ by @lem-poly-mom-bound), we obtain
   $
-    ||macron(a)_(alpha, epsilon)(t, x) - macron(a)(s, y)|| <= macron(K) ||x - y|| + macron(K)_T |t - s|,
+    ||macron(a)_(alpha, epsilon)(t, x) - macron(a)_(alpha, epsilon)(s, y)|| <= macron(K) ||x - y|| + macron(K)_T |t - s|,
   $
 
   with $macron(K) = K + C(1 + R) K_P$ and $macron(K)_T = K_T$, where $R$
@@ -2116,8 +2135,8 @@ from the distribution $P_ss (lambda)$,
 
 With the averaged coefficients satisfying the same regularity as the original
 system given in @def-ns-gen-sde, we can state the main error estimate for
-substituting in place of the multi-timescale system with its averaged
-counterpart..
+substituting in place of the pws system which is implicitly multi-timescale
+system with its averaged counterpart.
 
 
 #theorem(title: [Error estimate for the averaged SDE ])[Let $(t, x_t, lambda_t)$
@@ -2135,15 +2154,15 @@ counterpart..
 
   then substrituting in the definition for the  
   $
-    xi_t = integral^t_0 a(s, x_s, lambda_s)  - macron(a)(s, y_s) dif s
+    xi_t = integral^t_0 a_(alpha, epsilon)(s, x_s, lambda_s)  - macron(a)_(alpha, epsilon)(s, y_s) dif s
     + sqrt(epsilon) integral^t_0 b(s, x_s, y_s) - macron(b)(s, y_s) dif W_s,
   $
 
   Let us define the following integrands
 
   $
-    I_a (s) &eqdef a(s, x_s, lambda_s) - macron(a)(s, y_s), \
-    I I_a (s) &eqdef macron(a)(s, x_s) - macron(a)(s, y_s) ,
+    I_a (s) &eqdef a_(alpha, epsilon)(s, x_s, lambda_s) - macron(a)_(alpha, epsilon)(s, y_s), \
+    I I_a (s) &eqdef macron(a)_(alpha, epsilon)(s, x_s) - macron(a)_(alpha, epsilon)(s, y_s) ,
   $
   similarly for the noise coefficient we have
   $
@@ -2157,7 +2176,7 @@ counterpart..
     ||xi_t||^2 &<= 2 lr(||integral^t_0   I_a (s) + I I_a (s) dif s||)^2
               + 2 epsilon lr(||integral^t_0   I_b (s) + I I_b (s) dif W_s||)^2, \
     &<= 2 t integral^t_0   ||I_a (s) + I I_a (s)||^2 dif s
-              + 2 epsilon lr(||integral^t_0   I_b (s) + I I_b (s) dif W_s||)^2 \
+              + 2 epsilon lr(||integral^t_0   I_b (s) + I I_b (s) dif W_s||)^2, \
   $
 
   where in the first instance we have used the inequality $|a + b|^2 <= 2 (|a|^2
@@ -2180,7 +2199,7 @@ counterpart..
   bounded as it is is just an application of Lipschitz, 
 
   $
-    4t || I I_a (s) ||^2 + 4epsilon || I I_b (s) ||^2 &= 4t||macron(a)(s, x_s) - macron(a)(s, y_s) ||^2
+    4t || I I_a (s) ||^2 + 4epsilon || I I_b (s) ||^2 &= 4t||macron(a)_(alpha, epsilon)(s, x_s) - macron(a)_(alpha, epsilon)(s, y_s) ||^2
     + 4epsilon||macron(b)(s, x_s) - macron(b)(s, y_s) ||^2 \
       &<=  4 macron(K)^2(T + epsilon) ||xi_(s)||^2.
   $ 
@@ -2271,7 +2290,7 @@ counterpart..
   delta, (k+1) delta]$. Recall that for $k = 0$ we have $P_0 (lambda giv x_(0))
   = delta(lambda - lambda_0)$ but for all $k > 0$ the initial probability
   density $P_0 (lambda giv x_(k delta))$ corresponds to some conditional
-  probability density at $t = k delta > 0$ that by @thm-lam-smooth-denst, is in
+  probability density at $t = k delta > 0$ that by @lem-lam-smooth-denst, is in
   $L^2_(P_ss)$. With $J^((2))_(a, k, i)(s)$ denoting the $i^"th"$ component of the vector, we have for $k>0$
   $
     ||J^((2))_(a, k)(s)||^2 = sum_i |J^((2))_(a, k, i)(s)|^2 &= sum_i
@@ -2473,9 +2492,7 @@ covariance of $zeta_t$
 
 ]
 
-#remark[
-
-  A full transfer of the LDP of the reduced (averaged) system, $y_t$ to the full
+#remark[A full transfer of the LDP of the reduced (averaged) system, $y_t$ to the full
   system with $x_t$, requires a sharper controll of the error, specifically on
   requires exponential equivalence in distribution
 
@@ -2556,445 +2573,445 @@ covariance of $zeta_t$
 
 
 
-= Poincaré Bounding (Useless)
-
-Before we proceed it is usefull to introduce a defnition for the $L^2$ space that we will be working in, but first let us consider the general defintion of an $L^2$ inner product and norms on real functions.
-
-#definition(title: [$L^2$-norm])[
-
-  Let $(Omega, cal(F), mu)$ be a measurable space, where $Omega$ is the set,
-  $cal(F)$ is the sigma algebra of $Omega$, and $mu$ the measure. Then for any
-  $cal(F)$-measurable $f, g: Omega mapsto RR$, the $L^2$ inner product is defined as 
-
-  $
-    chevron.l f, g chevron.r_(L^2_(mu)) eqdef  integral_(Omega) f(omega) g(omega) dif mu(omega),
-  $<eq-l2-inner-prod-def>
-
-  which induces the $L^2$-norm
-  
-  $
-    lpnorm(f, L^2_(mu), ,) eqdef chevron.l f \, f chevron.r_(L^2_(mu))^(1/2)  =
-    (integral_(Omega) f^2(omega) dif mu(omega))^(1/2).
-  $<eq-l2-norm-def>
-]
-
-#corollary(title: [$L^2$-bound to supremum bound])[
-
-  It is straight forward to bound an $L^2$-norm using a supremum bound via the
-  argument
-
-  $
-    lpnorm(f, L^2_(mu), ,)
-    = (integral_(Omega) f^2(omega) dif mu(omega))^(1/2) 
-      &= (integral_(Omega) |f(omega)|^2 dif mu(omega))^(1/2), \
-      &<= sup_(x in Omega) |f(omega)| (integral_(Omega)  dif mu(omega))^(1/2), \
-      &<= sqrt(mu(Omega))sup_(x in Omega) |f(omega)|.
-  $
-]<cor-l2-to-sup>
-
-Since we have a probability density we will use the notation $inprod(., .,
-L^2_(P_t))$ and $lpnorm(., L^2_(P_t), ,)$ where $P_t in dom(cal(A)^*_x)$. 
-
-#lemma(title: [Symmetry of $cal(A)_x$])[
-  Let $x in cal(D)_epsilon$ be fixed, $cal(A)_x$ be the backward generator
-  given in @lem-bwd-gen, and $P_(ss)(lambda | x)$ satisfy $cal(A)^*_x
-  P_(ss) = 0$ with $J_(ss)(pm 1) = 0$. Then $cal(A)_x$ is
-  symetric in $L^2_(P_(ss))$, that is satisfying the ralation 
-
-  $
-    chevron.l cal(A)_x f, g chevron.r_(L^2_(P_oo)) =
-    chevron.l f, cal(A)_x g chevron.r_(L^2_(P_oo)) ,
-  $<eq-self-adjoint-def>
-
-  for all $f, g in dom(cal(A)_x)$.
-
-]<lem-self-adjoint>
-
-#proof[
-  We proceed by substituting @eq-bwd-gen into the left hand side of @eq-self-adjoint-def gives,
-
-  $
-    integral_(-1)^(1)  (cal(A)_x f)(lambda) g(lambda) P_(ss)(lambda) = I_1 + I_2
-  $<eq-adj-setup>
-  where
-  $
-    I_1  &eqdef integral_(-1)^1 partial_lambda
-    f(lambda) tilde(a)_(alpha, epsilon)(t, x, lambda) g(lambda) P_(ss)(lambda) dif lambda ,\
-    I_2 &eqdef 1/2 integral_(-1)^1 partial^2_(lambda lambda) f(lambda) tilde(d)(t, x, lambda) g(lambda) P_(ss), dif lambda
-  $
-  are, respectively, the drift and diffusion contributions which we treat separately.
-
-  _Drift term._ Integration by parts gives
-
-  $
-    I_1     &= lr(f(lambda) tilde(a)_(alpha, epsilon)(t, x, lambda) g P_(ss)(lambda)|)_(-1)^1 
-    - integral_(-1)^1 f(lambda) partial_lambda [tilde(a)_(alpha, epsilon)(t, x, lambda) g(lambda) P_(ss)(lambda)] dif lambda.
-  $<eq-drift-adj-1>
-
-  _Diffusion term_ -- Let $tilde(d)(t, x, lambda) eqdef tilde(b)(t, x, lambda)
-   tilde(b)(t, x, lambda)^tns$. Integrating by parts twice yeilds
-
-  $
-    I_2 &= 1/2 lr(partial_lambda f(lambda) d(t, x, lambda) g(lambda) P_(ss)(lambda)|)_(-1)^1
-    - 1/2 integral_(-1)^1 partial_lambda f(lambda) partial_lambda [d(t, x, lambda) g(lambda) P_(ss)(lambda)] dif lambda, \
-      &= -1/2 lr(f(lambda) partial_lambda  [d(t, x, lambda) g(lambda) P_(ss)(lambda)]|)_(-1)^1
-      + 1/2 integral_(-1)^1 f(lambda) partial^2_(lambda lambda) [d(t, x, lambda) g(lambda) P_(ss)(lambda)] dif lambda,
-  $<eq-diff-adj-1>
-
-  where the boundary term on the first line vanishes as $partial_lambda f(pm 1)
-  = 0$. Considering only the boundary terms from @eq-drift-adj-1 and @eq-diff-adj-1, 
-
-  $
-    &lr(f(lambda)  {tilde(a)_(alpha, epsilon)(t, x, lambda) g(lambda) P_(ss)(lambda) - 
-    1/2 partial_lambda [tilde(d)(t, x, lambda) g(lambda) P_(ss)(lambda)]}|)_(-1)^1, \
-      &= lr(f(lambda)  {tilde(a)_(alpha, epsilon)(t, x, lambda) g(lambda) P_(ss)(lambda) - 
-    1/2 partial_lambda g(lambda) tilde(d)(t, x, lambda) g(lambda) P_(ss)(lambda) - g(lambda) partial_lambda [tilde(d)(t, x, lambda)  P_(ss)(lambda)]}|)_(-1)^1, \
-      &= lr(f(lambda) g(lambda) {tilde(a)_(alpha, epsilon)(t, x, lambda)  P_(ss)(lambda) 
-      -  partial_lambda [tilde(d)(t, x, lambda)  P_(ss)(lambda)]}|)_(-1)^1 = 0,
-  $
-  where we have used $partial_lambda g(pm 1) = 0$ and the condition in @eq-db-on-lam. Expanding the integrand of the first integral gives
-
-  $
-    f(lambda)  partial_lambda [g(lambda) tilde(a)_(alpha, epsilon)(t, x, lambda) P_(ss)(lambda)] = 
-    f(lambda) [partial_lambda g(lambda) tilde(a)_(alpha, epsilon)(t, x, lambda)  P_(ss)(lambda) + g(lambda)partial_lambda [tilde(a)_(alpha, epsilon)(t, x, lambda) P_(ss)(lambda)]],
-  $
-  similarlay for the second integrand
-  $
-    1/2 f(lambda) partial^2_(lambda lambda) [d(t, x, lambda) g(lambda) P_(ss)(lambda)]  &= 
-    1/2 f(lambda) {
-      partial^2_(lambda lambda) g(lambda) tilde(d)(t, x, lambda)  P_(ss)(lambda) \
-        &+ 2 partial_lambda g(lambda) partial_lambda [tilde(d)(t, x, lambda)  P_(ss)(lambda)]  \
-        &+ g(lambda) partial^2_(lambda lambda) [tilde(d)(t, x, lambda)  P_(ss)(lambda)] }.
-  $
-
-  The coeffcients of $g(lambda)$ vanish due to the steady-state condition on $P_(ss)(lambda)$, ie. $(cal(A)^(*)_x P_(ss))(lambda) = 0$, leaving
-  $
-    &1/2 f(lambda) partial^2_(lambda lambda) [d(t, x, lambda) g(lambda) P_(ss)(lambda)] - f(lambda)  partial_lambda [g(lambda) tilde(a)_(alpha, epsilon)(t, x, lambda) P_(ss)(lambda)] \
-      &= f(lambda) lr({
-        partial_lambda g(lambda) [tilde(a)_(alpha, epsilon)(t, x, lambda)
-      + 1/2 partial^2_(lambda lambda) g(lambda) tilde(d)(t, x, lambda) ] P_(ss)(lambda)  \
-            &quad  quad quad  - 2 partial_lambda g(lambda) [tilde(a)_(alpha, epsilon)(t, x, lambda) P_(ss)(lambda) - 1/2 partial_lambda [tilde(d)(t, x, lambda)  P_(ss)(lambda)]]
-      }).
-  $
-
-  The second term vanishes due to the zero current condition leaving only
-  $(cal(A)_x g)(lambda)$ in the integrand, thus
-
-  $
-    integral_(-1)^1 (cal(A)_x f) g P_(ss) dif lambda 
-    = integral_(-1)^1 f (cal(A)_x g) P_(ss) dif lambda.
-  $
-
-]
-
-
-
-#todo[
-  add text here to say we need to introduce this theorem without proof, for the proof see .... 
-]
-
-
-#theorem(title: [Poincaré inequality])[
-
-  Let $P: [-1, 1] -> (0, oo)$ be a probability density and $d: [-1, 1] -> (0,
-  oo)$ satisfy $d(lambda) >= C_1 > 0$ and $P (lambda) >= C_2 > 0$ for all
-  $lambda in [-1, 1]$. Then for all $f in C^1([-1, 1])$ with $integral_(-1)^(1)
-  f(lambda) P (lambda) dif lambda = 0$
-
-  $ integral_(-1)^(1) f^2(lambda) P (lambda) dif lambda <= 1/kappa
-    integral_(-1)^(1) [partial_lambda f(lambda)]^2 d(lambda) P (lambda) dif
-    lambda, $<eq-poincare-bound-def>
-
-where $kappa = (C_1 C_2) \/ 2$.
-]<thm-poincare-ineq>
-
-#proof[
-  By the fudnemental thorem of calculus we have
-  $
-    f(a) - f(b) = integral_a^b partial_lambda f(lambda) dif lambda.
-  $
-
-  Multiplying both sides by $P_ss (b)$ and integrating over the support gives
-
-  $
-    integral_(-1)^(1) f(a)P (b) dif b - integral_(-1)^(1) P (b) f(b) dif b
-    = integral_(-1)^(1) P (b) integral_a^b partial_lambda f(lambda) dif lambda  dif b, 
-  $
-
-  where the first integral on the left hand side simplifies due to the
-  normalisastion of probability, while the second vanishes to zero due to
-  $EE[f(lambda)] = 0$, giving the relation  
-
-  $
-    f(a) = integral_(-1)^(1) P (b) integral_a^b partial_lambda f(lambda) dif lambda  dif b.
-  $
-
-  Taking the absolute value, squaring and employing Caychy-Schwarz twice gives
-  us the bound
-
-  $
-    | f(a)|^2 &= (integral_(-1)^(1) P (b) lr(|integral_a^b partial_lambda f(lambda) dif lambda |) dif b)^2 \
-      &<= (integral_(-1)^(1) P (b) dif b)
-      (integral_(-1)^(1)  P (b)
-      lr(integral_a^b |partial_lambda f(lambda) |^2 dif lambda) dif b), \
-      &<= 
-      (integral_(-1)^(1)  P (b)
-      integral_(-1)^(1) |partial_lambda f(lambda) |^2 dif lambda dif b), \
-      &<=  
-      2 lr(integral_(-1)^(1) lr([partial_lambda f(lambda) ])^2 dif lambda) .
-  $<eq-mod-f-bound>
-
-  To obtain the desired bound from @eq-mod-f-bound, we simply multiply both by
-  $P (a)$ and integrate over the interval to get
-  $
-    integral_(-1)^(1) |f(a)|^2 P (a) dif a = integral_(-1)^(1) f^2(a) P (a) dif a &<=2 lr(integral_(-1)^(1) lr([partial_lambda f(lambda) ])^2 dif lambda), \
-    &<= 2 lr(integral_(-1)^(1)
-    lr([partial_lambda f(lambda) ])^2 / (d(lambda) P (lambda))  d(lambda) P (lambda)dif lambda), \
-      &<=2/(C_1 C_2) lr(integral_(-1)^(1)
-      lr([partial_lambda f(lambda) ])^2   d(lambda) P (lambda)dif lambda), \
-  $
-
-  and letting $kappa = (C_1 C_2 )\/ 2$ yields @eq-poincare-bound-def.
-]
-
-
-#corollary[
-  #todo[
-    add a small statement about how for $t >0$ $P_t in L 2$
-  ]
-]<cor-l2-of-pt>
-
-
-#lemma(title: [Bounding zero-mean observables])[
-  Let $cal(A)_x$ be the backward generator defined in @eq-bwd-gen in
-  @lem-bwd-gen, $cal(A)^*_x$ be its adjoint defined in @eq-fwd-gen, let $P_ss
-  (lambda)$ be the steady-state probability density such that $(cal(A)^*_x
-  P_ss)(lambda) =0$, then for all $f in dom(cal(A))_x$ satisfying
-
-  $
-    integral_(-1)^(1)f(lambda) P_ss (lambda) dif lambda = 0,
-  $ we have the inequality
-
-  $
-    lpnorm(f, L^2_(P_ss), 2) <= 1/kappa inprod(-cal(A)_x f, f, L^(2)_(P_ss)) 
-  $
-]<lem-zero-mean-bound>
-
-#proof[
-  We need only show that 
-  $
-    inprod(-cal(A)_x f, f, L^(2)_(P_ss)) =  1/kappa
-    integral_(-1)^1  [partial_lambda f(lambda)]^2 tilde(d)(t, x, lambda) P_ss (lambda) dif lambda,
-  $
-
-  since from @lem-coeff-tilde-bounds that $|tilde(d)(t, x, lambda)|$ and similarly we know
-  that $P_ss (lambda)$ is bounded from below from @lem-inv-meas-bound, therefore
-  we can direcly apply @thm-poincare-ineq.
-  
-  $
-    - integral_(-1)^(1) f(lambda) [partial_lambda f(lambda)  tilde(a)_(alpha, epsilon)(t, x, lambda) + 1/2 partial^2_(lambda lambda) f(lambda) tilde(d)(t, x, lambda)] P_ss (lambda) dif lambda = integral_(-1)^1 d(t, x, lambda) [partial_lambda f(lambda)]^2 P_ss (lambda) dif lambda
-  $
-
-  then the rest follows via @thm-poincare-ineq
-
-  #todo[
-    in notebook complete it.
-  ]
-]
-
-
-#lemma(title: [Dense sets in $L^2([-1, 1])$])[
-  There exists a set $G subset dom(cal(A)_x)$ that are dense in $L^2$
-  
-]<lem-dense-l2>
-
-#proof[
-  #todo[
-    Look at zeidler
-  ]
-]
-
-#lemma(title: [zero mean observables in $L^2$])[
-  Let $cal(A)_x$ be the backward generator defined in @eq-bwd-gen in
-  @lem-bwd-gen, $cal(A)^*_x$ be its adjoint defined in @eq-fwd-gen, let $P_ss
-  (lambda)$ be the steady-state probability density such that $(cal(A)^*_x
-  P_ss)(lambda) =0$, then for all $g in L^2([-1, 1]; RR)$ satisfying
-
-  $
-    integral_(-1)^(1)g(lambda) P (lambda) dif lambda = 0 quad  forall P in dom(cal(A)^*_x),
-  $ we have the inequality
-
-  $
-    lpnorm(g, L^2_(P_ss),2)<= 1/kappa inprod(-cal(A)_x g, g, L^(2)_(P_ss)) 
-  $
-
-]<lem-zero-mean-bound-l2>
-
-#proof[
-  By @lem-dense-l2, there exisits a sequence smooth function in $f_n in dom(cal(A)_x)$  such that 
-  $
-    lim_(n -> 0) ||f_n - g||  = 0,
-  $
-
-  We can approximte any $g$ in $L^2([-1, 1])$, by a sequance of smooth $f in
-  dom(cal(A)_x)$, hence we can extend the  @lem-zero-mean-bound to generic $g$ 
-
-  #todo[
-    finish proof, it's in zeidler
-  ]
-]
-
-
-
-#theorem(title: [Exponential mixing of the switching variable])[
-
-  Let $x in cal(D)_epsilon$ be fixed, let $P_t in dom(cal(A))^*_x$ represent the
-  occupation probability density of $lambda$ conditioned on $x$, let $P_ss$ be
-  the invariant density, i.e $(cal(A)^*_x P_ss)(lambda) = 0$ which is uniformly
-  bounded from below by $P_ss (lambda) >= C_1 > 0$ and let the diffusion
-  coefficient satisfy $|tilde(d)(t, x, lambda)| >= C_2 > 0$ defined in
-  @eq-d-tilde-def, be uniformaly bounded from below. Then for any $t_0 > 0$ and $t in [0,
-  T]$ such that $ t_0 <= t$, and for any measurable $A subset [-1, 1]$, there
-  exisits $kappa(x)>0$ and $C(x) > 0$ such that
-
-  #todo[
-    fix statement
-  ]
-
-  $
-    lr(| integral_A [P_(t) (lambda | x) dif lambda - P_(ss)(lambda | x)]dif lambda |) <= C(x) ee^(-kappa(x) (t - t_0)).
-  $
-]<thm-exp-mixing>
-
-#proof[
-  To aid in the proof we define $xi_t (lambda) eqdef P_t (lambda) - P_ss
-  (lambda)$, and $zeta_t (lambda) eqdef xi_t (lambda) \/ P_ss (lambda)$, where
-  we have dropped the conditional argument in the noation. Clearly $zeta_t
-  (lambda)$ has
-
-  $
-    lr(|integral_A [P_t (lambda) - P (lambda)] dif lambda |)
-      &= lr(|integral_A zeta_t (lambda) P_ss (lambda) dif lambda|), \
-      &<= integral_(-1)^1 |zeta_t (lambda)| P_ss (lambda) dif lambda,  \
-      &<= (integral_(-1)^1 zeta^2_t (lambda) P_ss (lambda) dif lambda )^(1\/2)
-          (integral_(-1)^1  P_ss (lambda) dif lambda)^(1\/2), \ 
-      &<= (integral_(-1)^1 zeta^2_t (lambda) P_ss (lambda) dif lambda )^(1\/2), \
-      &= lpnorm(zeta_t, L^2_(P_ss),  ,).
-  $
-  Then it only remains to bound $lpnorm(zeta_t, L^2_(P_ss),  ,)$
-  $
-    dif /(dif t) lpnorm(zeta_t, L^2_(P_ss), 2 ,) &= 2 integral_(-1)^1  zeta_t (lambda) partial_t zeta_t (lambda) P_ss (lambda) dif lambda, \ 
-      &= -2 inprod(-cal(A)_x zeta_t,  zeta_t, L^2_(P_ss)), \
-      &<= -2kappa lpnorm(zeta_t, L^2_(P_ss),  2,), quad #text[(by @lem-zero-mean-bound-l2)].
-  $ 
-
-  Then by Gronwall's inequality we have 
-
-  $
-    lpnorm(zeta_t, L^2_(P_ss),  ,) <= lpnorm(zeta_(t_0), L^2_(P_ss),  ,) ee^(- kappa (t - t_0)).
-  $
-
-  We know from @lem-inv-meas-bound that $0 < C_P (x) <= P_ss (lambda | x)$, hence
-  $
-    lpnorm(zeta_(t_0), L^2_(P_ss), 2,) &= integral^(1)_(-1) {
-    [P_(t_0) (lambda | x) - P_ss (lambda)]^2 / (P^2_(ss)(lambda |x))
-    P_ss (lambda | x)} dif lambda, \
-      &<= 2/(C_(P)(x)) integral^(1)_(-1)
-      [P^2_(t_0) (lambda | x) + P^2_ss (lambda | x)] dif lambda \
-      &<= 4/(C_(P)(x)),\
-  $
-
-  where we have implicitly used that fact that $lpnorm(P_(t_0), L^2_(P_ss), ,)<
-  oo$ for any $t_0 > 0$ and for any initial distribution of $lambda$ which is
-  guaranteed by @thm-lam-smooth-denst. Finally, defining $C(x) = 2  \/ sqrt(
-  C_(P)(x))$ yields desired result.]
-
-
- ignore   below
-  $
-    lpnorm(zeta_0, L^2_(P_ss), 2,) &= integral^(1)_(-1) {
-    [P_(t_0) (lambda | x) - P_ss (lambda)]^2 / (P^2_(ss)(lambda |x))
-    P_ss (lambda | x) }dif lambda,  \
-      &<= integral^(1)_(-1) {[(P_(t_0) (lambda | x)) /(P_ss (lambda | x))  - 1]^2 P_ss (lambda | x)} dif lambda \
-      &<= 2 integral^(1)_(-1) [(P_(t_0) (lambda | x)) /(P_ss (lambda | x))  - 1]^2 P_ss (lambda | x) dif lambda \
-    
-  $
-
-#corollary(title: [Bound on expectations])[
-
-  The bound on the differences between probability measures obtained in
-  @thm-exp-mixing affords us a further bound, namely on the differences in
-  expectations via
-
-  $
-    lr(|EE[f(lambda_t)] - integral^(1)_(-1) f(lambda)  P_ss (lambda) dif lambda |) 
-      &= lr(|integral_(-1)^(1) f(lambda) zeta_t (lambda) P_ss (lambda) dif lambda|) ,\
-      &= lr(|inprod(f,  zeta_t,L^2_(P_ss))|) ,\
-      &<= lpnorm(f, L^2_(P_ss),  ,) lpnorm(zeta_t, L^2_(P_ss),  ,) ,\
-      &<=  lpnorm(f, L^2_(P_ss),  ,) lpnorm(zeta_0, L^2_(P_ss),  ,) ee^(-kappa t), \
-      &<=  sup_(lambda in [-1, 1]) | f(lambda) | lpnorm(P_(t) (lambda) - P_(ss) (lambda), L^2_(P_ss),  ,) ee^(-kappa t).
-      &<= lpnorm(f, L^2_(P_ss),  ,) lpnorm(zeta_t, L^2_(P_ss),  ,) ,\
-      &<=  sup_(lambda in [-1, 1]) | f(lambda) |  lpnorm(zeta_(t_0), L^2_(P_ss),  ,) ee^(-kappa (t - t_0)), \
-      &<=  C(x) ee^(-kappa (t - t_0)) sup_(lambda in [-1, 1]) | f(lambda) |  , 
-  $
-
-  where we have used @cor-l2-to-sup. Obviously, the final supremum bound is of
-  course only meaningful when we have bounded $f$ on the interval $lambda in
-  [-1, 1]$.
-]<cor-exp-mixing-obs>
-
-#lemma(title: [Bounds on the invariant measure])[
-  For all $x in cal(D)_epsilon$ fixed  and $||tilde(a)_(alpha, epsilon)(t, x, lambda)|| <= tilde(C)_1 (x)$  and $||tilde(b)(t, x, lambda)|| >= tilde(C)_1 (x) > 0$, set $tilde(C)_(12)(x) = tilde(C)_1 (x) \/ tilde(C)_2 (x)$
-
-
-  $
-    (tilde(C)_12 (x) exp[-tilde(C)_12 (x)(1 + 4 |lambda|)]) / sinh(tilde(C)_12 (x)) <= P_ss (lambda | x)
-   <= (tilde(C)_12 (x) exp[tilde(C)_12 (x)(1 + 4 |lambda|)]) / sinh(tilde(C)_12 (x)) 
-
-  $
-
-  #todo[
-    rewrite in a simpler form by introducing some auxiliary $G(x)$
-  ]
-]<lem-inv-meas-bound>
-
-
-
-#proof[
-
-  #todo[
-    proof in notebook add it in.
-  ]
-  
-
-  $
-    (alpha ee^(-2 alpha (1 + 4 |lambda|)))/ sinh(alpha/2)
-    <= P_ss (lambda)
-   <= (alpha ee^(2 alpha (1 + 4 |lambda|)))/ sinh(alpha/2)
-
-  $
-]
-
-#corollary[
-
-  It is useful to have the following uniform lower bound for invariant density
-
-  $
-    (tilde(C)_12 (x) exp[-tilde(C)_12 (x)(1 + 4 |lambda|)]) /
-    sinh(tilde(C)_12 (x)) &>= 1/2 tilde(C)_12 (x) ee^(-tilde(C)_(12)(x) (2 + 4|lambda|)) \
-      &>=1/2 C(1 + ||x||) ee^(-tilde(C)_(12)(x) (2 + 4|lambda|)), \
-      &=C_P (x)
-  $
-  where it is uesful to define
-  $
-    C_P (x) eqdef 1 / 2 C ee^(-6C) (1 + ||x||) ee^(-6 C ||x||)
-  $
-
-  $
-    C_P (x) eq.def 1 / 2 C ee^(-6C) (1 + ||x||) ee^(-6 C ||x||)
-  $
-
-]
+// = Poincaré Bounding (Useless)
+// 
+// Before we proceed it is usefull to introduce a defnition for the $L^2$ space that we will be working in, but first let us consider the general defintion of an $L^2$ inner product and norms on real functions.
+// 
+// #definition(title: [$L^2$-norm])[
+// 
+//   Let $(Omega, cal(F), mu)$ be a measurable space, where $Omega$ is the set,
+//   $cal(F)$ is the sigma algebra of $Omega$, and $mu$ the measure. Then for any
+//   $cal(F)$-measurable $f, g: Omega mapsto RR$, the $L^2$ inner product is defined as 
+// 
+//   $
+//     chevron.l f, g chevron.r_(L^2_(mu)) eqdef  integral_(Omega) f(omega) g(omega) dif mu(omega),
+//   $<eq-l2-inner-prod-def>
+// 
+//   which induces the $L^2$-norm
+//   
+//   $
+//     lpnorm(f, L^2_(mu), ,) eqdef chevron.l f \, f chevron.r_(L^2_(mu))^(1/2)  =
+//     (integral_(Omega) f^2(omega) dif mu(omega))^(1/2).
+//   $<eq-l2-norm-def>
+// ]
+// 
+// #corollary(title: [$L^2$-bound to supremum bound])[
+// 
+//   It is straight forward to bound an $L^2$-norm using a supremum bound via the
+//   argument
+// 
+//   $
+//     lpnorm(f, L^2_(mu), ,)
+//     = (integral_(Omega) f^2(omega) dif mu(omega))^(1/2) 
+//       &= (integral_(Omega) |f(omega)|^2 dif mu(omega))^(1/2), \
+//       &<= sup_(x in Omega) |f(omega)| (integral_(Omega)  dif mu(omega))^(1/2), \
+//       &<= sqrt(mu(Omega))sup_(x in Omega) |f(omega)|.
+//   $
+// ]<cor-l2-to-sup>
+// 
+// Since we have a probability density we will use the notation $inprod(., .,
+// L^2_(P_t))$ and $lpnorm(., L^2_(P_t), ,)$ where $P_t in dom(cal(A)^*_x)$. 
+// 
+// #lemma(title: [Symmetry of $cal(A)_x$])[
+//   Let $x in cal(D)_epsilon$ be fixed, $cal(A)_x$ be the backward generator
+//   given in @lem-bwd-gen, and $P_(ss)(lambda | x)$ satisfy $cal(A)^*_x
+//   P_(ss) = 0$ with $J_(ss)(pm 1) = 0$. Then $cal(A)_x$ is
+//   symetric in $L^2_(P_(ss))$, that is satisfying the ralation 
+// 
+//   $
+//     chevron.l cal(A)_x f, g chevron.r_(L^2_(P_oo)) =
+//     chevron.l f, cal(A)_x g chevron.r_(L^2_(P_oo)) ,
+//   $<eq-self-adjoint-def>
+// 
+//   for all $f, g in dom(cal(A)_x)$.
+// 
+// ]<lem-self-adjoint>
+// 
+// #proof[
+//   We proceed by substituting @eq-bwd-gen into the left hand side of @eq-self-adjoint-def gives,
+// 
+//   $
+//     integral_(-1)^(1)  (cal(A)_x f)(lambda) g(lambda) P_(ss)(lambda) = I_1 + I_2
+//   $<eq-adj-setup>
+//   where
+//   $
+//     I_1  &eqdef integral_(-1)^1 partial_lambda
+//     f(lambda) tilde(a)_(alpha, epsilon)(t, x, lambda) g(lambda) P_(ss)(lambda) dif lambda ,\
+//     I_2 &eqdef 1/2 integral_(-1)^1 partial^2_(lambda lambda) f(lambda) tilde(d)(t, x, lambda) g(lambda) P_(ss), dif lambda
+//   $
+//   are, respectively, the drift and diffusion contributions which we treat separately.
+// 
+//   _Drift term._ Integration by parts gives
+// 
+//   $
+//     I_1     &= lr(f(lambda) tilde(a)_(alpha, epsilon)(t, x, lambda) g P_(ss)(lambda)|)_(-1)^1 
+//     - integral_(-1)^1 f(lambda) partial_lambda [tilde(a)_(alpha, epsilon)(t, x, lambda) g(lambda) P_(ss)(lambda)] dif lambda.
+//   $<eq-drift-adj-1>
+// 
+//   _Diffusion term_ -- Let $tilde(d)(t, x, lambda) eqdef tilde(b)(t, x, lambda)
+//    tilde(b)(t, x, lambda)^tns$. Integrating by parts twice yeilds
+// 
+//   $
+//     I_2 &= 1/2 lr(partial_lambda f(lambda) d(t, x, lambda) g(lambda) P_(ss)(lambda)|)_(-1)^1
+//     - 1/2 integral_(-1)^1 partial_lambda f(lambda) partial_lambda [d(t, x, lambda) g(lambda) P_(ss)(lambda)] dif lambda, \
+//       &= -1/2 lr(f(lambda) partial_lambda  [d(t, x, lambda) g(lambda) P_(ss)(lambda)]|)_(-1)^1
+//       + 1/2 integral_(-1)^1 f(lambda) partial^2_(lambda lambda) [d(t, x, lambda) g(lambda) P_(ss)(lambda)] dif lambda,
+//   $<eq-diff-adj-1>
+// 
+//   where the boundary term on the first line vanishes as $partial_lambda f(pm 1)
+//   = 0$. Considering only the boundary terms from @eq-drift-adj-1 and @eq-diff-adj-1, 
+// 
+//   $
+//     &lr(f(lambda)  {tilde(a)_(alpha, epsilon)(t, x, lambda) g(lambda) P_(ss)(lambda) - 
+//     1/2 partial_lambda [tilde(d)(t, x, lambda) g(lambda) P_(ss)(lambda)]}|)_(-1)^1, \
+//       &= lr(f(lambda)  {tilde(a)_(alpha, epsilon)(t, x, lambda) g(lambda) P_(ss)(lambda) - 
+//     1/2 partial_lambda g(lambda) tilde(d)(t, x, lambda) g(lambda) P_(ss)(lambda) - g(lambda) partial_lambda [tilde(d)(t, x, lambda)  P_(ss)(lambda)]}|)_(-1)^1, \
+//       &= lr(f(lambda) g(lambda) {tilde(a)_(alpha, epsilon)(t, x, lambda)  P_(ss)(lambda) 
+//       -  partial_lambda [tilde(d)(t, x, lambda)  P_(ss)(lambda)]}|)_(-1)^1 = 0,
+//   $
+//   where we have used $partial_lambda g(pm 1) = 0$ and the condition in @eq-db-on-lam. Expanding the integrand of the first integral gives
+// 
+//   $
+//     f(lambda)  partial_lambda [g(lambda) tilde(a)_(alpha, epsilon)(t, x, lambda) P_(ss)(lambda)] = 
+//     f(lambda) [partial_lambda g(lambda) tilde(a)_(alpha, epsilon)(t, x, lambda)  P_(ss)(lambda) + g(lambda)partial_lambda [tilde(a)_(alpha, epsilon)(t, x, lambda) P_(ss)(lambda)]],
+//   $
+//   similarlay for the second integrand
+//   $
+//     1/2 f(lambda) partial^2_(lambda lambda) [d(t, x, lambda) g(lambda) P_(ss)(lambda)]  &= 
+//     1/2 f(lambda) {
+//       partial^2_(lambda lambda) g(lambda) tilde(d)(t, x, lambda)  P_(ss)(lambda) \
+//         &+ 2 partial_lambda g(lambda) partial_lambda [tilde(d)(t, x, lambda)  P_(ss)(lambda)]  \
+//         &+ g(lambda) partial^2_(lambda lambda) [tilde(d)(t, x, lambda)  P_(ss)(lambda)] }.
+//   $
+// 
+//   The coeffcients of $g(lambda)$ vanish due to the steady-state condition on $P_(ss)(lambda)$, ie. $(cal(A)^(*)_x P_(ss))(lambda) = 0$, leaving
+//   $
+//     &1/2 f(lambda) partial^2_(lambda lambda) [d(t, x, lambda) g(lambda) P_(ss)(lambda)] - f(lambda)  partial_lambda [g(lambda) tilde(a)_(alpha, epsilon)(t, x, lambda) P_(ss)(lambda)] \
+//       &= f(lambda) lr({
+//         partial_lambda g(lambda) [tilde(a)_(alpha, epsilon)(t, x, lambda)
+//       + 1/2 partial^2_(lambda lambda) g(lambda) tilde(d)(t, x, lambda) ] P_(ss)(lambda)  \
+//             &quad  quad quad  - 2 partial_lambda g(lambda) [tilde(a)_(alpha, epsilon)(t, x, lambda) P_(ss)(lambda) - 1/2 partial_lambda [tilde(d)(t, x, lambda)  P_(ss)(lambda)]]
+//       }).
+//   $
+// 
+//   The second term vanishes due to the zero current condition leaving only
+//   $(cal(A)_x g)(lambda)$ in the integrand, thus
+// 
+//   $
+//     integral_(-1)^1 (cal(A)_x f) g P_(ss) dif lambda 
+//     = integral_(-1)^1 f (cal(A)_x g) P_(ss) dif lambda.
+//   $
+// 
+// ]
+// 
+// 
+// 
+// #todo[
+//   add text here to say we need to introduce this theorem without proof, for the proof see .... 
+// ]
+// 
+// 
+// #theorem(title: [Poincaré inequality])[
+// 
+//   Let $P: [-1, 1] -> (0, oo)$ be a probability density and $d: [-1, 1] -> (0,
+//   oo)$ satisfy $d(lambda) >= C_1 > 0$ and $P (lambda) >= C_2 > 0$ for all
+//   $lambda in [-1, 1]$. Then for all $f in C^1([-1, 1])$ with $integral_(-1)^(1)
+//   f(lambda) P (lambda) dif lambda = 0$
+// 
+//   $ integral_(-1)^(1) f^2(lambda) P (lambda) dif lambda <= 1/kappa
+//     integral_(-1)^(1) [partial_lambda f(lambda)]^2 d(lambda) P (lambda) dif
+//     lambda, $<eq-poincare-bound-def>
+// 
+// where $kappa = (C_1 C_2) \/ 2$.
+// ]<thm-poincare-ineq>
+// 
+// #proof[
+//   By the fudnemental thorem of calculus we have
+//   $
+//     f(a) - f(b) = integral_a^b partial_lambda f(lambda) dif lambda.
+//   $
+// 
+//   Multiplying both sides by $P_ss (b)$ and integrating over the support gives
+// 
+//   $
+//     integral_(-1)^(1) f(a)P (b) dif b - integral_(-1)^(1) P (b) f(b) dif b
+//     = integral_(-1)^(1) P (b) integral_a^b partial_lambda f(lambda) dif lambda  dif b, 
+//   $
+// 
+//   where the first integral on the left hand side simplifies due to the
+//   normalisastion of probability, while the second vanishes to zero due to
+//   $EE[f(lambda)] = 0$, giving the relation  
+// 
+//   $
+//     f(a) = integral_(-1)^(1) P (b) integral_a^b partial_lambda f(lambda) dif lambda  dif b.
+//   $
+// 
+//   Taking the absolute value, squaring and employing Caychy-Schwarz twice gives
+//   us the bound
+// 
+//   $
+//     | f(a)|^2 &= (integral_(-1)^(1) P (b) lr(|integral_a^b partial_lambda f(lambda) dif lambda |) dif b)^2 \
+//       &<= (integral_(-1)^(1) P (b) dif b)
+//       (integral_(-1)^(1)  P (b)
+//       lr(integral_a^b |partial_lambda f(lambda) |^2 dif lambda) dif b), \
+//       &<= 
+//       (integral_(-1)^(1)  P (b)
+//       integral_(-1)^(1) |partial_lambda f(lambda) |^2 dif lambda dif b), \
+//       &<=  
+//       2 lr(integral_(-1)^(1) lr([partial_lambda f(lambda) ])^2 dif lambda) .
+//   $<eq-mod-f-bound>
+// 
+//   To obtain the desired bound from @eq-mod-f-bound, we simply multiply both by
+//   $P (a)$ and integrate over the interval to get
+//   $
+//     integral_(-1)^(1) |f(a)|^2 P (a) dif a = integral_(-1)^(1) f^2(a) P (a) dif a &<=2 lr(integral_(-1)^(1) lr([partial_lambda f(lambda) ])^2 dif lambda), \
+//     &<= 2 lr(integral_(-1)^(1)
+//     lr([partial_lambda f(lambda) ])^2 / (d(lambda) P (lambda))  d(lambda) P (lambda)dif lambda), \
+//       &<=2/(C_1 C_2) lr(integral_(-1)^(1)
+//       lr([partial_lambda f(lambda) ])^2   d(lambda) P (lambda)dif lambda), \
+//   $
+// 
+//   and letting $kappa = (C_1 C_2 )\/ 2$ yields @eq-poincare-bound-def.
+// ]
+// 
+// 
+// #corollary[
+//   #todo[
+//     add a small statement about how for $t >0$ $P_t in L 2$
+//   ]
+// ]<cor-l2-of-pt>
+// 
+// 
+// #lemma(title: [Bounding zero-mean observables])[
+//   Let $cal(A)_x$ be the backward generator defined in @eq-bwd-gen in
+//   @lem-bwd-gen, $cal(A)^*_x$ be its adjoint defined in @eq-fwd-gen, let $P_ss
+//   (lambda)$ be the steady-state probability density such that $(cal(A)^*_x
+//   P_ss)(lambda) =0$, then for all $f in dom(cal(A))_x$ satisfying
+// 
+//   $
+//     integral_(-1)^(1)f(lambda) P_ss (lambda) dif lambda = 0,
+//   $ we have the inequality
+// 
+//   $
+//     lpnorm(f, L^2_(P_ss), 2) <= 1/kappa inprod(-cal(A)_x f, f, L^(2)_(P_ss)) 
+//   $
+// ]<lem-zero-mean-bound>
+// 
+// #proof[
+//   We need only show that 
+//   $
+//     inprod(-cal(A)_x f, f, L^(2)_(P_ss)) =  1/kappa
+//     integral_(-1)^1  [partial_lambda f(lambda)]^2 tilde(d)(t, x, lambda) P_ss (lambda) dif lambda,
+//   $
+// 
+//   since from @lem-coeff-tilde-bounds that $|tilde(d)(t, x, lambda)|$ and similarly we know
+//   that $P_ss (lambda)$ is bounded from below from @lem-inv-meas-bound, therefore
+//   we can direcly apply @thm-poincare-ineq.
+//   
+//   $
+//     - integral_(-1)^(1) f(lambda) [partial_lambda f(lambda)  tilde(a)_(alpha, epsilon)(t, x, lambda) + 1/2 partial^2_(lambda lambda) f(lambda) tilde(d)(t, x, lambda)] P_ss (lambda) dif lambda = integral_(-1)^1 d(t, x, lambda) [partial_lambda f(lambda)]^2 P_ss (lambda) dif lambda
+//   $
+// 
+//   then the rest follows via @thm-poincare-ineq
+// 
+//   #todo[
+//     in notebook complete it.
+//   ]
+// ]
+// 
+// 
+// #lemma(title: [Dense sets in $L^2([-1, 1])$])[
+//   There exists a set $G subset dom(cal(A)_x)$ that are dense in $L^2$
+//   
+// ]<lem-dense-l2>
+// 
+// #proof[
+//   #todo[
+//     Look at zeidler
+//   ]
+// ]
+// 
+// #lemma(title: [zero mean observables in $L^2$])[
+//   Let $cal(A)_x$ be the backward generator defined in @eq-bwd-gen in
+//   @lem-bwd-gen, $cal(A)^*_x$ be its adjoint defined in @eq-fwd-gen, let $P_ss
+//   (lambda)$ be the steady-state probability density such that $(cal(A)^*_x
+//   P_ss)(lambda) =0$, then for all $g in L^2([-1, 1]; RR)$ satisfying
+// 
+//   $
+//     integral_(-1)^(1)g(lambda) P (lambda) dif lambda = 0 quad  forall P in dom(cal(A)^*_x),
+//   $ we have the inequality
+// 
+//   $
+//     lpnorm(g, L^2_(P_ss),2)<= 1/kappa inprod(-cal(A)_x g, g, L^(2)_(P_ss)) 
+//   $
+// 
+// ]<lem-zero-mean-bound-l2>
+// 
+// #proof[
+//   By @lem-dense-l2, there exisits a sequence smooth function in $f_n in dom(cal(A)_x)$  such that 
+//   $
+//     lim_(n -> 0) ||f_n - g||  = 0,
+//   $
+// 
+//   We can approximte any $g$ in $L^2([-1, 1])$, by a sequance of smooth $f in
+//   dom(cal(A)_x)$, hence we can extend the  @lem-zero-mean-bound to generic $g$ 
+// 
+//   #todo[
+//     finish proof, it's in zeidler
+//   ]
+// ]
+// 
+// 
+// 
+// #theorem(title: [Exponential mixing of the switching variable])[
+// 
+//   Let $x in cal(D)_epsilon$ be fixed, let $P_t in dom(cal(A))^*_x$ represent the
+//   occupation probability density of $lambda$ conditioned on $x$, let $P_ss$ be
+//   the invariant density, i.e $(cal(A)^*_x P_ss)(lambda) = 0$ which is uniformly
+//   bounded from below by $P_ss (lambda) >= C_1 > 0$ and let the diffusion
+//   coefficient satisfy $|tilde(d)(t, x, lambda)| >= C_2 > 0$ defined in
+//   @eq-d-tilde-def, be uniformaly bounded from below. Then for any $t_0 > 0$ and $t in [0,
+//   T]$ such that $ t_0 <= t$, and for any measurable $A subset [-1, 1]$, there
+//   exisits $kappa(x)>0$ and $C(x) > 0$ such that
+// 
+//   #todo[
+//     fix statement
+//   ]
+// 
+//   $
+//     lr(| integral_A [P_(t) (lambda | x) dif lambda - P_(ss)(lambda | x)]dif lambda |) <= C(x) ee^(-kappa(x) (t - t_0)).
+//   $
+// ]<thm-exp-mixing>
+// 
+// #proof[
+//   To aid in the proof we define $xi_t (lambda) eqdef P_t (lambda) - P_ss
+//   (lambda)$, and $zeta_t (lambda) eqdef xi_t (lambda) \/ P_ss (lambda)$, where
+//   we have dropped the conditional argument in the noation. Clearly $zeta_t
+//   (lambda)$ has
+// 
+//   $
+//     lr(|integral_A [P_t (lambda) - P (lambda)] dif lambda |)
+//       &= lr(|integral_A zeta_t (lambda) P_ss (lambda) dif lambda|), \
+//       &<= integral_(-1)^1 |zeta_t (lambda)| P_ss (lambda) dif lambda,  \
+//       &<= (integral_(-1)^1 zeta^2_t (lambda) P_ss (lambda) dif lambda )^(1\/2)
+//           (integral_(-1)^1  P_ss (lambda) dif lambda)^(1\/2), \ 
+//       &<= (integral_(-1)^1 zeta^2_t (lambda) P_ss (lambda) dif lambda )^(1\/2), \
+//       &= lpnorm(zeta_t, L^2_(P_ss),  ,).
+//   $
+//   Then it only remains to bound $lpnorm(zeta_t, L^2_(P_ss),  ,)$
+//   $
+//     dif /(dif t) lpnorm(zeta_t, L^2_(P_ss), 2 ,) &= 2 integral_(-1)^1  zeta_t (lambda) partial_t zeta_t (lambda) P_ss (lambda) dif lambda, \ 
+//       &= -2 inprod(-cal(A)_x zeta_t,  zeta_t, L^2_(P_ss)), \
+//       &<= -2kappa lpnorm(zeta_t, L^2_(P_ss),  2,), quad #text[(by @lem-zero-mean-bound-l2)].
+//   $ 
+// 
+//   Then by Gronwall's inequality we have 
+// 
+//   $
+//     lpnorm(zeta_t, L^2_(P_ss),  ,) <= lpnorm(zeta_(t_0), L^2_(P_ss),  ,) ee^(- kappa (t - t_0)).
+//   $
+// 
+//   We know from @lem-inv-meas-bound that $0 < C_P (x) <= P_ss (lambda | x)$, hence
+//   $
+//     lpnorm(zeta_(t_0), L^2_(P_ss), 2,) &= integral^(1)_(-1) {
+//     [P_(t_0) (lambda | x) - P_ss (lambda)]^2 / (P^2_(ss)(lambda |x))
+//     P_ss (lambda | x)} dif lambda, \
+//       &<= 2/(C_(P)(x)) integral^(1)_(-1)
+//       [P^2_(t_0) (lambda | x) + P^2_ss (lambda | x)] dif lambda \
+//       &<= 4/(C_(P)(x)),\
+//   $
+// 
+//   where we have implicitly used that fact that $lpnorm(P_(t_0), L^2_(P_ss), ,)<
+//   oo$ for any $t_0 > 0$ and for any initial distribution of $lambda$ which is
+//   guaranteed by @lem-lam-smooth-denst. Finally, defining $C(x) = 2  \/ sqrt(
+//   C_(P)(x))$ yields desired result.]
+// 
+// 
+//  ignore   below
+//   $
+//     lpnorm(zeta_0, L^2_(P_ss), 2,) &= integral^(1)_(-1) {
+//     [P_(t_0) (lambda | x) - P_ss (lambda)]^2 / (P^2_(ss)(lambda |x))
+//     P_ss (lambda | x) }dif lambda,  \
+//       &<= integral^(1)_(-1) {[(P_(t_0) (lambda | x)) /(P_ss (lambda | x))  - 1]^2 P_ss (lambda | x)} dif lambda \
+//       &<= 2 integral^(1)_(-1) [(P_(t_0) (lambda | x)) /(P_ss (lambda | x))  - 1]^2 P_ss (lambda | x) dif lambda \
+//     
+//   $
+// 
+// #corollary(title: [Bound on expectations])[
+// 
+//   The bound on the differences between probability measures obtained in
+//   @thm-exp-mixing affords us a further bound, namely on the differences in
+//   expectations via
+// 
+//   $
+//     lr(|EE[f(lambda_t)] - integral^(1)_(-1) f(lambda)  P_ss (lambda) dif lambda |) 
+//       &= lr(|integral_(-1)^(1) f(lambda) zeta_t (lambda) P_ss (lambda) dif lambda|) ,\
+//       &= lr(|inprod(f,  zeta_t,L^2_(P_ss))|) ,\
+//       &<= lpnorm(f, L^2_(P_ss),  ,) lpnorm(zeta_t, L^2_(P_ss),  ,) ,\
+//       &<=  lpnorm(f, L^2_(P_ss),  ,) lpnorm(zeta_0, L^2_(P_ss),  ,) ee^(-kappa t), \
+//       &<=  sup_(lambda in [-1, 1]) | f(lambda) | lpnorm(P_(t) (lambda) - P_(ss) (lambda), L^2_(P_ss),  ,) ee^(-kappa t).
+//       &<= lpnorm(f, L^2_(P_ss),  ,) lpnorm(zeta_t, L^2_(P_ss),  ,) ,\
+//       &<=  sup_(lambda in [-1, 1]) | f(lambda) |  lpnorm(zeta_(t_0), L^2_(P_ss),  ,) ee^(-kappa (t - t_0)), \
+//       &<=  C(x) ee^(-kappa (t - t_0)) sup_(lambda in [-1, 1]) | f(lambda) |  , 
+//   $
+// 
+//   where we have used @cor-l2-to-sup. Obviously, the final supremum bound is of
+//   course only meaningful when we have bounded $f$ on the interval $lambda in
+//   [-1, 1]$.
+// ]<cor-exp-mixing-obs>
+// 
+// #lemma(title: [Bounds on the invariant measure])[
+//   For all $x in cal(D)_epsilon$ fixed  and $||tilde(a)_(alpha, epsilon)(t, x, lambda)|| <= tilde(C)_1 (x)$  and $||tilde(b)(t, x, lambda)|| >= tilde(C)_1 (x) > 0$, set $tilde(C)_(12)(x) = tilde(C)_1 (x) \/ tilde(C)_2 (x)$
+// 
+// 
+//   $
+//     (tilde(C)_12 (x) exp[-tilde(C)_12 (x)(1 + 4 |lambda|)]) / sinh(tilde(C)_12 (x)) <= P_ss (lambda | x)
+//    <= (tilde(C)_12 (x) exp[tilde(C)_12 (x)(1 + 4 |lambda|)]) / sinh(tilde(C)_12 (x)) 
+// 
+//   $
+// 
+//   #todo[
+//     rewrite in a simpler form by introducing some auxiliary $G(x)$
+//   ]
+// ]<lem-inv-meas-bound>
+// 
+// 
+// 
+// #proof[
+// 
+//   #todo[
+//     proof in notebook add it in.
+//   ]
+//   
+// 
+//   $
+//     (alpha ee^(-2 alpha (1 + 4 |lambda|)))/ sinh(alpha/2)
+//     <= P_ss (lambda)
+//    <= (alpha ee^(2 alpha (1 + 4 |lambda|)))/ sinh(alpha/2)
+// 
+//   $
+// ]
+// 
+// #corollary[
+// 
+//   It is useful to have the following uniform lower bound for invariant density
+// 
+//   $
+//     (tilde(C)_12 (x) exp[-tilde(C)_12 (x)(1 + 4 |lambda|)]) /
+//     sinh(tilde(C)_12 (x)) &>= 1/2 tilde(C)_12 (x) ee^(-tilde(C)_(12)(x) (2 + 4|lambda|)) \
+//       &>=1/2 C(1 + ||x||) ee^(-tilde(C)_(12)(x) (2 + 4|lambda|)), \
+//       &=C_P (x)
+//   $
+//   where it is uesful to define
+//   $
+//     C_P (x) eqdef 1 / 2 C ee^(-6C) (1 + ||x||) ee^(-6 C ||x||)
+//   $
+// 
+//   $
+//     C_P (x) eq.def 1 / 2 C ee^(-6C) (1 + ||x||) ee^(-6 C ||x||)
+//   $
+// 
+// ]
 
 
 #pagebreak()

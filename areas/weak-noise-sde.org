@@ -200,15 +200,11 @@ which gives us (check!)
 
 Projecting [[eq-sde-dev-lead-o]] onto $E^s$ gives
 
-#+name: eq-sde-stable-project
-\begin{equation}
-\rmd z_t = 
-\end{equation}
 
 
 #+name: eq-OU-stable
 \begin{equation}
-\mathrm{d}z_t =  \mmat{P}_{s} \tilde{J}(t) \mmat{P}^{-1}_s \z_t \mrm{d}t
+\mathrm{d}z_t =  \mmat{P}_{s} \tilde{J}(t) \mmat{P}^{-1}_s z_t \mrm{d}t +
 \tilde{J}^{\mrm{s}}(t) z_t \,\mathrm{d}t + c\,b^{\mrm{s}}(t) \,\mathrm{d}W_t
 \end{equation}
 
