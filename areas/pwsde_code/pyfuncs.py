@@ -13,6 +13,7 @@ def lam(z, ep):
     return np.sign(sig)
   else:
     return sig / ep
+
 def lam_ss(z, grad_sig_func, ap_func, am_func, ep):
   sig = disc_sig(z)
   if abs(sig) >= ep:
@@ -23,7 +24,6 @@ def lam_ss(z, grad_sig_func, ap_func, am_func, ep):
 
   val = np.dot(grad_sig, ap + am) / np.dot(grad_sig, am - ap)
   return val
-
 
 
 def drift(t, z, ap_func, am_func, covp_func, covm_func, ep):

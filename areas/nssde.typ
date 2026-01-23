@@ -2,7 +2,7 @@
 #import "@preview/equate:0.3.2": equate
 #import "@preview/gruvy:2.1.0": gruvbox, theme-colors, colors
 #import "@preview/note-me:0.6.0": *
-#import "@preview/cetz:0.4.2"
+//#import "@preview/cetz:0.4.2"
 #import "@preview/smartaref:0.1.0": cref, Cref
 
 
@@ -172,17 +172,19 @@
 //         fill: black
 //       )
 //     )
-//     grid((-5, -5), (5, 5), step: 0.5, stroke: black + 0.2pt)
+//     // grid((-5, -5, 5), (5, 5, 5), step: 0.5, stroke: black + 0.2pt) // 
 //     
 // 
-//     line((-1, 0), (1, 0), mark: (end: "stealth"))
+//     line((0, 0, 0), (1, 0, 0), mark: (end: "stealth"), stroke: red)
+//     line((0, 0, 0), (0, 1, 0), mark: (end: "stealth"), stroke: green)
+//     line((0, 0, 0), (0, 0, 1), mark: (end: "stealth"), stroke: blue)
 // 
 //     // circle((0, 0), radius: 1.5, fill: blue.lighten(50%))
 //     // // content((0, 0), [Cunt])
 // 
 //   })
 // )
-// #pagebreak()
+
 
 #outline(depth: 2)
 
@@ -508,7 +510,6 @@ noise. In such a case one has $b^+ = b^-$, the hidden drift $h(t, x)$ vanishes
 identically and the averaged dynamics depends only on $macron(lambda)$. Whereas
 we not only consider the case $b^+ != b^-$ but also when the noise is
 multiplicative as is often the case in biological and chemical systems.
-
 
 = Main Result
 
@@ -1020,7 +1021,7 @@ local time terms in @eq-lam-sde, which we do in the following lemma.
   dif t$. Then
 
   $
-    dif EE[L^z_t (a)] = epsilon P^((z))(a, t) tilde(b)^2(t, x_t, lambda_t) dif t,
+    dif EE[L^z_t (a)] = epsilon P^((z))(a, t) tilde(b)(t, x_t, lambda_t)tilde(b)(t, x_t, lambda_t)^(tns) dif t,
   $<eq-diff-ee-lt>
   where $P^((z))(a, t)$ denotes the density of $z_t$ at level $a$.
 ]<lem-local-time-scaling>
@@ -1040,7 +1041,7 @@ $
 ]
 
 Having established the scaling of the local time terms, we now show that
-no time s time rescaling can balance all contributions to the
+no time rescaling can balance all contributions to the
 $lambda$-dynamics in the following lemma.
 
 #lemma(title: [Incompatibility of scaling])[
@@ -1214,7 +1215,7 @@ $delta(epsilon) = epsilon^beta$, for some $beta>0$ and then letting $epsilon ->
 
 $
   PP[sup_(0<=s<=delta(epsilon))|x_(t+s) - x_t| > gamma]
- <= C/gamma^2 (delta^2(epsilon) + epsilon delta(epsilon))
+ <= C/gamma^2 [delta^2(epsilon) + epsilon delta(epsilon)]
 
 
   -> 0,
@@ -2432,6 +2433,7 @@ system with its averaged counterpart.
   which is the desired bound.
 ]
 
+
 = Typical paths and Gaussian fluctuations <sec-typical-paths>
 
 The reduced SDE given in @def-reduced-sde is a weak-noise SDE for which we have
@@ -2458,8 +2460,7 @@ proofs and discussions). We state the relevant results here.
     -inf_(phi in A^circle.small) I_T [phi] <= liminf_(epsilon -> 0) epsilon log PP[y in A]
     <= limsup_(epsilon -> 0) epsilon log PP[y in A] <= -inf_(phi in macron(A)) I_T [phi],
   $
-  where $A^circle.small$ and $macron(A)$ denote the interior and closure of $A$
-  in the uniform topology.
+  where $A^circle.small$ and $macron(A)$ denote the interior and closure of $A$.
 ]<thm-ldp-averaged>
 
 In the limit $epsilon -> 0$, the paths of $y_t$ concentrate around the typical
@@ -2547,6 +2548,54 @@ covariance of $zeta_t$
   averaging principle with $cal(O)(sqrt(epsilon))$ error affords complete
   characterisation.
 ]
+
+= Examples
+
+== Toy example
+
+Let us consider a 1D system with $sigma(x) = x$
+
+$
+  a_(+)(t, x) = -x, quad a_(-)(t, x) = x,
+$
+and
+
+
+$
+  b_(+)(t, x) = r_(+) + x, quad b_(-)(t, x) = r_(-) - x, quad r_+, r_- > 0, r_+ != r_-, 
+$
+
+
+let $hat(r)_+ eqdef r_+ + r_-$, and $hat(r)_- eqdef r_+ + r_-$, when 
+$
+  a(t, x, lambda) = -lambda x, quad b(t, x, lambda) = 1/2 [hat(r)_+ + lambda (hat(r)_-  + 2 x)]
+$
+
+
+$
+$
+
+
+$
+  a_(alpha, epsilon)(t, x) &= -lambda x +  (alpha epsilon lambda)/2 b(t, x, lambda) \
+    &= lambda/2 (alpha epsilon hat(r)_+ - 2 x) + (alpha epsilon lambda^2)/2 (hat(r)_- + 2 x)
+$
+
+
+
+
+
+$
+  dif x_t &=   a_(alpha, epsilon) dif t + b(t, x, lambda) dif W_t
+$
+
+$
+  tilde(a)_(alpha, epsilon) = a_(alpha, epsilon), quad
+  tilde(d)  = b^2 =  1/4[hat(r)_+^2 + 2 lambda hat(r)_+(hat(r)_ + + 2x) + lambda^2(hat(r)_ + + 2x)^2]
+$
+
+
+
 
 #pagebreak()
 = Notes

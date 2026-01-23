@@ -1,6 +1,5 @@
 #+TITLE: Emacs-Lisp Cheatsheet
 #+OPTIONS: num:t
-#+SLUG: pwsde
 
 
 * Emacs Lisp Cheat Sheet for Programmers

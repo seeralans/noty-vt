@@ -1,0 +1,70 @@
+(defun my/latex-displaymath-to-equation ()
+  "Convert LaTeX display math \\[ ... \\] into equation env,
+and rewrite '\\]\\label{...}' into '\\label{...}\\n\\\\end{equation}'.
+
+Runs on the whole current buffer."
+  (interactive)
+  (save-excursion
+    (save-restriction
+      (widen)
+
+      ;; 1) Replace \[ with \begin{equation}
+      (goto-char (point-min))
+      (while (re-search-forward "\\\\\\[" nil t)
+        (replace-match "\\begin{equation}" t t))
+
+      ;; 2) Replace \]\label{...} with:
+      ;;    \label{...}
+      ;;    \end{equation}
+      (goto-char (point-min))
+      (while (re-search-forward "\\\\]\\s-*\\\\label{\\([^}]+\\)}" nil t)
+        (replace-match "\\\\label{\\1}\n\\\\end{equation}" t nil))
+
+
+
+      ;; Optional: if you also want plain \] (without label) to become \end{equation},
+      ;; uncomment this block:
+      ;;
+      ;; (goto-char (point-min))
+      ;; (while (re-search-forward "\\\\]" nil t)
+      ;;   (replace-match "\\\\end{equation}" t t))
+      )))
+
+(defun my/latex-fixup-equations-and-refs ()
+  "LaTeX fixups in current buffer:
+
+1) \\[        -> \\begin{equation}
+2) \\]\\label{...} -> \\label{...}\\n\\end{equation}
+3) \\ref{...} -> \\cref{...}
+4) \\label{xx-...} -> \\label{xx:...}  (first '-' after prefix becomes ':')"
+  (interactive)
+  (save-excursion
+    (save-restriction
+      (widen)
+
+      ;; 1) \[ -> \begin{equation}
+      (goto-char (point-min))
+      (while (re-search-forward "\\\\\\[" nil t)
+        (replace-match "\\begin{equation}" t t))
+
+      ;; 2) \]\label{...} -> \label{...}\n\end{equation}
+      (goto-char (point-min))
+      (while (re-search-forward "\\\\]\\s-*\\\\label{\\([^}]+\\)}" nil t)
+        (replace-match "\\label{\\1}\n\\end{equation}" t nil))
+
+      ;; 3) \ref{...} -> \cref{...}
+      ;; (This will not touch \cref{...} because that starts with \c, not \r.)
+      (goto-char (point-min))
+      (while (re-search-forward "\\\\ref{" nil t)
+        (replace-match "\\cref{" t t))
+
+      ;; 4) \label{prefix-rest} -> \label{prefix:rest}
+      ;; prefix = letters/digits/underscore, rest = anything up to }
+      (goto-char (point-min))
+      (while (re-search-forward "\\\\label{\\([[:alnum:]_]+\\)-\\([^}]*\\)}" nil t)
+        (replace-match "\\label{\\1:\\2}" t nil))
+
+      (message "Done: equations, refs, and labels updated."))))
+
+
+mapsto -> \mapsto
