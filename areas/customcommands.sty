@@ -1,0 +1,405 @@
+\usepackage{xparse}
+\usepackage{dsfont}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{dsfont}
+\usepackage{relsize}
+
+% \usepackage[T1]{fontenc}
+% \usepackage[sfdefault,scaled=.85]{FiraSans}
+% \usepackage{newtxsf}
+
+
+\usepackage{bm}
+
+\usepackage[outline]{contour}
+
+
+% \DeclareSymbolFont{matha}{OML}{txmi}{m}{n}
+% \DeclareSymbolFont{mathabold}{OML}{txmi}{b}{n}
+% \DeclareMathSymbol{\varvb}{\mathalpha}{mathabold}{118}
+% \DeclareMathSymbol{\varv}{\mathalpha}{matha}{118}
+
+
+
+\providecommand{\bm}[1]{\boldsymbol{#1}}
+\providecommand{\ensuremath}[1]{{#1}}
+\providecommand{\note}[2][orange]{\colorbox{#1!20}{#2}}
+
+\providecommand{\varvb}{\bm{v}}
+\providecommand{\varv}{v}
+
+% \DeclareBoldMathCommand\varv{v}
+\providecommand{\order}[1]{\mathcal{O}{({#1})}}
+
+\providecommand{\ee}{{\mathrm{e}}}
+\providecommand{\acos}{\mathrm{acos}}
+\providecommand{\vphi}{\varphi}
+\providecommand{\veps}{\varepsilon}
+\providecommand{\vthe}{\vartheta}
+
+
+\providecommand{\lb}{\left(}
+\providecommand{\rb}{\right)}
+
+\providecommand{\ls}{\left[}
+\providecommand{\rs}{\right]}
+
+\providecommand{\lc}{\left\{}
+\providecommand{\rc}{\right\}}
+
+\providecommand{\ld}{\left.}
+\providecommand{\rd}{\right.}
+
+\providecommand{\la}{\left\langle}
+\providecommand{\ra}{\right\rangle}
+
+\providecommand{\lp}{\left|}
+\providecommand{\rp}{\right|}
+
+\providecommand{\acosh}{\mathrm{acosh}}
+\providecommand{\floor}[1]{{\lfloor{#1}\rfloor}}
+
+
+\providecommand{\ffrac}[2]{{#1}/{#2}}
+\providecommand{\carr}{\curvearrowright}
+\providecommand{\carl}{\curvearrowleft}
+\providecommand{\ztrans}[1]{\widetilde{#1}}
+\providecommand{\wt}{\widetilde}
+\providecommand{\sgn}{\mathrm{sgn}}
+\providecommand{\tr}{\mathrm{Tr}}
+\providecommand{\mat}[1]{\mathbf{#1}}
+\providecommand{\mmat}[1]{\underline{\bm{#1}}}
+\providecommand{\mvec}[1]{\bm{#1}}
+\providecommand{\nvec}{\mvec{n}}
+
+\providecommand{\mdet}[1]{\left|#1\right|}
+\providecommand{\mrm}[1]{\ensuremath{\mathrm{{#1}}}}
+\providecommand{\rmd}{\ensuremath{\mathrm{{d}}}}
+
+\providecommand{\trans}{\ensuremath{\scriptsize\mathsf{T}}}
+\providecommand{\thh}{{\ensuremath\mathrm{th}}}
+\providecommand{\grad}[2]{\ensuremath{{\nabla_{\!{{#1}}}}{#2}}}
+
+\providecommand{\giv}{\,|\,}
+\providecommand{\matidx}[2]{{{#1}, {#2}}}
+\providecommand{\mbinom}[2]{{\ensuremath{\begin{pmatrix}{#1}\\{#2}\end{pmatrix}}}}
+
+
+\providecommand{\apref}[1]{Appendix~\ref{#1}}
+\providecommand{\checked}{{\color{green}\textbf{CHECKED}}\\}
+\providecommand{\changed}{{\color{red}\textbf{DISCUSS}}\\}
+
+
+% symbols
+\providecommand{\sstate}[1][\nvec]{\ensuremath{\sigma_{{#1}}}}
+
+\providecommand{\disp}{\ensuremath{g}}
+
+\providecommand{\nt}[2][]{\ensuremath{N^{_{#1}}_{^{^\mathrm{#2}}}}}
+\providecommand{\ntb}[2][]{\ensuremath{{\mvec{N}}^{_{#1}}_{^{^\mathrm{#2}}}}}
+
+
+\providecommand{\xep}[2][]{\ensuremath{{\rho}^{_{#1}}_{^{^\mathrm{#2}}}}}
+
+\providecommand{\xt}[1]{\ensuremath{{\color{sol_red}\xi}_{_{\mathrm{#1}}}}}
+
+\providecommand{\xtt}[2][]{\ensuremath{{\color{sol_red}\xi}^{{#1}}_{_{\mathrm{#2}}}}}
+\providecommand{\xtd}[1]{\ensuremath{{\color{sol_red}\dot{\xi}}_{_{\mathrm{#1}}}}}
+\providecommand{\et}[2][\vphi , \vthe]{\ensuremath{{\color{sol_blue}\eta}_{_{\mathrm{#2}}}{\lb {#1} \rb}}}
+
+
+\providecommand{\jt}[1]{\ensuremath{J_{^{^\mathrm{#1}}}}}
+\providecommand{\jtt}[1]{\ensuremath{\tilde{J}_{^{^\mathrm{#1}}}}}
+
+
+\providecommand{\configs}[1][]{\ensuremath{\lc \sstate[\nvec] \rc_{{#1}}}}
+\providecommand{\motif}[3]{\ensuremath{\mathcal{N}^{{#1}}_{{#2}}({#3})}}
+\providecommand{\motiff}[1]{\ensuremath{n_{{#1}}}}
+
+
+\providecommand{\intpsym}{\psi}
+\providecommand{\intmsym}{\pi}
+\providecommand{\intpv}{\mvec{\intpsym}}
+\providecommand{\intmv}{\mvec{\intmsym}}
+
+\providecommand{\diffu}[3][]{\ensuremath{\frac{\mathrm{d}^{#1}{#2}}{\mathrm{d}{#3}^{#1}}}}
+\providecommand{\diffl}[3][]{\ensuremath{\frac{\mathrm{d}^{#1}}{\mathrm{d}{#3}^{#1}} {#2}}}
+
+\providecommand{\pdiffu}[3][]{\ensuremath{\frac{\partial^{#1}{#2}}{\partial{#3}^{#1}}}}
+\providecommand{\pdiffl}[3][]{\ensuremath{\frac{\partial^{#1}}{\partial{#3}^{#1}} {#2}}}
+
+
+\providecommand{\mpdiff}[3][]{\ensuremath{\partial^{#1}_{#3}{#2}}}
+
+\providecommand{\fpdiffu}[3][]{\ensuremath{\frac{\partial^{#1}{#2}}{\partial{#3}}}}
+
+
+\providecommand{\grad}[2][]{\ensuremath{{\nabla_{\!{{#1}}}}{#2}}}
+
+
+\providecommand{\ufunc}[1]{\ensuremath{u{\ls {#1} \rs}}}
+\providecommand{\ufuncr}{\ensuremath{u}}
+\providecommand{\ufuncf}[1]{\ensuremath{\frac{1}{2}\ls 1 - \tanh{\lb \frac{1}{2} {#1} \rb} \rs}}
+
+\providecommand{\ew}[3]{\ensuremath{W^{{#1}}_{\mathrm{#2}}{\lb {#3} \rb}}}
+\providecommand{\iw}[3]{\ensuremath{w^{{#1}}_{\mathrm{#2}}{\lb {#3} \rb}}}
+
+
+
+
+\providecommand{\ewf}[4]{\ensuremath{W^{_\mathrm{{#1}}}_{^{\, \mathrm{{#2}}| {#3}}}{\lb {#4} \rb}}}
+\providecommand{\ewff}[5]{\ensuremath{W^{_{\mathrm{{#1}}| {#4}}}_{^{\, \mathrm{{#2}}| {#3}}}{\lb {#5} \rb}}}
+
+\providecommand{\swf}[4][]{\ensuremath{N^{_\mathrm{{#1}}}_{^{\, \mathrm{{#2}}| {#3}}}{\lb {#4} \rb}}}
+\providecommand{\swff}[5][]{\ensuremath{N^{_{\mathrm{{#1}}| {#4}}}_{^{\, \mathrm{{#2}}| {#3}}}{\lb {#5} \rb}}}
+
+\providecommand{\rcwf}[3]{\ensuremath{\tau^{_\mathrm{{#1}}}_{^{\, \mathrm{{#2}}| {#3}}}}}
+\providecommand{\rcwff}[4]{\ensuremath{\tau^{_{\mathrm{{#1}}| {#4}}}_{^{\, \mathrm{{#2}}| {#3}}}}}
+
+\providecommand{\scwf}[3]{\ensuremath{\mvec{\Delta}^{_\mathrm{{#1}}}_{^{\, \mathrm{{#2}}| {#3}}}}}
+\providecommand{\scwff}[4]{\ensuremath{\mvec{\Delta}^{_{\mathrm{{#1}}| {#4}}}_{^{\, \mathrm{{#2}}| {#3}}}}}
+
+
+\providecommand{\edwf}[3]{\ensuremath{\Delta H^{_\mathrm{{#1}}}_{^{\, \mathrm{{#2}}| {#3}}}}}
+\providecommand{\edwff}[4]{\ensuremath{\Delta H^{_{\mathrm{{#1}}| {#4}}}_{^{\, \mathrm{{#2}}| {#3}}}}}
+
+\providecommand{\gwf}[4][G]{\ensuremath{{#1}^{_\mathrm{{#2}}}_{^{\, \mathrm{{#3}}| {#4}}}}}
+\providecommand{\gwff}[5][G]{\ensuremath{{#1}^{_{\mathrm{{#2}}| {#5}}}_{^{\, \mathrm{{#3}}| {#4}}}}}
+
+
+\providecommand{\iwf}[4]{\ensuremath{w^{_\mathrm{{#1}}}_{^{ \mathrm{{#2}}| {#3}}}{\lb {#4} \rb}}}
+\providecommand{\iwfs}[3]{\ensuremath{w^{_\mathrm{{#1}}}_{^{ \mathrm{{#2}} }}{\lb {#3} \rb}}}
+% w^{_\mathrm{D}}_{^{\mathrm{T} |  {i,j}}}(\vphi, \vtheta, \xt{TD})
+
+
+\providecommand{\enwf}[3]{\ensuremath{u^{_\mathrm{{#1}}}_{^{ \mathrm{{#2}}| {#3}}}}}
+\providecommand{\enwfs}[2]{\ensuremath{u^{_\mathrm{{#1}}}_{^{ \mathrm{{#2}} }}}}
+
+
+\providecommand{\sech}{\ensuremath{\mathrm{sech}}}
+
+\providecommand{\idef}{\ensuremath{\overset{\,\mathrm{def}\,}{=}}}
+\providecommand{\prob}{\ensuremath{\mathbb{P}}}
+
+
+\providecommand{\wptt}[1]{\ensuremath{\iwf{T}{E}{1, 0}{{#1}}}}
+\providecommand{\wptd}[1]{\ensuremath{\iwf{D}{E}{1, 0}{{#1}}}}
+\providecommand{\wpdd}[1]{\ensuremath{\iwf{D}{E}{0, 1}{{#1}}}}
+\providecommand{\wpdt}[1]{\ensuremath{\iwf{T}{E}{0, 1}{{#1}}}}
+
+\providecommand{\wmtt}[1]{\ensuremath{\iwf{E}{T}{1, 0}{{#1}}}}
+\providecommand{\wmtd}[1]{\ensuremath{\iwf{E}{D}{1, 0}{{#1}}}}
+\providecommand{\wmdd}[1]{\ensuremath{\iwf{E}{D}{0, 1}{{#1}}}}
+\providecommand{\wmdt}[1]{\ensuremath{\iwf{E}{T}{0, 1}{{#1}}}}
+
+
+\providecommand{\wptte}[1]{\ensuremath{\iwf{T}{D}{1, 0}{{#1}}}}
+\providecommand{\wpdde}[1]{\ensuremath{\iwf{D}{T}{0, 1}{{#1}}}}
+\providecommand{\wmtte}[1]{\ensuremath{\iwf{D}{T}{1, 0}{{#1}}}}
+\providecommand{\wmdde}[1]{\ensuremath{\iwf{T}{D}{0, 1}{{#1}}}}
+
+\providecommand{\wpttt}[1]{\ensuremath{\iwf{T}{D}{2, 0}{{#1}}}}
+\providecommand{\wpddd}[1]{\ensuremath{\iwf{D}{T}{0, 2}{{#1}}}}
+
+\providecommand{\wmttt}[1]{\ensuremath{\iwf{D}{T}{2, 0}{{#1}}}}
+\providecommand{\wmddd}[1]{\ensuremath{\iwf{T}{D}{0, 2}{{#1}}}}
+
+\providecommand{\wpttd}[1]{\ensuremath{\iwf{T}{D}{1, 1}{{#1}}}}
+\providecommand{\wmttd}[1]{\ensuremath{\iwf{D}{T}{1, 1}{{#1}}}}
+
+
+
+
+\renewcommand{\bm}[1]{\boldsymbol{#1}}%
+\renewcommand{\ensuremath}[1]{{#1}}%
+\renewcommand{\note}[2][orange]{\colorbox{#1!20}{#2}}%
+%
+\renewcommand{\varvb}{\bm{v}}%
+\renewcommand{\varv}{v}%
+%
+% \DeclareBoldMathCommand\varv{v}%
+\renewcommand{\order}[1]{\mathcal{O}{({#1})}}%
+%
+\renewcommand{\ee}{{\mathrm{e}}}%
+\renewcommand{\acos}{\mathrm{acos}}%
+\renewcommand{\vphi}{\varphi}%
+\renewcommand{\veps}{\varepsilon}%
+\renewcommand{\vthe}{\vartheta}%
+%
+%
+\renewcommand{\lb}{\left(}%
+\renewcommand{\rb}{\right)}%
+%
+\renewcommand{\ls}{\left[}%
+\renewcommand{\rs}{\right]}%
+%
+\renewcommand{\lc}{\left\{}%
+\renewcommand{\rc}{\right\}}%
+%
+\renewcommand{\ld}{\left.}%
+\renewcommand{\rd}{\right.}%
+%
+\renewcommand{\la}{\left\langle}%
+\renewcommand{\ra}{\right\rangle}%
+%
+\renewcommand{\lp}{\left|}%
+\renewcommand{\rp}{\right|}%
+%
+\renewcommand{\acosh}{\mathrm{acosh}}%
+\renewcommand{\floor}[1]{{\lfloor{#1}\rfloor}}%
+%
+%
+\renewcommand{\ffrac}[2]{{#1}/{#2}}%
+\renewcommand{\carr}{\curvearrowright}%
+\renewcommand{\carl}{\curvearrowleft}%
+\renewcommand{\ztrans}[1]{\widetilde{#1}}%
+\renewcommand{\wt}{\widetilde}%
+\renewcommand{\sgn}{\mathrm{sgn}}%
+\renewcommand{\tr}{\mathrm{Tr}}%
+\renewcommand{\mat}[1]{\mathbf{#1}}%
+\renewcommand{\mmat}[1]{\underline{\bm{#1}}}%
+\renewcommand{\mvec}[1]{\bm{#1}}%
+\renewcommand{\nvec}{\mvec{n}}%
+\renewcommand{\xvec}{\mvec{x}}%
+%
+\renewcommand{\mdet}[1]{\left|#1\right|}%
+\renewcommand{\mrm}[1]{\ensuremath{\mathrm{{#1}}}}%
+\renewcommand{\rmd}{\ensuremath{\mathrm{{d}}}}%
+%
+\renewcommand{\trans}{\ensuremath{\scriptsize\mathsf{T}}}%
+\renewcommand{\thh}{{\ensuremath\mathrm{th}}}%
+\renewcommand{\grad}[2]{\ensuremath{{\nabla_{\!{{#1}}}}{#2}}}%
+%
+\renewcommand{\giv}{\,|\,}%
+\renewcommand{\matidx}[2]{{{#1}, {#2}}}%
+\renewcommand{\mbinom}[2]{{\ensuremath{\begin{pmatrix}{#1}\\{#2}\end{pmatrix}}}}%
+%
+%
+\renewcommand{\apref}[1]{Appendix~\ref{#1}}%
+\renewcommand{\checked}{{\color{green}\textbf{CHECKED}}\\}%
+\renewcommand{\changed}{{\color{red}\textbf{DISCUSS}}\\}%
+%
+%
+% symbols%
+\renewcommand{\sstate}[1][\nvec]{\ensuremath{\sigma_{{#1}}}}%
+%
+\renewcommand{\disp}{\ensuremath{g}}%
+%
+\renewcommand{\nt}[2][]{\ensuremath{N^{_{#1}}_{^{^\mathrm{#2}}}}}%
+\renewcommand{\ntb}[2][]{\ensuremath{{\mvec{N}}^{_{#1}}_{^{^\mathrm{#2}}}}}%
+%
+%
+\renewcommand{\xep}[2][]{\ensuremath{{\rho}^{_{#1}}_{^{^\mathrm{#2}}}}}%
+%
+\renewcommand{\xt}[1]{\ensuremath{{\color{sol_red}\xi}_{_{\mathrm{#1}}}}}%
+%
+\renewcommand{\xtt}[2][]{\ensuremath{{\color{sol_red}\xi}^{{#1}}_{_{\mathrm{#2}}}}}%
+\renewcommand{\xtd}[1]{\ensuremath{{\color{sol_red}\dot{\xi}}_{_{\mathrm{#1}}}}}%
+\renewcommand{\et}[2][\vphi , \vthe]{\ensuremath{{\color{sol_blue}\eta}_{_{\mathrm{#2}}}{\lb {#1} \rb}}}%
+%
+%
+\renewcommand{\jt}[1]{\ensuremath{J_{^{^\mathrm{#1}}}}}%
+\renewcommand{\jtt}[1]{\ensuremath{\tilde{J}_{^{^\mathrm{#1}}}}}%
+%
+%
+\renewcommand{\configs}[1][]{\ensuremath{\lc \sstate[\nvec] \rc_{{#1}}}}%
+\renewcommand{\motif}[3]{\ensuremath{\mathcal{N}^{{#1}}_{{#2}}({#3})}}%
+\renewcommand{\motiff}[1]{\ensuremath{n_{{#1}}}}%
+%
+%
+\renewcommand{\intpsym}{\varphi}%
+\renewcommand{\intmsym}{\pi}%
+\renewcommand{\intpv}{\mvec{\intpsym}}%
+\renewcommand{\intmv}{\mvec{\intmsym}}%
+\renewcommand{\intpsyms}{\bar{\intpv}}%
+\renewcommand{\intmsyms}{\bar{\intmv}}%
+\renewcommand{\intpvs}{\mvec{\intpsyms}}%
+\renewcommand{\intmvs}{\mvec{\intmsyms}}%
+%
+\renewcommand{\diffu}[3][]{\ensuremath{\frac{\mathrm{d}^{#1}{#2}}{\mathrm{d}{#3}^{#1}}}}%
+\renewcommand{\diffl}[3][]{\ensuremath{\frac{\mathrm{d}^{#1}}{\mathrm{d}{#3}^{#1}} {#2}}}%
+%
+\renewcommand{\pdiffu}[3][]{\ensuremath{\frac{\partial^{#1}{#2}}{\partial{#3}^{#1}}}}%
+\renewcommand{\pdiffl}[3][]{\ensuremath{\frac{\partial^{#1}}{\partial{#3}^{#1}} {#2}}}%
+%
+%
+\renewcommand{\mpdiff}[3][]{\ensuremath{\partial^{#1}_{#3}{#2}}}%
+%
+\renewcommand{\fpdiffu}[3][]{\ensuremath{\frac{\partial^{#1}{#2}}{\partial{#3}}}}%
+%
+%
+\renewcommand{\grad}[2][]{\ensuremath{{\nabla_{\!{{#1}}}}{#2}}}%
+%
+%
+\renewcommand{\ufunc}[1]{\ensuremath{u{\ls {#1} \rs}}}%
+\renewcommand{\ufuncr}{\ensuremath{u}}%
+\renewcommand{\ufuncf}[1]{\ensuremath{\frac{1}{2}\ls 1 - \tanh{\lb \frac{1}{2} {#1} \rb} \rs}}%
+%
+\renewcommand{\ew}[3]{\ensuremath{W^{{#1}}_{\mathrm{#2}}{\lb {#3} \rb}}}%
+\renewcommand{\iw}[3]{\ensuremath{w^{{#1}}_{\mathrm{#2}}{\lb {#3} \rb}}}%
+%
+%
+%
+%
+\renewcommand{\ewf}[4]{\ensuremath{W^{_\mathrm{{#1}}}_{^{\, \mathrm{{#2}}| {#3}}}{\lb {#4} \rb}}}%
+\renewcommand{\ewff}[5]{\ensuremath{W^{_{\mathrm{{#1}}| {#4}}}_{^{\, \mathrm{{#2}}| {#3}}}{\lb {#5} \rb}}}%
+%
+\renewcommand{\swf}[4][]{\ensuremath{N^{_\mathrm{{#1}}}_{^{\, \mathrm{{#2}}| {#3}}}{\lb {#4} \rb}}}%
+\renewcommand{\swff}[5][]{\ensuremath{N^{_{\mathrm{{#1}}| {#4}}}_{^{\, \mathrm{{#2}}| {#3}}}{\lb {#5} \rb}}}%
+%
+\renewcommand{\rcwf}[3]{\ensuremath{\tau^{_\mathrm{{#1}}}_{^{\, \mathrm{{#2}}| {#3}}}}}%
+\renewcommand{\rcwff}[4]{\ensuremath{\tau^{_{\mathrm{{#1}}| {#4}}}_{^{\, \mathrm{{#2}}| {#3}}}}}%
+%
+\renewcommand{\scwf}[3]{\ensuremath{\mvec{\Delta}^{_\mathrm{{#1}}}_{^{\, \mathrm{{#2}}| {#3}}}}}%
+\renewcommand{\scwff}[4]{\ensuremath{\mvec{\Delta}^{_{\mathrm{{#1}}| {#4}}}_{^{\, \mathrm{{#2}}| {#3}}}}}%
+%
+%
+\renewcommand{\edwf}[3]{\ensuremath{\Delta H^{_\mathrm{{#1}}}_{^{\, \mathrm{{#2}}| {#3}}}}}%
+\renewcommand{\edwff}[4]{\ensuremath{\Delta H^{_{\mathrm{{#1}}| {#4}}}_{^{\, \mathrm{{#2}}| {#3}}}}}%
+%
+\renewcommand{\gwf}[4][G]{\ensuremath{{#1}^{_\mathrm{{#2}}}_{^{\, \mathrm{{#3}}| {#4}}}}}%
+\renewcommand{\gwff}[5][G]{\ensuremath{{#1}^{_{\mathrm{{#2}}| {#5}}}_{^{\, \mathrm{{#3}}| {#4}}}}}%
+%
+%
+\renewcommand{\iwf}[4]{\ensuremath{w^{_\mathrm{{#1}}}_{^{ \mathrm{{#2}}| {#3}}}{\lb {#4} \rb}}}%
+\renewcommand{\iwfs}[3]{\ensuremath{w^{_\mathrm{{#1}}}_{^{ \mathrm{{#2}} }}{\lb {#3} \rb}}}%
+% w^{_\mathrm{D}}_{^{\mathrm{T} |  {i,j}}}(\vphi, \vtheta, \xt{TD})%
+%
+%
+\renewcommand{\enwf}[3]{\ensuremath{u^{_\mathrm{{#1}}}_{^{ \mathrm{{#2}}| {#3}}}}}%
+\renewcommand{\enwfs}[2]{\ensuremath{u^{_\mathrm{{#1}}}_{^{ \mathrm{{#2}} }}}}%
+%
+%
+\renewcommand{\sech}{\ensuremath{\mathrm{sech}}}%
+%
+\renewcommand{\idef}{\ensuremath{\overset{\,\mathrm{def}\,}{=}}}%
+\renewcommand{\idef}{\ensuremath{\equiv}}%
+\renewcommand{\prob}{\ensuremath{\mathbb{P}}}%
+%
+%
+\renewcommand{\wptt}[1]{\ensuremath{\iwf{T}{E}{1, 0}{{#1}}}}%
+\renewcommand{\wptd}[1]{\ensuremath{\iwf{D}{E}{1, 0}{{#1}}}}%
+\renewcommand{\wpdd}[1]{\ensuremath{\iwf{D}{E}{0, 1}{{#1}}}}%
+\renewcommand{\wpdt}[1]{\ensuremath{\iwf{T}{E}{0, 1}{{#1}}}}%
+%
+\renewcommand{\wmtt}[1]{\ensuremath{\iwf{E}{T}{1, 0}{{#1}}}}%
+\renewcommand{\wmtd}[1]{\ensuremath{\iwf{E}{D}{1, 0}{{#1}}}}%
+\renewcommand{\wmdd}[1]{\ensuremath{\iwf{E}{D}{0, 1}{{#1}}}}%
+\renewcommand{\wmdt}[1]{\ensuremath{\iwf{E}{T}{0, 1}{{#1}}}}%
+%
+%
+\renewcommand{\wptte}[1]{\ensuremath{\iwf{T}{D}{1, 0}{{#1}}}}%
+\renewcommand{\wpdde}[1]{\ensuremath{\iwf{D}{T}{0, 1}{{#1}}}}%
+\renewcommand{\wmtte}[1]{\ensuremath{\iwf{D}{T}{1, 0}{{#1}}}}%
+\renewcommand{\wmdde}[1]{\ensuremath{\iwf{T}{D}{0, 1}{{#1}}}}%
+%
+\renewcommand{\wpttt}[1]{\ensuremath{\iwf{T}{D}{2, 0}{{#1}}}}%
+\renewcommand{\wpddd}[1]{\ensuremath{\iwf{D}{T}{0, 2}{{#1}}}}%
+%
+\renewcommand{\wmttt}[1]{\ensuremath{\iwf{D}{T}{2, 0}{{#1}}}}%
+\renewcommand{\wmddd}[1]{\ensuremath{\iwf{T}{D}{0, 2}{{#1}}}}%
+%
+\renewcommand{\wpttd}[1]{\ensuremath{\iwf{T}{D}{1, 1}{{#1}}}}%
+\renewcommand{\wmttd}[1]{\ensuremath{\iwf{D}{T}{1, 1}{{#1}}}}%
+%

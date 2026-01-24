@@ -162,7 +162,7 @@ $$
 \renewcommand{\sech}{\ensuremath{\mathrm{sech}}}%
 %
 \renewcommand{\idef}{\ensuremath{\overset{\,\mathrm{def}\,}{=}}}%
-\renewcommand{\idef}{\ensuremath{\equiv}}%
+\renewcommand{\eqdef}{\ensuremath{\equiv}}%
 \renewcommand{\prob}{\ensuremath{\mathbb{P}}}%
 %
 %
@@ -190,5 +190,9 @@ $$
 %
 \renewcommand{\wpttd}[1]{\ensuremath{\iwf{T}{D}{1, 1}{{#1}}}}%
 \renewcommand{\wmttd}[1]{\ensuremath{\iwf{D}{T}{1, 1}{{#1}}}}%
+%
+%
+\renewcommand{\EE}{\ensuremath{\mathbb{E}}}%
+\renewcommand{\PP}{\ensuremath{\mathbb{P}}}%
 %
 $$

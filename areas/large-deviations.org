@@ -20,7 +20,12 @@
 
 
 * Introduction 
-Large deviation theory, in its austere form can feel unintuitive, for example the employment of techniques such as Radon-Nikodym are most often introduced without apriori justification. To me large deviation theory is lifeless without the applications that originally motivated it so to get a a feel for the theory we will start with a toy example before returning to formulate the ideas more precisely.
+Large deviation theory, in its austere form can feel unintuitive, for example
+the employment of techniques such as Radon-Nikodym are most often introduced
+without apriori justification. To me large deviation theory is lifeless without
+the applications that originally motivated it so to get a a feel for the theory
+we will start with a toy example before returning to formulate the ideas more
+precisely.
 
 ** Toy Example: A tail of two die
 :PROPERTIES:
