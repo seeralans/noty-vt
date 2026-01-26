@@ -11,7 +11,7 @@
 #import cosmos.simple: *
 
 // choose your preferred theme color
-#let theme-color = theme-colors.light.hard
+#let theme-color = theme-colors.dark.hard
 
 // apply colors to common typst components
 #show: gruvbox.with(
@@ -22,7 +22,7 @@
   // customize `highlight` color
   hl: theme-color.muted.yellow,
   // is the document printable?
-  print: true,
+  print: false,
 )
 
 #show: equate.with(breakable: true, sub-numbering: false)
@@ -412,7 +412,7 @@ $<eq-a-al-ep-def>
 
   2. Lipschitz continuity
   $
-    ||a_(alpha, epsilon)(t, x, lambda) - a_(alpha, epsilon)(s, y, lambda)|| <= K_(alpha, x) ||x - y|| + K_(alpha, T) |t - s|
+    ||a_(alpha, epsilon)(t, x, lambda) - a_(alpha, epsilon)(s, y, lambda)|| <= K_(alpha) ||x - y|| + K_(alpha, T) |t - s|
   $
 ]<lem-a-spur-bound>
 
@@ -430,9 +430,9 @@ $<eq-a-al-ep-def>
 
   Lipschitz continuity. From @eq-ab-lip-bound we have the Lipschitz bound on $a$. For $c$, using (A6),
   $
-    ||c(t, x, lambda) - c(s, y, lambda)|| &<= H_x ||x - y|| + H_T |t - s|.
+    ||c(t, x, lambda) - c(s, y, lambda)|| &<= H ||x - y|| + H_T |t - s|.
   $
-  Combining, $||a_(alpha, epsilon)(t, x, lambda) - a_(alpha, epsilon)(s, y, lambda)|| <= K_(alpha, x) ||x - y|| + K_(alpha, T) |t - s|$ with $K_(alpha, x) = K + alpha epsilon H_x$ and $K_(alpha, T) = K_T + alpha epsilon H_T$.
+  Combining, $||a_(alpha, epsilon)(t, x, lambda) - a_(alpha, epsilon)(s, y, lambda)|| <= K_(alpha) ||x - y|| + K_(alpha, T) |t - s|$ with $K_(alpha) = K + alpha epsilon H$ and $K_(alpha, T) = K_T + alpha epsilon H_T$.
 ]
 
 The regularity of $a_(alpha, epsilon)$ ensures that the system @eq-ito-sde
@@ -448,13 +448,13 @@ switching variable and that we must have a dynamics that exist on the
 discontinuity set. To elucidate this we can decompose the drift into
 $
   a_(alpha, epsilon)(t, x, lambda) 
-    &= 1/2(1 + lambda){a^+(t, x, lambda) + 1/2(1 + lambda) sum_(j) J_(x)[b^(+)_(j)(t, x)]b^(+)_(j)(t, x)} \
-    &+ 1/2(1 - lambda){a^-(t, x, lambda) + 1/2(1 - lambda) sum_(j) J_(x)[b^(-)_(j)(t, x)]b^(-)_(j)(t, x)} \
-    &+ (1 - lambda^2) h(t, x)), \
+    &= 1/2(1 + lambda){a^+(t, x, lambda) + (alpha epsilon)/2(1 + lambda) sum_(j) J_(x)[b^(+)_(j)(t, x)]b^(+)_(j)(t, x)} \
+    &+ 1/2(1 - lambda){a^-(t, x, lambda) + (alpha epsilon)/2(1 - lambda) sum_(j) J_(x)[b^(-)_(j)(t, x)]b^(-)_(j)(t, x)} \
+    &+ alpha epsilon (1 - lambda^2) h(t, x)), \
 $<eq-a-al-ep-def-decomp>
 where
 $
-  h(t, x) = eqdef 1/4 sum_(j) {J_(x)[b^(+)_(j)(t, x)]b^(-)_(j)(t, x) + J_(x)[b^(-)_(j)(t, x)]b^(+)_(j)(t, x)}.
+  h(t, x)  eqdef 1/4 sum_(j) {J_(x)[b^(+)_(j)(t, x)]b^(-)_(j)(t, x) + J_(x)[b^(-)_(j)(t, x)]b^(+)_(j)(t, x)}.
 $<eq-hidden-drift>
 
 
@@ -514,11 +514,11 @@ multiplicative as is often the case in biological and chemical systems.
 = Main Result
 
 Our main result concerns the typical paths of the piecewise-smooth SDE
-@eq-ito-sde-simp. We show that $x_t$ is well-approximated by a reduced SDE
+@eq-ito-sde. We show that $x_t$ is well-approximated by a reduced SDE
 obtained by averaging over the fast switching dynamics, and that this
 approximation is sufficiently strong to characterise both the typical paths and
 the Gaussian fluctuations around them. In more formal terms, suppose $x_t$ solves
-@eq-ito-sde-simp with coefficients satisfying the regularity conditions of
+@eq-ito-sde with coefficients satisfying the regularity conditions of
 @def-ns-gen-sde, and suppose $y_t$ solves the reduced SDE
 
   $
