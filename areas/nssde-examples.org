@@ -1,0 +1,110 @@
+
+#+TITLE: Supplementary to "On stochastic differential equations with piecewise-smooth drift and noise coefficients."
+#+SLUG: anothernssde
+#+INCLUDE: "_macros.org"
+#+PROPERTY: header-args:jupyter-python :eval no :exports code :results none :session none
+#+LATEX_HEADER: \addbibresource{library.bib}
+# If notes.cls doesn't load TikZ, uncomment:
+# #+LATEX_HEADER: \usepackage{tikz}
+
+*  Examples
+:PROPERTIES:
+:CUSTOM_ID: sec-examples
+:END:
+** Toy example
+:PROPERTIES:
+:CUSTOM_ID: sec-toy-example
+:END:
+Let us consider a 1D system with \(\sigma(x) = x\)
+
+\[a_{+}\left(t , x\right) = - x , \quad a_{-}\left(t , x\right) = x ,\]
+and
+\[b_{+}\left(t , x\right) = r_{+} + x , \quad b_{-}\left(t , x\right) = r_{-} - x , \quad r_{+}, r_{-} > 0 , r_{+} \neq r_{-},\]
+
+let \(\widehat{r}_{+} \eqdef r_{+} + r_{-}\), and
+\(\widehat{r}_{-} \eqdef r_{+} + r_{-}\), when
+\[a\left(t , x , \lambda\right) = -\lambda x , \quad b\left(t , x , \lambda\right) = \frac{1}{2} \left[\widehat{r}_{+} + \lambda \left(\widehat{r}_{-} + 2 x\right)\right]\]
+
+\[\begin{aligned}
+a_{\alpha , \epsilon}\left(t , x\right) & = -\lambda x + \frac{(\alpha \epsilon \lambda)}{2} b\left(t , x , \lambda\right) \\
+ & = \frac{\lambda}{2} \left(\alpha \epsilon \widehat{r}_{+} - 2 x\right) + \frac{(\alpha \epsilon \lambda^2)}{2} \left(\widehat{r}_{-} + 2 x\right)
+\end{aligned}\]
+
+\[\begin{aligned}
+\mathrm{d} x_t & = a_{\alpha , \epsilon} \mathrm{d} t + b\left(t , x , \lambda\right) \mathrm{d} W_t
+\end{aligned}\]
+
+\[\widetilde{a}_{\alpha , \epsilon} = a_{\alpha , \epsilon}, \quad \widetilde{d} = b^2 = \frac{1}{4}\left[\widehat{r}_{+}^2 + 2 \lambda \widehat{r}_{+}\left(\widehat{r}_{+} + 2 x\right) + \lambda^2\left(\widehat{r}_{+} + 2 x\right)^2\right]\]
+
+
+#+begin_src jupyter-python :session nssde :exports no :eval yes :results drawer
+import numpy as np 
+import matplotlib.pyplot as pp
+
+# paramters
+rp = 0.4
+rm = 0.4
+ep = 0.1
+al = 1.0
+
+rpp = rp + rm
+rmm = rp - rm
+
+ap_func = lambda t, x: -x
+am_func = lambda t, x: -x
+
+bp_func = lambda t, x: rp + x
+bm_func = lambda t, x: rm - x
+
+cp_func = lambda t, x: rp + x
+cm_func = lambda t, x: -(rm - x)
+cpm_func = lambda t, x: -(rp + x) + (rm - x)
+
+sig_func = lambda x: x[0]
+
+drift_ns = lambda t, x, _: drift_non_smooth(t, x, ap_func, am_func, bp_func, bm_func, cp_func, cm_func, sig_func, al, ep)
+diff_ns = lambda t, x, _: diff_non_smooth(t, x, ap_func, am_func, bp_func, bm_func, cp_func, cm_func, sig_func, al, ep)
+
+
+drift_lam = lambda t, x, _: drift_regular_lam(t, x, ap_func, am_func, bp_func, bm_func, cp_func, cm_func, cpm_func, sig_func, al, ep)
+diff_lam = lambda t, x, _: diff_regular_lam(t, x, ap_func, am_func, bp_func, bm_func, cp_func, cm_func, cpm_func, sig_func, al, ep)
+
+drift_ns_no_noise = lambda t, x, _: drift_non_smooth(t, x, ap_func, am_func, bp_func, bm_func, cp_func, cm_func, sig_func, al, 0.0)
+diff_ns_no_noise = lambda t, x, _: diff_non_smooth(t, x, ap_func, am_func, bp_func, bm_func, cp_func, cm_func, sig_func, al, 0.0)
+
+x0 = np.array([0.1])
+t0 = 0.0
+t1 = 5.0
+dt = 0.001
+
+num_trajs = 100
+
+lam_sol = euler_maruyama(drift_lam, diff_lam, x0, t0, t1, dt, trajectories=num_trajs)
+ns_sol  = euler_maruyama(drift_ns, diff_ns, x0, t0, t1, dt, trajectories=num_trajs)
+ode_sol = euler_maruyama(drift_ns_no_noise, diff_ns_no_noise, x0, t0, t1, dt, trajectories=1)
+#+end_src
+
+
+
+#+begin_src jupyter-python :session nssde :exports no :eval yes :results drawer
+
+fig, ax = pp.subplots(figsize=[6, 2], ncols=2, sharey=True)
+for k in range(num_trajs):
+    ax[0].plot(ns_sol[0], ns_sol[1][k, :, 0], c="k", alpha=0.2)
+    ax[1].plot(lam_sol[0], lam_sol[1][k, :, 0], c="k", alpha=0.2)
+
+ax[0].plot(ns_sol[0], ns_sol[1].mean(0)[:, 0], c="r")
+ax[0].plot(ode_sol[0], ode_sol[1][0, :, 0], c="b")
+ax[0].plot(ode_sol[0], np.ones(len(ode_sol[0]))*ep, c="m")
+ax[0].plot(ode_sol[0], -np.ones(len(ode_sol[0]))*ep, c="m")
+ax[0].set_xlabel("t")
+ax[0].set_ylabel("x")
+
+ax[1].plot(lam_sol[0], lam_sol[1].mean(0)[:, 0], c="r")
+ax[1].plot(ode_sol[0], ode_sol[1][0, :, 0], c="b")
+ax[1].plot(ode_sol[0], np.ones(len(ode_sol[0]))*ep, c="m")
+ax[1].plot(ode_sol[0], -np.ones(len(ode_sol[0]))*ep, c="m")
+ax[1].set_xlabel("t")
+
+#+end_src
+
