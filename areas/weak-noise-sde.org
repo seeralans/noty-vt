@@ -139,7 +139,7 @@ From [[eq-rotation-to-z]], we can obtain the evolution of the covariance, i.e. t
 \diffl{\mmat{\Sigma}}{t} = \mmat{A}(t) \mmat{\Sigma} +  \mmat{\Sigma} \mmat{A}^{\trans}(t)
 + \mmat{D}(t)
 \end{equation}
-where $\mmat{A} = \mmat{R} \tilde{J} \mmat{R}^{-1}$ and $\mmat{D} = \mmat{R}\, \tilde{b}$. If all the eigenvalues of the Jacobian have positive real part, then Equation [[eq-rotation-to-z]] gives a time dependent Ornstein-Uhlenbeck. Notice that we have
+where $\mmat{A} = \mmat{R} \tilde{J} \mmat{R}^{-1}$ and $\mmat{D} = \mmat{R}\, \tilde{b} \tilde{b}^{\trans}\, \mmat{R}^{\trans}$. If all the eigenvalues of the Jacobian have positive real part, then Equation [[eq-rotation-to-z]] gives a time dependent Ornstein-Uhlenbeck. Notice that we have
 #+name: eq-sigma-expanded
 \begin{equation}
 \mmat{\Sigma} = 

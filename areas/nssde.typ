@@ -2,7 +2,7 @@
 #import "@preview/equate:0.3.2": equate
 #import "@preview/gruvy:2.1.0": gruvbox, theme-colors, colors
 #import "@preview/note-me:0.6.0": *
-//#import "@preview/cetz:0.4.2"
+#import "@preview/cetz:0.4.2"
 #import "@preview/smartaref:0.1.0": cref, Cref
 
 
@@ -22,7 +22,7 @@
   // customize `highlight` color
   hl: theme-color.muted.yellow,
   // is the document printable?
-  print: false,
+  print: true,
 )
 
 #show: equate.with(breakable: true, sub-numbering: false)
@@ -127,6 +127,7 @@
 #let trc = math.op("Tr")
 #let dom = math.op("Dom")
 #let pm  = math.op($plus.minus$)
+#let mp  = math.op($minus.plus$)
 #let eqdef  = math.op($eq.triple$)
 #let ee  = math.op($upright(e)$)
 #let epsilon = math.epsilon.alt
@@ -190,6 +191,21 @@
 
 #pagebreak()
 
+
+// #let drafting(title: "TODO", children) = admonition(
+//   icon-path: "icons/question.svg",
+//   icon-alt: none,
+//   title: title,
+//   color: rgb(209, 36, 47),
+//   children
+// )
+
+#let drafting(title: "Draft", children) = block(
+  width: 100%,
+  outset: (x: 5pt, y: 5pt),
+  fill: rgb(87, 127, 230, 20))[
+  #children
+]
 
 
 = Introduction
@@ -1239,6 +1255,209 @@ of the switching variable, $lambda$, for a fixed $x in cal(D)_epsilon$. We start
 by obtaining relevant facts about the dynamics of the former. Using @eq-lam-sde
 from @thm-lam-sde, we can easily obtain the backward generator as the following
 lemma shows.
+
+
+// Theorem IV.1 (Generator on the Constraint Manifold).
+// Let f:S→Rf: \mathcal{S} \to \mathbb{R}
+// f:S→R be a smooth function. The infinitesimal generator is:
+// 
+// $$\boxed{(\mathcal{A}f)(\lambda, z) = \begin{cases}
+// \tilde{a}^-(z) \partial_z f + \dfrac{\epsilon \tilde{d}^-(z)}{2} \partial_z^2 f & z < -\epsilon \[4mm]
+// \dfrac{\tilde{a}0(\lambda)}{\epsilon} \partial\lambda f + \dfrac{\tilde{d}0(\lambda)}{2\epsilon} \partial\lambda^2 f & |\lambda| < 1 \[4mm]
+// \tilde{a}^+(z) \partial_z f + \dfrac{\epsilon \tilde{d}^+(z)}{2} \partial_z^2 f & z > \epsilon
+// \end{cases}}$$
+
+#drafting[
+  = Fast Makrovian Dyanmics 
+
+  Although the dyanamics of $lambda_t$ can be described by the SDE in @eq-lam-sde,
+  it is not a Markovian process, and hence there  
+
+  == Orthogonal decomposition
+
+  Let 
+  $
+    nu eqdef K_(sigma) partial_x sigma(x), quad K_(sigma) quad 1/(||partial_x sigma(x)||), 
+  $
+  be the unit normal to the discontiniuty surface then for a given $x in
+  RR^d$, there exists a scalar $zeta$, such that $epsilon zeta$ is the
+  shortest distance from $x$ to the discontinuity surface defined as
+  $
+    zeta eqdef sigma(x)/(epsilon ||partial_x sigma(x)||) = z/(epsilon ||partial_x sigma(x)||)
+  $
+  We can then decompose any $x in RR^d$ as 
+  $
+    x = xi + epsilon  nu zeta
+  $
+
+  where $$ $xi$ is a vector on the discontinuity surface, i.e. $sigma(xi) = 0$.
+  Using Ito's lemma, it is straight forward to obtain the the SDE 
+
+  - Fix $xi in cal(D)$
+
+  - Assume for all $x in cal(D)_("sliding")$, $t in [0, T]$, we have
+    $tilde(a)_(a, epsilon)(t,x, lambda = pm 1) = mp C$ for some $C>0$, that is the sliding condition.
+
+  Then we have 
+
+  $
+    dif zeta_t = 1/epsilon tilde(a)_(alpha, epsilon)(t, xi_t, epsilon zeta_t, lambda_t) dif t
+    + 1/sqrt(epsilon) tilde(b)(t, xi_t, epsilon zeta_t, lambda_t) dif W_t,
+  $<eq-zeta-sde>
+
+  $
+    dif lambda_t &= 1/epsilon bb(1)_((-epsilon, epsilon])[sigma(x_t)]
+    tilde(a)_(alpha, epsilon)(t, xi_t, epsilon zeta_t, lambda_t) dif t
+    + 1/sqrt(epsilon) bb(1)_((-epsilon, epsilon])[sigma(x_t)]
+    tilde(b)(t, xi_t, epsilon zeta_t, lambda_t) dif W_t \
+      &+ 1/epsilon [dif L_t^(zeta)(-K_(sigma)) - dif L_t^(zeta)(K_(sigma))]
+    , \
+  $<eq-lam-sde-a>
+
+  The proces $(lambda_t, zeta_t) in cal(S) eqdef [-1, 1] times RR$ is Markovian
+  and takes place on an embedded 1D manifold.
+
+
+  #figure(
+    caption: [1D manifold embedded in $RR times [-1, 1]$],
+    cetz.canvas({
+      import cetz.draw: *
+      set-style(
+        stroke: 1.0pt,
+        grid: (
+          stroke: gray + 0.2pt,
+          step: 0.5
+        ),
+        mark: (
+          transform-shape: false,
+          fill: black
+        )
+      )
+
+      line((-5, 0), (5, 0), mark: (end: "stealth", start: "stealth"))
+      content((), anchor: "north", $zeta$)
+      line((0, -2), (0, 2), mark: (end: "stealth", start: "stealth"))
+      content((), anchor: "east", $lambda$)
+
+      line((-5, -1), (-1, -1), (1, 1), (5, 1))
+
+
+    })
+  )
+
+
+  Let $f: cal(S) mapsto R$
+// f:S→R be a smooth function. The infinitesimal generator is:
+// 
+
+  
+  
+// $$\boxed{(\mathcal{A}f)(\lambda, z) = \begin{cases}
+// \tilde{a}^-(z) \partial_z f + \dfrac{\epsilon \tilde{d}^-(z)}{2} \partial_z^2 f & z < -\epsilon \[4mm]
+// \dfrac{\tilde{a}0(\lambda)}{\epsilon} \partial\lambda f + \dfrac{\tilde{d}0(\lambda)}{2\epsilon} \partial\lambda^2 f & |\lambda| < 1 \[4mm]
+// \tilde{a}^+(z) \partial_z f + \dfrac{\epsilon \tilde{d}^+(z)}{2} \partial_z^2 f & z > \epsilon
+// \end{cases}}$$
+  
+
+  - Prove that $zeta_t$ with $xi$ fixed, permits a an invariant measure
+
+  Conisder the three regions $cal(R)^- = (-oo, -1]$, $cal(R)^bullet = (1, -1)$,
+  and $cal(R)^+ = [1, oo)$, 
+
+
+    $
+      tilde(a)^(pm)_(alpha, epsilon) (t, xi, zeta) &eqdef
+      tilde(a)^(+)_(alpha, epsilon) (t, x = xi + epsilon nu zeta, lambda = pm 1) \
+      tilde(b)^(pm)_(alpha, epsilon) (t, xi, zeta) &eqdef
+      tilde(b)^(+)_(alpha, epsilon) (t, x = xi + epsilon nu zeta, lambda = pm 1) \
+      tilde(d)^(pm)_(alpha, epsilon) (t, xi, zeta) &eqdef
+      tilde(d)^(+)_(alpha, epsilon) (t, x = xi + epsilon nu zeta, lambda = pm 1)
+    $
+
+
+  Rescale time $tau = t / epsilon$, then get the invariant measure, or simply
+  for $t in [0, delta]$
+
+  We define the following potential funcitons
+
+  $
+    Psi^(-)(zeta) &eqdef 2 integral_(-oo)^(zeta) (tilde(a)^(-)_(alpha, epsilon) (t, xi, zeta'))/(tilde(d)^(-)_(alpha, epsilon) (t, xi, zeta')) dif zeta', quad &&zeta in (-oo, 1]\
+    Psi^(bullet)(zeta) &eqdef 2 integral_(-1)^(zeta) (tilde(a)_(alpha, epsilon) (t, xi, zeta',  zeta'))/(tilde(d)_(alpha, epsilon) (t, xi, zeta', zeta')) dif zeta', quad &&zeta in (-1, 1) \
+    Psi^(+)(zeta) &eqdef 2 integral_1^(zeta) (tilde(a)^(+)_(alpha, epsilon) (t, xi, zeta'))/(tilde(d)^(+)_(alpha, epsilon) (t, xi, zeta')) dif zeta', quad &&zeta in [1, oo)\ 
+  $
+
+  
+
+  Then we have the invariant density
+
+    $
+      P^(oo)_(pm, xi)(zeta) = (C^(pm)(xi))/(tilde(d)^(pm)(t, xi, zeta))  ee^(Psi^(pm)(zeta))
+    $
+
+  
+
+
+  #remark[We assume we start within the attracting basin of the sliding mode, in
+    that sense we assume the coeffieints are local approximations which are
+    extended to $pm oo$. As a result, given that $tilde(a)^+ < 0$ ensures that
+    the $lim_(zeta -> inf) exp(Psi^+(zeta)) -> 0$. Similarl argument for
+    $tilde(a)^-$, which ensures that the invariant density decays away from the
+    discconiity.
+
+  ]
+
+  Matching Conditions:
+
+  continuty of density (continuous sample paths $=>$ continuous density)
+
+  $
+    P^(oo)_(-, xi)(-1) &= P^(oo)_(bullet, xi)(-1)  &&=> C^(-) (xi) e^(Psi^(-)(-1))&&&= C^(bullet)(xi) \
+    P^(oo)_(bullet, xi)(1) &= P^(oo)_(+, xi)(1)  &&=>  C^(bullet) (xi)e^(Psi^(bullet)(1)) &&& = C^(+)(xi) \
+  $
+
+  Let $C^-(xi) eqdef C(xi)$, then 
+
+  $
+    C^(bullet)(xi) = C(xi) ee^(Psi^(- )(-1)), quad C^(+)(xi) = C(xi) ee^(Psi^(-)(-1) + Psi^(bullet)(1))
+  $
+
+  Normalisation :
+
+  $
+    N^(-)(xi) &eqdef integral_(-oo)^(1) (ee^(Psi^(-)(zeta)))/(tilde(d)^(pm)(t, xi, zeta))  dif zeta, quad
+    N^(bullet)(xi) &eqdef integral_(-1)^(1) (ee^(Psi^(bullet)(zeta)))/(tilde(d)^(bullet)(t, xi, zeta))  dif zeta,  quad
+    N^(+)(xi) &eqdef integral_(1)^(oo) (ee^(Psi^(+)(zeta)))/(tilde(d)^(+)(t, xi, zeta))  dif zeta, 
+  $
+
+  Enforcing normalisation gives
+  $
+    C(xi) = (N^(-)(xi) + N^(bullet)(xi) ee^(Psi^-(-1)) + N^(+)(xi) ee^(Psi^-(-1) + Psi^+(1)))^(-1),
+  $
+
+  $
+    P(zeta) =  Q^-(zeta) bb(1)_(cal(R)^-)(zeta)
+    + Q^(bullet)(zeta) bb(1)_(cal(R)^bullet)(zeta)
+    + Q^+(zeta) bb(1)_(cal(R)^+)(zeta)
+  $
+
+  We push forward the measure on $zeta$ to a measure $lambda$ under the mapping
+  $lambda = Lambda_(epsilon)(epsilon K_sigma zeta)$
+
+  $
+    mu_(P^(oo)(lambda))(A) = rho^(+) bb(1)_(A)(1) + rho^(-) bb(1)_(A)(-1)
+    + integral_(A)  P^(oo)_(bullet) (lambda) dif lambda
+  $
+
+
+  $
+    rho_(+)(t) = integral_(-1)^(oo) P^(t)_(-) (t)
+  $
+  
+
+  Exponential mixing
+]
+
+
 
 
 #lemma(title: [Backward generator of the switching variable])[

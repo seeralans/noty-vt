@@ -1,6 +1,6 @@
 
-#+TITLE: Supplementary to "On stochastic differential equations with piecewise-smooth drift and noise coefficients."
-#+SLUG: anothernssde
+#+TITLE: Examples and application of the averagine principle
+#+SLUG: nssdeexp
 #+INCLUDE: "_macros.org"
 #+PROPERTY: header-args:jupyter-python :eval no :exports code :results none :session none
 #+LATEX_HEADER: \addbibresource{library.bib}
@@ -62,22 +62,22 @@ cpm_func = lambda t, x: -(rp + x) + (rm - x)
 
 sig_func = lambda x: x[0]
 
-drift_ns = lambda t, x, _: drift_non_smooth(t, x, ap_func, am_func, bp_func, bm_func, cp_func, cm_func, sig_func, al, ep)
-diff_ns = lambda t, x, _: diff_non_smooth(t, x, ap_func, am_func, bp_func, bm_func, cp_func, cm_func, sig_func, al, ep)
+drift_ns = lambda t, x, *args: drift_non_smooth(t, x, ap_func, am_func, bp_func, bm_func, cp_func, cm_func, sig_func, al, ep)
+diff_ns = lambda t, x, *args: diff_non_smooth(t, x, ap_func, am_func, bp_func, bm_func, cp_func, cm_func, sig_func, al, ep)
 
 
-drift_lam = lambda t, x, _: drift_regular_lam(t, x, ap_func, am_func, bp_func, bm_func, cp_func, cm_func, cpm_func, sig_func, al, ep)
-diff_lam = lambda t, x, _: diff_regular_lam(t, x, ap_func, am_func, bp_func, bm_func, cp_func, cm_func, cpm_func, sig_func, al, ep)
+drift_lam = lambda t, x, *args: drift_regular_lam(t, x, ap_func, am_func, bp_func, bm_func, cp_func, cm_func, cpm_func, sig_func, al, ep)
+diff_lam = lambda t, x, *args: diff_regular_lam(t, x, ap_func, am_func, bp_func, bm_func, cp_func, cm_func, cpm_func, sig_func, al, ep)
 
-drift_ns_no_noise = lambda t, x, _: drift_non_smooth(t, x, ap_func, am_func, bp_func, bm_func, cp_func, cm_func, sig_func, al, 0.0)
-diff_ns_no_noise = lambda t, x, _: diff_non_smooth(t, x, ap_func, am_func, bp_func, bm_func, cp_func, cm_func, sig_func, al, 0.0)
+drift_ns_no_noise = lambda t, x, *args: drift_non_smooth(t, x, ap_func, am_func, bp_func, bm_func, cp_func, cm_func, sig_func, al, 0.0)
+diff_ns_no_noise = lambda t, x, *args: diff_non_smooth(t, x, ap_func, am_func, bp_func, bm_func, cp_func, cm_func, sig_func, al, 0.0)
 
-x0 = np.array([0.1])
+x0 = np.array([2.0])
 t0 = 0.0
 t1 = 5.0
 dt = 0.001
 
-num_trajs = 100
+num_trajs = 10
 
 lam_sol = euler_maruyama(drift_lam, diff_lam, x0, t0, t1, dt, trajectories=num_trajs)
 ns_sol  = euler_maruyama(drift_ns, diff_ns, x0, t0, t1, dt, trajectories=num_trajs)
@@ -86,9 +86,9 @@ ode_sol = euler_maruyama(drift_ns_no_noise, diff_ns_no_noise, x0, t0, t1, dt, tr
 
 
 
-#+begin_src jupyter-python :session nssde :exports no :eval yes :results drawer
 
-fig, ax = pp.subplots(figsize=[6, 2], ncols=2, sharey=True)
+#+begin_src jupyter-python :session nssde :exports no :eval yes :results output
+fig, ax = pp.subplots(figsize=[6, 6], nrows=2, sharex=True)
 for k in range(num_trajs):
     ax[0].plot(ns_sol[0], ns_sol[1][k, :, 0], c="k", alpha=0.2)
     ax[1].plot(lam_sol[0], lam_sol[1][k, :, 0], c="k", alpha=0.2)
@@ -97,8 +97,8 @@ ax[0].plot(ns_sol[0], ns_sol[1].mean(0)[:, 0], c="r")
 ax[0].plot(ode_sol[0], ode_sol[1][0, :, 0], c="b")
 ax[0].plot(ode_sol[0], np.ones(len(ode_sol[0]))*ep, c="m")
 ax[0].plot(ode_sol[0], -np.ones(len(ode_sol[0]))*ep, c="m")
-ax[0].set_xlabel("t")
 ax[0].set_ylabel("x")
+ax[1].set_ylabel("x")
 
 ax[1].plot(lam_sol[0], lam_sol[1].mean(0)[:, 0], c="r")
 ax[1].plot(ode_sol[0], ode_sol[1][0, :, 0], c="b")
@@ -106,5 +106,722 @@ ax[1].plot(ode_sol[0], np.ones(len(ode_sol[0]))*ep, c="m")
 ax[1].plot(ode_sol[0], -np.ones(len(ode_sol[0]))*ep, c="m")
 ax[1].set_xlabel("t")
 
+fig.savefig("toy-example-test.svg", bbox_inches="tight")
+#+end_src
+#+caption: Example trajectories
+[[./nssdeexp-assets/toy-example-test.svg]]
+
+
+
+
+
+* Friction Example
+
+#+begin_src jupyter-python :session nssde :exports no :eval yes :results output
+b = 0.5
+a = (1 - b) / 3
+al = 0
+ep = 0.0
+v = 1
+
+ap_func = lambda t, x: np.array([x[1], -b * x[1] - a * x[0] - 1])
+am_func = lambda t, x: np.array([x[1], -b * x[1] - a * x[0] + 1])
+
+sig_func = lambda x: x[1] - v
+
+bp_func = lambda t, x: np.eye(2)
+bm_func = lambda t, x: np.eye(2)
+
+cp_func = lambda t, x: np.zeros(2)
+cm_func = lambda t, x: np.zeros(2)
+cpm_func = lambda t, x: np.zeros(2)
+
+drift_ns = lambda t, x, *args: drift_non_smooth(t, x, ap_func, am_func, bp_func, bm_func, cp_func, cm_func, sig_func, al, ep)
+diff_ns = lambda t, x, *args: diff_non_smooth(t, x, ap_func, am_func, bp_func, bm_func, cp_func, cm_func, sig_func, al, ep)
+
+x0 = np.array([0.0, 1.1])
+t0 = 0.0
+t1 = 50.0
+dt = 0.001
+
+num_trajs = 10
+
+ns_sol  = euler_maruyama(drift_ns, diff_ns, x0, t0, t1, dt, trajectories=1)
 #+end_src
 
+* Simpliy system
+#+begin_src jupyter-python :session nssde_symb :exports no :eval yes :results output
+import matplotlib.pyplot as pp
+import numpy as np
+from sympy import *
+
+init_session()
+init_printing(
+    pretty_print=True,
+    use_latex=True,
+    use_unicode=False,
+    forecolor="White",
+    wrap_line=True,
+    num_columns=100,
+    mat_symbol_style="bold",
+    fontsize="200pt",
+    euler=True,
+)
+
+v = symbols("v")
+nu = symbols(r"\nu")
+
+
+la = symbols("lambda")
+al, ep, xi = symbols(r"\alpha \epsilon \xi")
+xip, xim = symbols(r"\xi_+ \xi_-")
+
+aa_spur = -v * la
+bb =  (xip + 0) * (1 + la) / 2 + (xim + 0) * (1 - la) / 2
+
+
+aa_tilde = aa_spur
+dd_tilde = bb * bb
+
+
+inte_fac = 2 * integrate(aa_tilde/dd_tilde, (la, -1, la)).simplify().simplify()
+inv_dens = 1/dd_tilde * exp(inte_fac)
+
+inv_dens_n_unorm = lambdify((x, v, xip, xim, la), inv_dens)
+norm_fac = lambda x, v, xip, xim, mesh=100: np.trapezoid(inv_dens_n_unorm(x, v, xip, xim, np.linspace(-1, 1, mesh)), np.linspace(-1, 1, mesh))
+
+
+inv_dens_n = lambda x, v, xip, xim, la, mesh=100: inv_dens_n_unorm(x, v, xip, xim, la) / norm_fac(x, v, xip, xim, mesh)
+
+
+
+def mean_lam(x, v, xip, xim,  mesh=100):
+  prob = inv_dens_n(x, v, xip, xim, np.linspace(-1, 1, mesh))
+  mean = np.trapezoid(prob * np.linspace(-1, 1, mesh), np.linspace(-1, 1, mesh))
+  mean_2 = np.trapezoid(prob * np.linspace(-1, 1, mesh)**2, np.linspace(-1, 1, mesh))
+  return mean, mean_2
+
+
+
+v_val = 1.0
+xip_v = 1.0
+xim_v = 2.
+ep_v = 0.01
+mu_la, mu_la2 = mean_lam(0, v_val, xip_v, xim_v)
+
+aa_spur_l = lambdify((x, v, la), aa_spur)
+bb_l      = lambdify((x, v, xip, xim, la), bb)
+
+
+def lam_interp(x, ep):
+  if abs(x) >= ep:
+    return np.sign(x)
+  else:
+    return x / ep
+
+
+def drift_tanh(t, x):
+  return np.array([aa_spur_l(x[0], v_val, lam_interp(x, ep_v))])
+  if abs(x[1] - 8) < ep_v:
+    return aa_avg_l(x[0], x[1], al_v, ep_v)[:, 0]
+  else:
+    return aa_spur_l(x[0], x[1], al_v, ep_v, np.sign(x[1] - 8))[:, 0]
+
+
+def diffu_tanh(t, x):
+  return  np.sqrt(ep_v) * np.array([bb_l(x[0], v_val, xip_v, xim_v, lam_interp(x, ep_v))])
+  if abs(x[1] - 8) < ep_v:
+    return  np.sqrt(ep_v) * bb_avg_l(x[0], x[1], al_v, ep_v)
+  else:
+    return np.sqrt(ep_v) * bb_l(x[0], x[1], al_v, ep_v, np.sign(x[1] - 8))
+
+
+def drift_avg(t, x):
+  return np.array([aa_spur_l(x[0], v_val, mu_la)])
+  if abs(x[1] - 8) < ep_v:
+    return aa_avg_l(x[0], x[1], al_v, ep_v)[:, 0]
+  else:
+    return aa_spur_l(x[0], x[1], al_v, ep_v, np.sign(x[1] - 8))[:, 0]
+
+def diffu_avg(t, x):
+  return  np.sqrt(ep_v) * np.array([bb_l(x[0], v_val, xip_v, xim_v, mu_la)])
+  if abs(x[1] - 8) < ep_v:
+    return  np.sqrt(ep_v) * bb_avg_l(x[0], x[1], al_v, ep_v)
+  else:
+    return np.sqrt(ep_v) * bb_l(x[0], x[1], al_v, ep_v, np.sign(x[1] - 8))
+
+def drift_avg_mode(t, x):
+  return np.array([aa_spur_l(x[0], v_val, np.tanh(x[0] / 0.001))])
+  if abs(x[1] - 8) < ep_v:
+    return aa_avg_l(x[0], x[1], al_v, ep_v)[:, 0]
+  else:
+    return aa_spur_l(x[0], x[1], al_v, ep_v, np.sign(x[1] - 8))[:, 0]
+   
+ 
+
+x0 = np.array([0.0])
+dt = 0.001
+t_max = 2.0
+num_trajs = 200
+ns_sol  = euler_maruyama(drift_tanh,  diffu_tanh, x0, 0.0, t_max, dt, trajectories=num_trajs)
+skel_sol  = euler_maruyama(drift_avg, diffu_avg, x0, 0.0, 2 * t_max, dt, trajectories=1)
+
+
+fig, ax = pp.subplots(figsize=[9, 9])
+
+for i in range(num_trajs):
+  ax.plot(ns_sol[0], ns_sol[1][i, :, 0], c="tab:blue", alpha=0.3)
+
+ax.plot(skel_sol[0], skel_sol[1][0, :, 0], c="tab:red")
+#+end_src
+
+
+** Genetic Switch
+#+begin_src jupyter-python :session nssde :exports no :eval yes :results output
+
+#+end_src
+
+
+#+begin_src jupyter-python :session nssde_symb :exports no :eval yes :results output
+import matplotlib.pyplot as pp
+import numpy as np
+from sympy import *
+
+init_session()
+init_printing(
+    pretty_print=True,
+    use_latex=True,
+    use_unicode=False,
+    forecolor="White",
+    wrap_line=True,
+    num_columns=100,
+    mat_symbol_style="bold",
+    fontsize="200pt",
+    euler=True,
+)
+
+g1, g2, k1, k2 = symbols(r"\gamma_1 \gamma_2 \kappa_1 \kappa_2")
+th11, th12, th21, th22 = symbols(r"\theta_{{{11}}} \theta_{{{12}}} \theta_{{{21}}} \theta_{{{22}}}")
+la11, la12, la21, la22 = symbols(r"\lambda_{{{11}}} \lambda_{{{12}}} \lambda_{{{21}}} \lambda_{{{22}}}")
+be1l, be1m, be1h = symbols(r"\beta_{{{1L}}} \beta_{{{1M}}} \beta_{{{1H}}}")
+be2l, be2m, be2h = symbols(r"\beta_{{{2L}}} \beta_{{{2M}}} \beta_{{{2H}}}")
+xi1, xi2 = symbols(r"\xi_1 \xi_2")
+
+x1, x2 = symbols(r"x_1 x_2")
+
+a1 = -g1*x1 + k1 * (1 + la21) * (1 - la12) / 4
+a2 = -g2*x2 + k2 * (1 + la11) * (1 - la22) / 4
+
+b11 = (sqrt(x1) + xi1) * (be1h * (1 - la21)/2 + be1m * (1 + la21) * (1 - la22)/4 + be1l * (1 + la22)/2)
+b22 = (sqrt(x2) + xi2) * (be2h * (1 - la11)/2 + be2m * (1 + la11) * (1 - la12)/4 + be2l * (1 + la12)/2)
+#+end_src
+
+
+
+#+begin_src jupyter-python :session nssde_symb :exports no :eval yes :results output
+la = symbols("lambda")
+al, ep, xi = symbols(r"\alpha \epsilon \xi")
+aa1 = a1.subs({la11: 1, la12: -1, la21: 1}).subs(la22, la)
+aa2 = a2.subs({la11: 1, la12: -1, la21: 1}).subs(la22, la)
+
+bb1 = b11.subs({la11: 1, la12: -1, la21: 1}).subs(la22, la)
+bb2 = b22.subs({la11: 1, la12: -1, la21: 1}).subs(la22, la)
+aa = Matrix([[aa1], [aa2]])
+bb = Matrix([[bb1, 0], [0, bb2]])
+
+J1 = Matrix([[bb[0, 0].diff(x1), bb[0, 0].diff(x2)], [bb[1, 0].diff(x1), bb[1, 0].diff(x2)]])
+J2 = Matrix([[bb[0, 1].diff(x1), bb[0, 1].diff(x2)], [bb[1, 1].diff(x1), bb[1, 1].diff(x2)]])
+
+
+
+
+aa_spur = aa + al * ep * (J1 * bb[:, 0] + J2 * bb[:, 1])
+
+sig_grad = Matrix([[0], [1]])
+
+aa_tilde = (sig_grad.T * aa_spur)[0]
+dd_tilde = (sig_grad.T * bb * bb.T * sig_grad)[0]
+
+inte_fac = 2 * integrate(aa_tilde/dd_tilde, (la, -1, la)).simplify().simplify().subs({xi1: xi, xi2: xi})
+inv_dens = 1/dd_tilde * exp(inte_fac)
+
+fac = 2.0
+params = {
+g1: 4.5,
+g2: 1.5,
+k1: 40,
+k2: 40,
+be1l: 0.3 * fac,
+be1m: 0.6 * fac, 
+be1h: 1.2 * fac,
+be2l: 0.3 * fac,
+be2m: 0.6 * fac,
+be2h: 1.2 * fac  ,
+xi1: 1.0,
+xi2: 1.0,
+xi: 1.0,
+}
+
+inv_dens_n_unorm = lambdify((x1, x2, al, ep, la), inv_dens.subs(params))
+norm_fac = lambda x1, x2, al, ep, mesh=100: np.trapezoid(inv_dens_n_unorm(x1, x2, al, ep, np.linspace(-1, 1, mesh)), np.linspace(-1, 1, mesh))
+
+
+inv_dens_n = lambda x1, x2, al, ep, la, mesh=100: inv_dens_n_unorm(x1, x2, al, ep, la) / norm_fac(x1, x2, al, ep, mesh)
+
+
+def mean_lam(x1, x2, al, ep, mesh=100):
+  prob = inv_dens_n(x1, x2, al, ep, np.linspace(-1, 1, mesh))
+  mean = np.trapezoid(prob * np.linspace(-1, 1, mesh), np.linspace(-1, 1, mesh))
+  mean_2 = np.trapezoid(prob * np.linspace(-1, 1, mesh)**2, np.linspace(-1, 1, mesh))
+  return mean, mean_2
+
+
+
+mu_la, mu_la2 = mean_lam(6, 8, 0.0, 0.01)
+mu_la = 0.4
+
+
+aa_avg_1 = aa_spur[0, 0].diff(la, 0).subs(la, 0) + aa_spur[0, 0].diff(la, 1).subs(la, 0) * mu_la + aa_spur[0, 0].diff(la, 2).subs(la, 0)/2 * mu_la2
+
+aa_avg_2 = aa_spur[1, 0].diff(la, 0).subs(la, 0) + aa_spur[1, 0].diff(la, 1).subs(la, 0) * mu_la + aa_spur[1, 0].diff(la, 2).subs(la, 0)/2 * mu_la2
+
+aa_avg = Matrix([[aa_avg_1], [aa_avg_2]]).subs(params)
+bb_avg = bb.subs(la, mu_la).subs(params)
+
+aa_avg_l = lambdify((x1, x2, al, ep), aa_avg)
+bb_avg_l = lambdify((x1, x2, al, ep), bb_avg)
+
+aa_spur_l = lambdify((x1, x2, al, ep, la), aa_spur.subs(params))
+bb_l = lambdify((x1, x2, al, ep, la), bb.subs(params))
+
+aa_tanh = aa.subs(params).subs(la, tanh((x2 - 8)/ep))
+bb_tanh = bb.subs(params).subs(la, tanh((x2 - 8)/ep))
+
+aa_tanh_l = lambdify((x1, x2, al, ep), aa_tanh)
+bb_tanh_l = lambdify((x1, x2, al, ep), bb_tanh)
+
+
+al_v = 0.0
+ep_v = 0.01
+drift_avg = lambda t, x: aa_avg_l(x[0], x[1], al_v, ep_v)[:, 0]
+diffu_avg = lambda t, x: sqrt(ep) * bb_avg_l(x[0], x[1], al_v, ep_v)
+
+
+drift_tanh = lambda t, x: aa_tanh_l(x[0], x[1], al_v, ep_v)[:, 0]
+diffu_tanh = lambda t, x: sqrt(ep_v) * bb_tanh_l(x[0], x[1], al_v, ep_v)
+
+
+def drift_avg(t, x):
+  return aa_avg_l(x[0], x[1], al_v, ep_v)[:, 0]
+  if abs(x[1] - 8) < ep_v:
+    return aa_avg_l(x[0], x[1], al_v, ep_v)[:, 0]
+  else:
+    return aa_spur_l(x[0], x[1], al_v, ep_v, np.sign(x[1] - 8))[:, 0]
+   
+ 
+
+def diffu_avg(t, x):
+  return  np.sqrt(ep_v) * bb_avg_l(x[0], x[1], al_v, ep_v)
+  if abs(x[1] - 8) < ep_v:
+    return  np.sqrt(ep_v) * bb_avg_l(x[0], x[1], al_v, ep_v)
+  else:
+    return np.sqrt(ep_v) * bb_l(x[0], x[1], al_v, ep_v, np.sign(x[1] - 8))
+
+
+x0 = np.array([4+3*ep_v, 8])
+dt = 0.0005
+t_max = 0.25
+num_trajs = 500
+ns_sol  = euler_maruyama(drift_avg, diffu_avg, x0, 0.0, t_max, dt, trajectories=num_trajs)
+skel_sol  = euler_maruyama(drift_avg, lambda t, x: np.zeros((2, 2)), x0, 0.0, t_max, dt, trajectories=1)
+
+fig_phase, ax_phase = pp.subplots(figsize=[9, 9])
+
+for i in range(num_trajs):
+  ax_phase.plot(ns_sol[1][i, :, 0], ns_sol[1][i, :, 1], c="tab:blue", alpha=0.3)
+
+ax_phase.plot(skel_sol[1][0, :, 0], skel_sol[1][0, :, 1], c="tab:red")
+ax_phase.plot(np.linspace(0, 12, 100), np.ones(100) * 4, c="k")
+ax_phase.plot(np.linspace(0, 12, 100), np.ones(100) * 8, c="k")
+
+ax_phase.plot(np.ones(100) * 4, np.linspace(0, 12, 100), c="k")
+ax_phase.plot(np.ones(100) * 8, np.linspace(0, 12, 100), c="k")
+
+ax_phase.set_xlim([4, 8])
+ax_phase.set_ylim([7, 9])
+
+ax_phase.set_title("Averaged", y=0.7, fontsize=16)
+  
+#+end_src
+
+
+#+begin_src jupyter-python :session nssde_symb :exports no :eval yes :results output
+jac_a = Matrix([
+  [aa_spur.subs(la, -1)[0, 0].diff(x1), aa_spur.subs(la, -1)[0, 0].diff(x2)],
+  [aa_spur.subs(la, -1)[1, 0].diff(x1), aa_spur.subs(la, -1)[1, 0].diff(x2)],
+]).subs(params).subs({al: al_v, ep: ep_v})
+
+dd = (bb * bb.T).subs(params).subs({al: al_v, ep: ep_v}).subs(la, -1).reshape(4, 1)
+jac_a_l = lambdify((x1, x2), jac_a)
+dd_l = lambdify((x1, x2), dd)
+
+def lya_drift(t, z):
+  x_vals =  skel_sol[1][0, (skel_sol[0] == t), :][0, :]
+  jac_val = jac_a_l(x_vals[0], x_vals[1])
+  dd_val = dd_l(x_vals[0], x_vals[1])[:, 0]
+  A = np.kron(jac_val, np.eye(2)) + np.kron(np.eye(2), jac_val)
+  return dd_val + z @ A.T
+
+z0 = np.array([0.0, 0.0, 0.0, 0.0]) 
+  
+z_sol  = euler_maruyama(lya_drift, lambda t, x: np.zeros((4, 1)), z0, 0.0, t_max, dt, trajectories=1)
+
+sigmas = z_sol[1][0, :, :].reshape((len(skel_sol[0]), 2, 2, ))
+sigmas_eigs = [np.linalg.eig(sigma) for sigma in sigmas]
+sigmas_evals = np.array([eig.eigenvalues for eig in sigmas_eigs])
+sigmas_evecs = np.array([eig.eigenvectors for eig in sigmas_eigs])
+
+
+skel_x1 = skel_sol[1][0, :, 0]
+skel_x2 = skel_sol[1][0, :, 1]
+tangs = aa_spur_l(skel_x1, skel_x2, al_v, ep_v, -1)[:, 0, :]
+norm = (np.array([[0, 1], [-1, 0]]) @ tangs)
+norm /= np.linalg.norm(tangs, axis=0)
+
+sigma_proj = np.array([norm[:, k] * (sigmas_evals[k, 0] * sigmas_evecs[k, :, 0] + sigmas_evals[k, 1] * sigmas_evecs[k, :, 1]) for k in range(len(norm.T))]).sum(1)  / ep_v
+
+upper_tube = skel_sol[1][0, :, :] + (norm * sigma_proj).T * np.sqrt(ep_v)
+lower_tube = skel_sol[1][0, :, :] - (norm * sigma_proj).T * np.sqrt(ep_v)
+
+ax_phase.plot(upper_tube[:, 0], upper_tube[:, 1], c="m") 
+ax_phase.plot(lower_tube[:, 0], lower_tube[:, 1], c="m")
+
+
+fig, ax = pp.subplots()
+for k in range(num_trajs):
+  ax.plot(ns_sol[0], ns_sol[1][k, :, 1], c="k", alpha=0.2)
+ax.plot(skel_sol[0], skel_sol[1][0, :, 1], c="r")
+ax.plot(ns_sol[0], skel_sol[1][0, :, 1] + np.sqrt(sigmas[:, 1, 1]) * np.sqrt(ep_v), c="m")
+ax.plot(ns_sol[0], skel_sol[1][0, :, 1] - np.sqrt(sigmas[:, 1, 1]) * np.sqrt(ep_v), c="m")
+
+#+end_src
+
+
+
+* Stochastic Piecewise-Smooth Systems in Gene Regulatory Networks: A Canonical Application
+
+** Executive Summary
+
+This document outlines why **piecewise-linear models of gene regulatory networks with multiplicative noise** constitute an ideal canonical application for Freidlin-Wentzell large deviations theory extended to piecewise-smooth stochastic differential equations. The application addresses a genuine gap in the literature: while deterministic Filippov theory for gene networks is well-developed, and smooth stochastic gene expression models are mature, the intersection—**stochastic piecewise-smooth systems with multiplicative noise**—lacks a rigorous theoretical framework. The key biological question this framework answers is: *at what rate, and along what molecular path, do cells spontaneously switch between phenotypic states?*
+
+---
+
+** Part I: Why Piecewise-Linear Models?
+
+*** 1.1 Biological Justification: The Hill Function Limit
+
+Transcription factor binding is fundamentally cooperative. The Hill function describes the fraction of promoter sites occupied:
+
+$$H(x) = \frac{x^n}{\theta^n + x^n}$$
+
+where $n$ is the Hill coefficient (typically 2–4 for transcription factors, but effectively higher with multiple binding sites or autoregulation). In the **steep cooperativity limit** $n \to \infty$:
+
+$$H(x) \xrightarrow{n \to \infty} s^+(x, \theta) := \begin{cases} 0 & x < \theta \\ 1 & x > \theta \end{cases}$$
+
+The step function is not an approximation—it is the **natural limit** of highly cooperative binding. This limit:
+
+- Arises from allosteric effects and multivalent binding (Santillán, 2008)
+- Is experimentally observed in synthetic genetic circuits (Gardner et al., 2000)
+- Separates the sources of complexity: nonlinearity (handled by piecewise decomposition) from discontinuity (handled by Filippov/averaging)
+
+**Key references:**
+- Santillán M. *On the use of the Hill functions in mathematical models of gene regulatory networks.* Math. Model. Nat. Phenom. 3(2):85-97, 2008.
+- Weiss JN. *The Hill equation revisited: uses and misuses.* FASEB J. 11:835-841, 1997.
+
+*** 1.2 Mathematical Justification: Tractability in Each Region
+
+In each region separated by threshold hyperplanes, the dynamics are **linear**:
+
+$$\dot{x}_i = \alpha_i - \gamma_i x_i$$
+
+where $\alpha_i$ is a piecewise-constant production rate. This yields:
+
+1. **Explicit solutions within regions**: exponential relaxation to focal points
+2. **Eigenvalue analysis** for local stability
+3. **Complexity localized to switching surfaces**: the interesting behavior occurs at discontinuities, not from smooth nonlinearity
+
+*** 1.3 Applied Mathematics Literature
+
+The deterministic theory is well-developed:
+
+- **Glass & Kauffman (1973)**: Foundational paper on piecewise-linear gene networks
+- **Casey, de Jong & Gouzé (2006)**: Filippov framework for gene regulatory networks, stability of singular equilibria
+- **Acary, de Jong & Brogliato (2014)**: Numerical methods for piecewise-smooth gene networks
+- **Edwards et al. (2015)**: Extension to include transcription and translation
+
+**Gap in the literature**: These works are deterministic. The stochastic extensions that exist (e.g., Hill et al. 2022, arXiv:2112.12958) handle only **additive noise**. Your framework handles **multiplicative noise with discontinuous coefficients**.
+
+---
+
+** Part II: Why Filippov Theory?
+
+*** 2.1 The Problem: Undefined Vector Field at Switching Surfaces
+
+At a threshold $\Sigma = \{x_2 = \theta\}$, the vector field is undefined. From one side:
+
+$$f^+(x) = (\alpha_1^+ - \gamma_1 x_1, \quad \alpha_2 - \gamma_2 x_2, \quad \ldots)$$
+
+From the other:
+
+$$f^-(x) = (\alpha_1^- - \gamma_1 x_1, \quad \alpha_2 - \gamma_2 x_2, \quad \ldots)$$
+
+If both point toward $\Sigma$ (attractive), what happens?
+
+*** 2.2 Filippov's Solution: Sliding Motion
+
+The system **slides** along $\Sigma$ with velocity given by a convex combination:
+
+$$f^S = \lambda f^+ + (1-\lambda) f^-, \qquad \lambda \in [0,1]$$
+
+where $\lambda$ is chosen to keep the trajectory on $\Sigma$:
+
+$$\langle \nabla g, f^S \rangle = 0$$
+
+for $g(x) = x_2 - \theta$ defining the surface.
+
+*** 2.3 Biological Interpretation: Decision States
+
+**Sliding regions are where cells decide.**
+
+When a cell's gene expression approaches a threshold, and regulatory signals conflict (gene 1 says "go up," gene 2 says "go down"), the cell enters a sliding regime: partially committed, expressing both programs, waiting for the conflict to resolve.
+
+This corresponds to:
+- **Partially differentiated cells** in development
+- **Transition states** in epithelial-mesenchymal transition (EMT)
+- **"Primed" populations** poised to respond to signals
+
+The sliding region is not a mathematical artifact—it is a **real phenotypic state**.
+
+**Key references:**
+- Filippov AF. *Differential Equations with Discontinuous Righthand Sides.* Kluwer, 1988.
+- Machina A, Ponosov A. *Filippov solutions in the analysis of piecewise linear models describing gene regulatory networks.* Nonlinear Analysis 74:882-900, 2011.
+
+---
+
+** Part III: Why Stochastic Extensions Matter
+
+*** 3.1 The Central Insight: Spontaneous Switching Requires Noise
+
+Consider a bistable toggle switch with two stable phenotypes A and B. In the **deterministic** Filippov system:
+
+- Once committed to state A, the cell stays in A forever
+- Transitions require external signals
+
+In the **stochastic** system with small noise $\sqrt{\varepsilon}$:
+
+- Spontaneous transitions occur at rate $k \sim \exp(-S^*/\varepsilon)$
+- $S^*$ is the Freidlin-Wentzell action (quasi-potential)
+- The **instanton** (most probable transition path) reveals the molecular mechanism
+
+**This question—spontaneous phenotypic switching—cannot even be posed in the deterministic literature.**
+
+*** 3.2 Biological Examples Where This Matters
+
+**** 3.2.1 Cancer Drug Resistance
+
+**Problem**: Tumor cells spontaneously switch to drug-tolerant persister states, surviving treatment.
+
+**Literature**:
+- Sharma SV et al. *A chromatin-mediated reversible drug-tolerant state in cancer cell subpopulations.* Cell 141:69-80, 2010.
+- Gunnarsson EB et al. *Understanding the role of phenotypic switching in cancer drug resistance.* J. Theor. Biol. 490:110162, 2020.
+
+**What the framework provides**:
+- Rate of spontaneous switching to resistant phenotype
+- Whether transition passes through partially-committed intermediates
+- How noise structure (intrinsic vs. extrinsic) affects switching
+
+**** 3.2.2 Bacterial Persistence
+
+**Problem**: A subpopulation of bacteria spontaneously enters dormant "persister" state, surviving antibiotics.
+
+**Key finding**: Balaban et al. (Science 2004) showed persistence is a **phenotypic switch**, not genetic mutation.
+
+**Literature**:
+- Balaban NQ et al. *Bacterial persistence as a phenotypic switch.* Science 305:1622-1625, 2004.
+- Kussell E, Leibler S. *Phenotypic diversity, population growth, and information in fluctuating environments.* Science 309:2075-2078, 2005.
+- Balaban NQ et al. *Definitions and guidelines for research on antibiotic persistence.* Nat. Rev. Microbiol. 17:441-448, 2019.
+
+**What the framework provides**:
+- Switching rate between normal and persister states
+- Evolutionary optimal switching rate in fluctuating environments
+- Effect of drug on the action landscape
+
+**** 3.2.3 Stem Cell Fate Decisions
+
+**Problem**: Stem cells stochastically commit to different lineages even in uniform conditions.
+
+**Literature**:
+- Chang HH et al. *Transcriptome-wide noise controls lineage choice in mammalian progenitor cells.* Nature 453:544-547, 2008.
+- Mojtahedi M et al. *Cell fate decision as high-dimensional critical state transition.* PLoS Biol. 14:e2000640, 2016.
+- Wang C et al. *Quantifying cell fate decisions for differentiation and reprogramming of a human stem cell network: Landscape and biological paths.* PLoS Comput. Biol. 9:e1003165, 2013.
+
+**What the framework provides**:
+- Rate of spontaneous differentiation/de-differentiation
+- Path through gene expression space during transitions
+- How sliding regions (partially differentiated states) affect switching
+
+**** 3.2.4 Prion-Like Epigenetic States
+
+**Problem**: Yeast prions ([PSI+], [URE3]) involve conformational switching that propagates.
+
+**Literature**:
+- Shorter J, Lindquist S. *Prions as adaptive conduits of memory and inheritance.* Nat. Rev. Genet. 6:435-450, 2005.
+
+**What the framework provides**:
+- Spontaneous rate of conformational/expression state switching
+- How noise affects epigenetic memory
+
+---
+
+** Part IV: The Canonical Example
+
+*** 4.1 Two-Gene Toggle Switch (2D Basis)
+
+Following Gardner, Cantor & Collins (Nature 2000) and Acary, de Jong & Brogliato (Physica D 2014):
+
+$$\dot{x}_1 = -\gamma_1 x_1 + \kappa_1 s^+(x_2, \theta_2^1) s^-(x_1, \theta_1^2)$$
+$$\dot{x}_2 = -\gamma_2 x_2 + \kappa_2 s^+(x_1, \theta_1^1) s^-(x_2, \theta_2^2)$$
+
+**Phase portrait features** (Acary et al. parameters: $\theta_1^1 = \theta_2^1 = 4$, $\theta_1^2 = \theta_2^2 = 8$, $\kappa_1 = \kappa_2 = 40$, $\gamma_1 = 4.5$, $\gamma_2 = 1.5$):
+
+- Two stable equilibria: (0,0) and (8,8)
+- Sliding along threshold surfaces
+- 9 rectangular regions from grid of thresholds
+
+*** 4.2 Extension to 3D (for Nontrivial Sliding Surfaces)
+
+Add a third gene regulated by $x_2$:
+
+$$\dot{x}_3 = -\gamma_3 x_3 + \kappa_3 s^+(x_2, \theta_2^1)$$
+
+Now $\Sigma = \{x_2 = \theta_2^1\}$ is a **2D plane** in 3D space, and the sliding region $S \subset \Sigma$ is a **disc or strip** with nontrivial 2D dynamics.
+
+*** 4.3 Adding Multiplicative Noise
+
+The stochastic extension:
+
+$$dx_i = b_i(x) \, dt + \sqrt{\varepsilon} \, \sigma_i(x) \, dW_t^i$$
+
+where $\sigma_i(x)$ is **piecewise-constant** (or proportional to $\sqrt{x_i}$ for Poisson fluctuations).
+
+**Crucial features**:
+- Noise coefficient $\sigma_i$ can be discontinuous at $\Sigma$
+- Meyer-Itô formula contributes spurious drift at discontinuities
+- Averaging over fast switching yields effective coefficients $\bar{a}(x)$, $\bar{b}(x)$
+
+---
+
+** Part V: What the Framework Provides
+
+*** 5.1 Instanton Calculation
+
+The instanton (most probable escape path) minimizes the Freidlin-Wentzell action:
+
+$$S[\phi] = \frac{1}{2} \int_0^T \left| \sigma^{-1}(s) \left( \dot{\phi}(s) - b(\phi(s)) \right) \right|^2 \, ds$$
+
+For piecewise systems, the action **decomposes by region**:
+
+$$S = S_I + S_{II} + S_{III}$$
+
+with matching conditions at entry/exit points of $\Sigma$.
+
+*** 5.2 Key Results
+
+| Quantity | Biological Meaning |
+|----------|-------------------|
+| $S^*$ (action) | Logarithm of mean switching time: $\tau \sim e^{S^*/\varepsilon}$ |
+| Instanton path | Molecular trajectory through gene expression space during switching |
+| Entry/exit points on $\Sigma$ | Whether transition passes through sliding (partially-committed) states |
+| Tube around instanton | Variability of switching paths |
+
+*** 5.3 Novel Contributions Beyond Existing Theory
+
+1. **Multiplicative noise**: Existing piecewise FW theory (Hill et al. 2022) handles only additive noise
+2. **Sliding dynamics with noise**: How noise affects trajectories constrained to switching surfaces
+3. **Three-timescale averaging**: Fast switching ($\delta^{-1}$), slow dynamics ($O(1)$), weak noise ($\varepsilon^{1/2}$)
+4. **LDP transfer under averaging**: Rate function for averaged system inherits contributions from hidden dynamics
+
+---
+
+** Part VI: References
+
+*** Foundational Theory
+
+1. Freidlin MI, Wentzell AD. *Random Perturbations of Dynamical Systems.* 3rd ed. Springer, 2012.
+2. Filippov AF. *Differential Equations with Discontinuous Righthand Sides.* Kluwer, 1988.
+
+*** Piecewise-Linear Gene Networks (Deterministic)
+
+3. Glass L, Kauffman SA. *The logical analysis of continuous, non-linear biochemical control networks.* J. Theor. Biol. 39:103-129, 1973.
+4. de Jong H et al. *Qualitative simulation of genetic regulatory networks using piecewise-linear models.* Bull. Math. Biol. 66:301-340, 2004.
+5. Casey R, de Jong H, Gouzé JL. *Piecewise-linear models of genetic regulatory networks: equilibria and their stability.* J. Math. Biol. 52:27-56, 2006.
+6. Acary V, de Jong H, Brogliato B. *Numerical simulation of piecewise-linear models of gene regulatory networks using complementarity systems.* Physica D 269:103-119, 2014.
+7. Machina A, Ponosov A. *Filippov solutions in the analysis of piecewise linear models describing gene regulatory networks.* Nonlinear Analysis 74:882-900, 2011.
+
+*** Toggle Switch
+
+8. Gardner TS, Cantor CR, Collins JJ. *Construction of a genetic toggle switch in Escherichia coli.* Nature 403:339-342, 2000.
+9. Tian T, Burrage K. *Stochastic models for regulatory networks of the genetic toggle switch.* Proc. Natl. Acad. Sci. USA 103:8372-8377, 2006.
+
+*** Stochastic Gene Expression & Large Deviations
+
+10. Paulsson J. *Models of stochastic gene expression.* Phys. Life Rev. 2:157-175, 2005.
+11. Assaf M, Meerson B. *WKB theory of large deviations in stochastic populations.* J. Phys. A 50:263001, 2017.
+12. Bressloff PC. *Stochastic Processes in Cell Biology.* Springer, 2014.
+13. Newby JM. *Isolating intrinsic noise sources in a stochastic genetic switch.* Phys. Biol. 9:026002, 2012.
+
+*** Phenotypic Switching: Cancer & Persistence
+
+14. Sharma SV et al. *A chromatin-mediated reversible drug-tolerant state in cancer cell subpopulations.* Cell 141:69-80, 2010.
+15. Balaban NQ et al. *Bacterial persistence as a phenotypic switch.* Science 305:1622-1625, 2004.
+16. Kussell E, Leibler S. *Phenotypic diversity, population growth, and information in fluctuating environments.* Science 309:2075-2078, 2005.
+17. Gunnarsson EB et al. *Understanding the role of phenotypic switching in cancer drug resistance.* J. Theor. Biol. 490:110162, 2020.
+
+*** Stem Cells & Cell Fate
+
+18. Chang HH et al. *Transcriptome-wide noise controls lineage choice in mammalian progenitor cells.* Nature 453:544-547, 2008.
+19. Mojtahedi M et al. *Cell fate decision as high-dimensional critical state transition.* PLoS Biol. 14:e2000640, 2016.
+20. Wang C et al. *Quantifying cell fate decisions for differentiation and reprogramming.* PLoS Comput. Biol. 9:e1003165, 2013.
+
+*** Large Deviations with Delay/Switching
+
+21. Gupta C et al. *Large deviations for Gaussian diffusions with delay.* J. Stat. Phys. 170:254-285, 2018. (Application to toggle switch)
+
+*** Recent Mathematical Developments
+
+22. Bakhtin Y, Pajor-Gyulai Z. *Malliavin calculus approach to long exit times from an unstable equilibrium.* Ann. Appl. Probab. 29:827-850, 2019.
+23. Hill C et al. *Large deviations for piecewise-deterministic Markov processes.* arXiv:2112.12958, 2022. (Additive noise only)
+
+---
+
+** Part VII: Suggested Paper Structure
+
+**Title**: *Large Deviations for Piecewise-Smooth Stochastic Differential Equations with Multiplicative Noise: Application to Phenotypic Switching in Gene Regulatory Networks*
+
+**Structure**:
+
+1. **Introduction**: Motivate with phenotypic switching, state gap in theory
+2. **Model**: 3D toggle with sliding on 2D surface, multiplicative noise
+3. **Three-Timescale Framework**: $\varepsilon \ll \delta \ll 1$ averaging
+4. **Main Results**: 
+   - Averaging theorem with explicit error bounds
+   - LDP transfer: rate function for averaged system
+   - Instanton decomposition across regions
+5. **Application**: 
+   - Compute switching rate and path for toggle switch
+   - Show sliding region contribution not captured by mollification
+6. **Discussion**: Biological implications (cancer persistence, stem cells)
+
+---
+
+*Document prepared for AAP submission planning. Last updated: January 2026.*

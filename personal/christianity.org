@@ -1,4 +1,4 @@
-#+TITLE: Christianity notes
+#+TITLE: Some topic
 #+LAYOUT: default
 
 * Topics

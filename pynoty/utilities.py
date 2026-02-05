@@ -11,7 +11,6 @@ def euler_maruyama(
     t0: float,
     t1: float,
     dt: float,
-    *,
     args: Sequence = (),
     trajectories: int = 1,
     rng: Optional[np.random.Generator] = None,
