@@ -764,7 +764,7 @@ observable $sigma(x_t)$ which we state in the following lemma.
   $<eq-a-tilde-def>
   and 
   $
-    tilde(b)(t, x, lambda) eqdef partial_x sigma(x)^(tns) b(t, x, lambda)],
+    tilde(b)(t, x, lambda) eqdef partial_x sigma(x)^(tns) b(t, x, lambda),
   $<eq-b-tilde-def>
 ]<lem-z-sde>
 #proof[
@@ -777,6 +777,8 @@ observable $sigma(x_t)$ which we state in the following lemma.
   apply Itō's product rule.
 
 ]
+
+
 
 
 We are now in a position to consider the dynamics of the switching variable as
@@ -1314,6 +1316,17 @@ lemma shows.
     , \
   $<eq-lam-sde-a>
 
+
+  #lemma(title: [SDE for $zeta_t$])[
+    Let $xi in cal(D)$,  ...
+
+    $
+
+    $
+    
+  ]
+  
+
   The proces $(lambda_t, zeta_t) in cal(S) eqdef [-1, 1] times RR$ is Markovian
   and takes place on an embedded 1D manifold.
 
@@ -1455,6 +1468,20 @@ lemma shows.
   
 
   Exponential mixing
+
+
+  
+    I_T [phi] = cases(
+  $
+    V(zeta) = cases(
+    exp(gamma(-zeta - 1)) & quad zeta < -1,
+    1 & quad -1 <= zeta <= 1, 
+    exp(gamma(zeta - 1)) &quad  zeta > 1
+)
+ $
+  // $
+// $$V(\zeta) = \begin{cases}
+// \end{cases}$$
 ]
 
 
